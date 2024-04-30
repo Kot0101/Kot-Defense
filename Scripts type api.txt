@@ -28,7 +28,15 @@ attack_dog - Обработка атаки собаки
 
 	Game functions - Функции игры
 main_menu - Функция главного экрана
-menu_info - Функция с информацией о игре
+main_menu_event - Обработка ивентов в main_menu
+main_menu_ui - Обработка интерфейса в main_menu
+game_info - Функция с информацией о игре
+game_info_event - Обработка ивентов в game_info
+game_info_ui - Обработка интерфейса в game_info
+win - Поздравление с победой
+win_event - Обработка ивентов в win
+win_ui - Обработка интерфейса в win
+new_cat_unblock - Обработка разблокировки новых котов
 lose_screen - Функция, показ экрана смерти, ваш скрипт выполнится
 lose_event - Обработка ивентов в lose_screen (как event)
 lose_ui - интерфейс lose_screen
@@ -50,8 +58,9 @@ game_pause - Обработка паузы
 game_die - Обработка смерти игрока
 	Cmd
 cmd - Свои консольные команды для игры
+cmd_event - Обработка cmd
 
 	Примеры:
 В main.py добавляем строчку кода:
-Script('Data/Mods/Main/Scripts/cat_supers.py', 'remove_dogs_periodically')
+Script('Data/Mods/<Название мода>/Scripts/cat_supers.py', 'remove_dogs_periodically')
 И весь скрипт на ульту котов пишем в этот файл путь которого мы указали, готово ! Вы добавили свой уникальный скрипт
