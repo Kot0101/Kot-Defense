@@ -987,11 +987,20 @@ class Dog:
 loading_text('функций')
 
 def save_best_score(score):
-    with open('Data/Save/best_score.pickle', 'wb') as file:
-        pickle.dump(score, file)
-    load_best_score
+    global scripts
+    for script in scripts:
+        exec(str(start_script(script, 'save')))
+    try:
+        with open('Data/Save/best_score.pickle', 'wb') as file:
+            pickle.dump(score, file)
+        load_best_score()
+    except:
+        pass
 
 def load_best_score():
+    global scripts
+    for script in scripts:
+        exec(str(start_script(script, 'load')))
     try:
         with open('Data/Save/best_score.pickle', 'rb') as file:
             best_score = pickle.load(file)
@@ -1000,27 +1009,35 @@ def load_best_score():
     return best_score
 
 def spawn_cats(custom_budget = None, xxx = None, yyy = None):
-    while True:
-        cat_value = random.choice(list(cats_moneys.keys()))
-        cat_values = list(cats_moneys.keys())
-        cat_value = random.choice(cat_values)
-        spermatozoid2 = False
-        fork = False
-        all_buy_cats = buy_cats + buy_no_cats
-        for cat_value2 in cats_moneys:
-            fork = True
-            if cat_value2 <= custom_budget:
-                spermatozoid2 = True
+    global scripts, cats, cats_moneys
+    for script in scripts:
+        exec(str(start_script(script, 'spawn_cats')))
+    try:
+        while True:
+            cat_value = random.choice(list(cats_moneys.keys()))
+            cat_values = list(cats_moneys.keys())
+            cat_value = random.choice(cat_values)
+            spermatozoid2 = False
+            fork = False
+            all_buy_cats = buy_cats + buy_no_cats
+            for cat_value2 in cats_moneys:
+                fork = True
+                if cat_value2 <= custom_budget:
+                    spermatozoid2 = True
+                    break
+            if spermatozoid2 == False and fork == True or custom_budget <= 0:
                 break
-        if spermatozoid2 == False and fork == True or custom_budget <= 0:
-            break
-        if custom_budget >= cat_value:
-            cats_moneys[cat_value].random_buy(xxx, yyy)
-            custom_budget -= cat_value
+            if custom_budget >= cat_value:
+                cats_moneys[cat_value].random_buy(xxx, yyy)
+                custom_budget -= cat_value
+    except:
+        pass
 
 def spawn_dogs(custom_budget = None, xxx = None, yyy = None):
     global health, dogs, cats, cat, dogs_variants, del_cat, money, catown, dogs_moneys, budget, frame_count, frame_count2, frame_count3, frame_count4, plustime, new_wey, wave, for_mega_wave, pause, music_playing, dog_damag_boost, cat_works_boost, cats_boost, upping, buy_cats, xexe, mx, dogs_class, scripts, mods_count_11d23s2saaa, catown2, pos, cursor_pos, bonus, new_music, event_game, maxMoney, input_text, running, input_active, ctrl_pressed, shift_pressed
     online = 0
+    for script in scripts:
+        exec(str(start_script(script, 'spawn_dogs')))
     if custom_budget != None:
         old_budget = budget
         budget = custom_budget
@@ -1214,12 +1231,16 @@ def game_info():
     global music_playing, input_text, running, input_active, ctrl_pressed, shift_pressed
     running = True
     clock = pygame.time.Clock()
+    for script in scripts:
+        exec(str(start_script(script, 'game_info')))
     while running:
         back_rect = back_image.get_rect(topleft=(width-140, 20))
         pos = pygame.mouse.get_pos()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            for script in scripts:
+                exec(str(start_script(script, 'game_info_event')))
             CMD_codes(event)
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
@@ -1239,6 +1260,8 @@ def game_info():
                 return
         fonte = pygame.font.Font(None, 75)
         fonte2 = pygame.font.Font(None, 65)
+        for script in scripts:
+            exec(str(start_script(script, 'game_info_ui')))
         text = fonte.render("Играть проще не куда!", True, text_color)
         text2 = fonte2.render("Не дай собакам дойти до правой стороны экрана\nСтавь котов чтобы они помогали отбивать нападения\nПри нажатие ПКМ по коту он продастся за половину его цены\nПри нажатие ЛКМ по собаке ей наносится урон\nЕсть вид собак 'в полёте' их может убить только ПВО\nПри нажатие space выключаеться музыка", True, text_color)
         text_rect = text.get_rect(center=(width/2, 70))
@@ -1265,19 +1288,8 @@ def menu():
         pass
     clock = pygame.time.Clock()
     running = True
-    dir_path = 'Data/Mods'
-    
-    for _, dirnames, _ in os.walk(dir_path):
-        for dirname in dirnames:
-            file_path = os.path.join(dir_path, dirname, 'main.py')
-            try:
-                with open(file_path, 'r', encoding='utf-8') as file:
-                    first_line = file.readline()
-                    last_line = file.readlines()[-1]
-            except FileNotFoundError:
-                continue
-            except Exception as e:
-                print(f"Ошибка при обработке файла {file_path}: {e}")
+    for script in scripts:
+        exec(str(start_script(script, 'main_menu')))
     while running:
         play_rect = play_image.get_rect(topleft=(width/2-140, height/2-100))
         info_rect = info_image.get_rect(topleft=(width-140, 20))
@@ -1289,6 +1301,8 @@ def menu():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            for script in scripts:
+                exec(str(start_script(script, 'main_menu_event')))
             CMD_codes(event)
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
@@ -1322,6 +1336,8 @@ def menu():
                 # menu_mult()
                 # return
         fonte = pygame.font.Font(None, 75)
+        for script in scripts:
+            exec(str(start_script(script, 'main_menu_ui')))
         text = fonte.render("Добро пожаловать в Kot Defense", True, text_color)
         fonte = pygame.font.Font(None, 45)
         fonte2 = pygame.font.Font(None, 35)
@@ -1347,71 +1363,6 @@ def menu():
         screen.blit(text_surface, (10, 10))
         pygame.display.flip()
         clock.tick(60)
-
-import os
-import pickle
-
-# Функция сохранения данных
-def save_game():
-    global cats, dogs, money, health, wave, budget, for_mega_wave, plustime, new_wey, catown
-    cat_pixels = []
-    for cat in cats:
-        cat_pixels.append(cat.convert_alpha().get_array().tolist())
-
-    dog_pixels = []
-    for dog in dogs:
-        dog_pixels.append(dog.convert_alpha().get_array().tolist())
-
-    # Создаем объект для сериализации
-    data = {
-        "cats": cat_pixels,
-        "dogs": dog_pixels,
-        "money": money,
-        "health": health,
-        "wave": wave,
-        "budget": budget,
-        "for_mega_wave": for_mega_wave,
-        "plustime": plustime,
-        "new_wey": new_wey,
-        "catown": catown
-    }
-
-    # Открываем файл для записи
-    with open("savefile.save", "wb") as f:
-        # Сериализуем данные
-        pickle.dump(data, f)
-
-
-# Функция загрузки данных
-def load_game():
-    global cats, dogs, money, health, wave, budget, formegawave, plustime, newwey, catown
-    if os.path.isfile('savefile.save'):
-        with open("savefile.save", "rb") as f:
-            # Десериализуем данные
-            data = pickle.load(f)
-
-            # Преобразуем массивы пикселей в объекты pygame.Surface
-            cats = []
-            for cat_pixels in data["cats"]:
-                cat_surface = pygame.surfarray.make_surface(np.array(cat_pixels))
-                cats.append(cat_surface)
-
-            dogs = []
-            for dog_pixels in data["dogs"]:
-                dog_surface = pygame.surfarray.make_surface(np.array(dog_pixels))
-                dogs.append(dog_surface)
-
-            # Извлекаем данные из объекта
-            money = data["money"]
-            health = data["health"]
-            wave = data["wave"]
-            budget = data["budget"]
-            for_mega_wave = data["for_mega_wave"]
-            plustime = data["plustime"]
-            new_wey = data["new_wey"]
-            catown = data["catown"]
-    else:
-        print('Файл сохранения не найден')
 
 def omg(wave2, screen, online):
     global scripts
@@ -1563,6 +1514,8 @@ def omg(wave2, screen, online):
 
 def new_cat_unblock():
     global buy_cats, xexe, mx, input_text, running, input_active, ctrl_pressed, shift_pressed
+    for script in scripts:
+        exec(str(start_script(script, 'new_cat_unblock')))
     buy_cats = sorted(buy_cats, key=lambda x: x.money)
     xexe = 100
     if len(buy_cats) <= 14:
@@ -1581,6 +1534,8 @@ def new_cat_unblock():
 def start(online):
     loading_text('игры')
     global health, dogs, cats, cat, dogs_variants, del_cat, money, catown, dogs_moneys, budget, frame_count, frame_count2, frame_count3, frame_count4, plustime, new_wey, wave, for_mega_wave, pause, music_playing, dog_damag_boost, cat_works_boost, cats_boost, upping, buy_cats, xexe, mx, dogs_class, dangerous_keywords_pp2irooodjhjjjkjkn, scripts, bad_list, good_list, catown2, bonus, new_music, buy_no_cats, event_game, maxMoney, cat_unblock, cats_moneys
+    for script in scripts:
+        exec(str(start_script(script, 'start')))
     del_cat = False
     money = 30
     maxMoney = 0
@@ -1653,7 +1608,6 @@ def start(online):
 
     bad_list.extend(['собаки наносят больше урона', 'игра станет сложнее', 'некоторым котам на поле боя нанесут 10 урона', f'-Максимальное число денег которое у вас было', 'превращает 20% котов в лягушек'])
     good_list.extend([f'+Максимальное число денег которое у вас было', '+1 главных сердец', '+30 жизней некоторым котам на поле боя', 'Игра станет легче', 'Коты работники дают на 5$ больше', 'Коты наносят больше урона', 'Магический щит, защищает котов от вражеских заклинаний'])
-
     folder_path = 'Data\\Mods\\'
     for root, dirs, files in os.walk(folder_path):
         for file_name in files:
@@ -1677,6 +1631,7 @@ def start(online):
         pygame.time.delay(50)
     new_cat_unblock()
     
+    
     game(online)
     return
 
@@ -1688,7 +1643,7 @@ def win(online):
     timer = 60*2
     mywincode = int(time.time())
     for script in scripts:
-            exec(str(start_script(script, 'bonus_loade')))
+        exec(str(start_script(script, 'win')))
     while loade:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -1707,6 +1662,8 @@ def win(online):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            for script in scripts:
+                exec(str(start_script(script, 'win_event')))
             CMD_codes(event)
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
@@ -1728,6 +1685,8 @@ def win(online):
                     game(online)
                 return
         fonte = pygame.font.Font(None, 60)
+        for script in scripts:
+            exec(str(start_script(script, 'win_event')))
         if event_game == 1:
             text = fonte.render(f"Поздравляю ! Вы прошли ивент, отправьте скришот этого экрана\nв тех поддержку чтобы получить бонус ваш код: {mywincode}\nНажмите ПКМ чтобы выйти", True, text_color)
         else:
@@ -1753,6 +1712,8 @@ def game(online):
     data_back2 = [(0, 0), 30, 10, 1, 4, [], []]
     boss_time = 0
     cat_unblock = False
+    for script in scripts:
+        exec(str(start_script(script, 'game')))
     if new_music == True:
         try:
             if event_game == 1:
@@ -2329,112 +2290,113 @@ shift_pressed = False
 def text_input():
     global input_text, running, input_active, ctrl_pressed, shift_pressed, health, dogs, cats, cat, dogs_variants, del_cat, money, catown, dogs_moneys, budget, frame_count, frame_count2, frame_count3, frame_count4, plustime, new_wey, wave, for_mega_wave, pause, music_playing, dog_damag_boost, cat_works_boost, cats_boost, upping, buy_cats, xexe, mx, dogs_class, dangerous_keywords_pp2irooodjhjjjkjkn, scripts, bad_list, good_list, catown2, bonus, new_music, buy_no_cats, event_game, maxMoney, cat_unblock, stop_game, cats_moneys
     input_text = str(input_text)
-    # try:
-    if input_text.split()[0] == "health":
-        health = int(input_text.split()[1])
-    elif input_text.split()[0] == "regen":
-        WhoRegen = input_text.split()[1]
-        if WhoRegen == "cats":
-            for cat2 in cats:
-                cat2.health = cat2.maxhealth
-        elif WhoRegen == "dogs":
-            for dog2 in dogs:
-                dog2.health = dog2.maxhealth
-        elif WhoRegen == "all":
-            for dog2 in dogs:
-                dog2.health = dog2.maxhealth
-            for cat2 in cats:
-                cat2.health = cat2.maxhealth
-    # elif input_text.split()[0] == "spawn":
-        # spawn_name = input_text.split()[1]
-        # xs = input_text.split()[2]
-        # ys = input_text.split()[3]
-        # for dog2 in dogs_class:
-            # if spawn_name == dog2:
-                # dog2.CreateDog(xs, ys)
-    elif input_text.split()[0] == "random":
-        try:
-            WhoRan = input_text.split()[1]
-        except:
-            WhoRan = None
-        try:
-            xs = int(input_text.split()[3])
-        except:
-            xs = None
-        try:
-            ys = int(input_text.split()[4])
-        except:
-            ys = None
-        try:
-            custom_budget = int(input_text.split()[2])
-        except:
-            custom_budget = random.randint(1, 400000)
-        if custom_budget < 0:
-            custom_budget = random.randint(1, 400000)
-        if WhoRan == 'dogs' or WhoRan == None:
-            spawn_dogs(custom_budget, xs, ys)
-        if WhoRan == 'cats' or WhoRan == None:
-            spawn_cats(custom_budget, xs ,ys)
-    elif input_text.split()[0] == "money":
-        money = int(input_text.split()[1])
-    elif input_text.split()[0] == "wave":
-        wave = int(input_text.split()[1])
-        budget = 0
-        for wave in range(1, wave + 1):
-            budget += 5
-            budget += round(budget / 5)
-    elif input_text.split()[0] == "budget":
-        budget = int(input_text.split()[1])
-    # elif input_text.split()[0] == "budget_to_wave":
-        # budget = int(input_text.split()[1])
-        # wave = 0
-        # for budget in range(1, budget + 1):
-            # wave += 5
-            # wave += round(wave / 5)
-            # if wave >= budget:
-                # break
-    elif input_text.split()[0] == "mega_wave":
-        for_mega_wave = 0
-    elif input_text.split()[0] == "kill":
-        WhiKill = input_text.split()[1]
-        if WhiKill == "cats":
-            while len(cats) != 0:
+    try:
+        if input_text.split()[0] == "health":
+            health = int(input_text.split()[1])
+        elif input_text.split()[0] == "regen":
+            WhoRegen = input_text.split()[1]
+            if WhoRegen == "cats":
                 for cat2 in cats:
-                    cat2.bump(cat2.maxhealth)
-        elif WhiKill == "dogs":
-            while len(dogs) != 0:
+                    cat2.health = cat2.maxhealth
+            elif WhoRegen == "dogs":
                 for dog2 in dogs:
-                    dog2.bump(dog2.maxhealth, [], False)
-        elif WhiKill == "all":
-            while len(dogs) != 0 or len(cats) != 0:
+                    dog2.health = dog2.maxhealth
+            elif WhoRegen == "all":
                 for dog2 in dogs:
-                    dog2.bump(dog2.maxhealth, [], False)
+                    dog2.health = dog2.maxhealth
                 for cat2 in cats:
-                    cat2.bump(cat2.maxhealth)
-    elif input_text.split()[0] == "shop":
-        for cd2 in buy_no_cats:
-            cd2.unblock = True
-        input_text = ''
-        game(0)
-    elif input_text.split()[0] == "stop":
-        stop_game = True
-    elif input_text.split()[0] == "play":
-        stop_game = False
-    # elif input_text.split()[0] == "save":
-        # save_game()
-    # elif input_text.split()[0] == "load":
-        # load_game()
-    # else:
-        # for script in scripts:
-            # exec(str(start_script(script, 'cmd')))
-        # pass
-    # except:
-        # pass
+                    cat2.health = cat2.maxhealth
+        # elif input_text.split()[0] == "spawn":
+            # spawn_name = input_text.split()[1]
+            # xs = input_text.split()[2]
+            # ys = input_text.split()[3]
+            # for dog2 in dogs_class:
+                # if spawn_name == dog2:
+                    # dog2.CreateDog(xs, ys)
+        elif input_text.split()[0] == "random":
+            try:
+                WhoRan = input_text.split()[1]
+            except:
+                WhoRan = None
+            try:
+                xs = int(input_text.split()[3])
+            except:
+                xs = None
+            try:
+                ys = int(input_text.split()[4])
+            except:
+                ys = None
+            try:
+                custom_budget = int(input_text.split()[2])
+            except:
+                custom_budget = random.randint(1, 400000)
+            if custom_budget < 0:
+                custom_budget = random.randint(1, 400000)
+            if WhoRan == 'dogs' or WhoRan == None:
+                spawn_dogs(custom_budget, xs, ys)
+            if WhoRan == 'cats' or WhoRan == None:
+                spawn_cats(custom_budget, xs ,ys)
+        elif input_text.split()[0] == "money":
+            money = int(input_text.split()[1])
+        elif input_text.split()[0] == "wave":
+            wave = int(input_text.split()[1])
+            budget = 0
+            for wave in range(1, wave + 1):
+                budget += 5
+                budget += round(budget / 5)
+        elif input_text.split()[0] == "budget":
+            budget = int(input_text.split()[1])
+        # elif input_text.split()[0] == "budget_to_wave":
+            # budget = int(input_text.split()[1])
+            # wave = 0
+            # for budget in range(1, budget + 1):
+                # wave += 5
+                # wave += round(wave / 5)
+                # if wave >= budget:
+                    # break
+        elif input_text.split()[0] == "mega_wave":
+            for_mega_wave = 0
+        elif input_text.split()[0] == "kill":
+            WhiKill = input_text.split()[1]
+            if WhiKill == "cats":
+                while len(cats) != 0:
+                    for cat2 in cats:
+                        cat2.bump(cat2.maxhealth)
+            elif WhiKill == "dogs":
+                while len(dogs) != 0:
+                    for dog2 in dogs:
+                        dog2.bump(dog2.maxhealth, [], False)
+            elif WhiKill == "all":
+                while len(dogs) != 0 or len(cats) != 0:
+                    for dog2 in dogs:
+                        dog2.bump(dog2.maxhealth, [], False)
+                    for cat2 in cats:
+                        cat2.bump(cat2.maxhealth)
+        elif input_text.split()[0] == "shop":
+            for cd2 in buy_no_cats:
+                cd2.unblock = True
+            input_text = ''
+            game(0)
+        elif input_text.split()[0] == "stop":
+            stop_game = True
+        elif input_text.split()[0] == "play":
+            stop_game = False
+        # elif input_text.split()[0] == "save":
+            # save_game()
+        # elif input_text.split()[0] == "load":
+            # load_game()
+        else:
+            for script in scripts:
+                exec(str(start_script(script, 'cmd')))
+    except:
+        pass
     
     input_text = ''
 
 def CMD_codes(event):
     global input_text, running, input_active, ctrl_pressed, shift_pressed
+    for script in scripts:
+        exec(str(start_script(script, 'cmd_event')))
     if event.type == pygame.KEYDOWN:
         if event.key == pl.K_LCTRL:
             ctrl_pressed = True
@@ -2445,10 +2407,10 @@ def CMD_codes(event):
         elif input_active:
             if event.key == pl.K_RETURN:
                 if input_text:
-                    # try:
-                    text_input()
-                    # except:
-                        # pass
+                    try:
+                        text_input()
+                    except:
+                        pass
             elif event.key == pl.K_BACKSPACE:
                 input_text = input_text[:-1]
             else:
