@@ -25,18 +25,19 @@ try:
 except:
     pass
 
-global dangerous_keywords_pp2irooodjhjjjkjkn, mods_count_11d23s2saaa, port, event_game, stop_game
+global dangerous_keywords_pp2irooodjhjjjkjkn, mods_count_11d23s2saaa, port, event_game, stop_game, new_cat
 dangerous_keywords_pp2irooodjhjjjkjkn= ['os.system', 'os.popen']
 mods_count_11d23s2saaa = 0
 port = random.randint(1, 65535)
 scripts = []
 event_game = None
 stop_game = False
+new_cat = None
 
 width = 1400
 height = 800
 screen = pygame.display.set_mode((width, height))
-pygame.display.set_caption("Kot Defense 1.8")
+pygame.display.set_caption("Kot Defense 1.81")
 
 text_color = (0, 0, 0)
 heart_color = (255, 0, 0)
@@ -398,7 +399,7 @@ class BuyCat:
             pass
     
     def buy(self, pos, mo):
-        global cats, money, xexe, scripts, catown, catown2, buy_no_cats
+        global cats, money, xexe, scripts, catown, catown2, buy_no_cats, new_cat
         for script in scripts:
             exec(str(start_script(script, 'buy_cat')))
         try:
@@ -416,6 +417,8 @@ class BuyCat:
                             if money >= self.money:
                                 money -= self.money
                                 new_cat = Cat(self.image, self.aura_radius, self.health, self.dogs_count, self.money, self.reload, self.damage, self.mega, self.path_my_image, self.size_x, self.size_y) 
+                                for script in scripts:
+                                    exec(str(start_script(script, 'buy_cat_create')))
                                 catown = new_cat
                                 cats.append(new_cat)
                                 new_cat.dds = mo
@@ -544,10 +547,10 @@ class Cat:
         try:
             if self.aura_radius > 0 and self.stope == False: 
                 if online != 0:
-                        if catown2 != None or catown != None or self.rect.collidepoint(pos) or self.rect.collidepoint(cursor_pos):
-                            circle_surface = pygame.Surface((self.aura_radius * 2, self.aura_radius * 2), pygame.SRCALPHA)
-                            pygame.draw.circle(circle_surface, (255, 255, 255, 100), (self.aura_radius, self.aura_radius), self.aura_radius, 2)
-                            screen.blit(circle_surface, (self.rect.centerx - self.aura_radius, self.rect.centery - self.aura_radius))
+                    if catown2 != None or catown != None or self.rect.collidepoint(pos) or self.rect.collidepoint(cursor_pos):
+                        circle_surface = pygame.Surface((self.aura_radius * 2, self.aura_radius * 2), pygame.SRCALPHA)
+                        pygame.draw.circle(circle_surface, (255, 255, 255, 100), (self.aura_radius, self.aura_radius), self.aura_radius, 2)
+                        screen.blit(circle_surface, (self.rect.centerx - self.aura_radius, self.rect.centery - self.aura_radius))
                 else:
                     if catown != None or self.rect.collidepoint(pos):
                         circle_surface = pygame.Surface((self.aura_radius * 2, self.aura_radius * 2), pygame.SRCALPHA)
@@ -1573,6 +1576,7 @@ def start(online):
     wave = 1
     bonus = False
     for_mega_wave = 4
+    
     new_dog = CreateDog(3, 1, 'Dog', dog_image, 2, 2, 1, 1, 1, 0, 'Data/Img/Dog1.png', 60, 60)
     new_dog = CreateDog(7, 5, 'FastDog', dog_image, 1, 4, 1, 1, 1, 0, 'Data/Img/Dog1.png', 60, 60)
     new_dog = CreateDog(7, 5, 'BigDog', dog_image, 6, 1, 1, 1, 1, 0, 'Data/Img/Dog1.png', 60, 60)
@@ -1629,6 +1633,7 @@ def start(online):
                             print(f"An error occurred: {e}")
             pygame.time.delay(50)
         pygame.time.delay(50)
+    
     new_cat_unblock()
     
     
@@ -1700,7 +1705,7 @@ def win(online):
         clock.tick(60)
 
 def game(online):
-    global health, dogs, cats, cat, dogs_variants, del_cat, money, catown, dogs_moneys, budget, frame_count, frame_count2, frame_count3, frame_count4, plustime, new_wey, wave, for_mega_wave, pause, music_playing, dog_damag_boost, cat_works_boost, cats_boost, upping, buy_cats, xexe, mx, dogs_class, scripts, mods_count_11d23s2saaa, catown2, pos, cursor_pos, bonus, new_music, event_game, maxMoney, input_text, running, input_active, ctrl_pressed, shift_pressed, stop_game
+    global health, dogs, cats, cat, dogs_variants, del_cat, money, catown, dogs_moneys, budget, frame_count, frame_count2, frame_count3, frame_count4, plustime, new_wey, wave, for_mega_wave, pause, music_playing, dog_damag_boost, cat_works_boost, cats_boost, upping, buy_cats, xexe, mx, dogs_class, scripts, mods_count_11d23s2saaa, catown2, pos, cursor_pos, bonus, new_music, event_game, maxMoney, input_text, running, input_active, ctrl_pressed, shift_pressed, stop_game, pos
     running = True
     bonus = False
     clock = pygame.time.Clock()
@@ -1831,8 +1836,6 @@ def game(online):
             # data_back[0] = pos
         
         
-        for script in scripts:
-            exec(str(start_script(script, 'game_ui')))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -2214,6 +2217,8 @@ def game(online):
                         dog.attack(5)
                     omg(wave, screen, online)
                     return
+            for script in scripts:
+                exec(str(start_script(script, 'game_ui')))
             
             # if online == 1:
                 # try:
