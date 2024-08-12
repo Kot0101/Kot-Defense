@@ -27,7 +27,9 @@ try:
 except:
     pass
 
-global __dangerous_keywords_pp2irooodjhjjjkjkn, mods_count_11d23s2saaa, port, event_game, stop_game, new_cat, all_cats, all_dogs
+global __dangerous_keywords_pp2irooodjhjjjkjkn, mods_count_11d23s2saaa, port, event_game, stop_game, new_cat, all_cats, all_dogs, training_step, cmd_queue,first, wave
+first = False
+wave = 0
 __dangerous_keywords_pp2irooodjhjjjkjkn= ['os.system', 'os.popen']
 mods_count_11d23s2saaa = 0
 port = random.randint(1, 65535)
@@ -37,6 +39,7 @@ stop_game = False
 new_cat = None
 all_cats = []
 all_dogs = []
+training_step = 0
 
 width = 1400
 height = 800
@@ -60,23 +63,291 @@ info_text2_color = (170, 170, 170)
 skip_button_color = (255, 0, 0)
 skip_button_text_color = (0, 0, 0)
 boss_background_color = (102, 125, 12)
+hint_color_1 = (255, 255, 255)
+hint_color_2 = (255, 255, 255)
+hint_color_3 = (255, 255, 255)
+hint_color_def = hint_color_1
+
+cmd_queue = []
+
+global translate, translate_dogs, translate_cats, translate_text, translate_baffs, Notifications
+translate = "ru"
+Notifications = []
+
+translate_dogs = {
+    "ru": {
+        "FastDog": "Быстрые собаки",
+        "BigDog": "Большые собаки",
+        "KillerDog": "Ассасины собаки",
+        "KiberDog": "Кибер-собаки",
+        "BoomDog": "Бум-доги",
+        "NecDog": "Некроманские псы",
+        "MehoDog": "Мехо",
+        "BomberDog": "Бомберы",
+        "TrojanDog": "Троянский псы",
+        "GhostDog": "Призраки собак",
+        "Woolf": "Оборотни",
+        "MedicDog": "Медицинские псы",
+        "DogTitan": "Собаки титаны",
+        "ManiakDog": "Маньяки",
+        "Dog": "Собаки"
+    },
+    "en": {
+        "fastdog": "Fast dogs", 
+        "bigdog": "Big dogs", 
+        "killerdog": "Assassin dogs", 
+        "kiberdog": "Cyber dogs", 
+        "boomdog": "Boom dogs", 
+        "necdog": "Necromancer dogs", 
+        "mehodog": "Meho", 
+        "bomberdog": "Bombers", 
+        "trojandog": "Trojan dogs", 
+        "ghostdog": "Ghost dogs", 
+        "woolf": "Werewolves", 
+        "medicdog": "Medical dogs", 
+        "dogtitan": "Titan dogs", 
+        "maniakdog": "Maniacs", 
+        "dog": "Dogs" 
+    }
+}
+
+translate_cats = {
+    "description": {
+        "ru": {
+            "official_kot_defense_info1": "4 жизни, атакует 2 собаки за раз, средняя перезарядка, 1 урон",
+            "official_kot_defense_info2": "40 жизни, не атакует собак",
+            "official_kot_defense_info3": "6 жизней, атакует 3 собаки за раз, долгая перезарядка, 10 урон",
+            "official_kot_defense_info4": "20 жизнь, атакует 3 собаки за раз, быстрая перезарядка, 1.5 урон",
+            "official_kot_defense_info5": "15 жизней, не атакует собак, но зарабатывает 10$ каждую волну",
+            "official_kot_defense_info6": "80 жизней, не атакует собак, усиливает\nатаку курсором игрока",
+            "official_kot_defense_info7": "60 жизней, не атакует собак, лечит котов в его радиусе",
+            "official_kot_defense_info8": "60 жизней, атакует 1 собаки за раз, быстрая перезарядка, \nбьёт только взрывучих или в полёте собак, 150 урон",
+            "official_kot_defense_info9": "30 жизней, атакует 1 собаки за раз, долгая перезарядка, 100 урон",
+            "official_kot_defense_info10": "1000 жизней, собака получает 5%\nурона при нападение на кота",
+            "official_kot_defense_info11": "80 жизней, не атакует собак, лечит котов в его радиусе",
+            "official_kot_defense_info12": "1 жизнь, атакует 1 собаки за раз, быстрая перезарядка,\nпри получения урона, собака которая ударила кота получает урон 25% от своего хп",
+            "official_kot_defense_info13": "20 жизней, атакует 6 собаки за раз,\nдолгая перезарядка, 3 урон",
+            "official_kot_defense_info14": "1 жизня, каждую волну спавнит жабу",
+            "official_kot_defense_info15": "1 жизня, каждую волну спавнит добрую собаку",
+            "official_kot_defense_info16": "5 жизней, атакует всех в её зоне поражения,\nбыстрая перезарядка, 0.5 урон",
+            "official_kot_defense_info17": "50 жизни, атакует 30 собак за раз, сверх быстрая перезарядка, 10 урон"
+        },
+        "en": {
+            "official_kot_defense_info1": "4 lives, attacks 2 dogs at a time, medium cooldown, 1 damage", 
+            "official_kot_defense_info2": "40 lives, does not attack dogs", 
+            "official_kot_defense_info3": "6 lives, attacks 3 dogs at a time, long cooldown, 10 damage", 
+            "official_kot_defense_info4": "20 lives, attacks 3 dogs at a time, fast cooldown, 1.5 damage", 
+            "official_kot_defense_info5": "15 lives, does not attack dogs, but earns $10 per wave", 
+            "official_kot_defense_info6": "80 lives, does not attack dogs, enhances the attack of the player's cursor", 
+            "official_kot_defense_info7": "60 lives, does not attack dogs, heals cats in its radius", 
+            "official_kot_defense_info8": "60 HP, attacks 1 dog at a time, quick reload, \nonly hits explosive or flying dogs, 150 damage", 
+            "official_kot_defense_info9": "30 HP, attacks 1 dog at a time, long reload, 100 damage", 
+            "official_kot_defense_info10": "1000 HP, dog takes 5%\ndamage when attacking a cat", 
+            "official_kot_defense_info11": "80 HP, does not attack dogs, heals cats in its radius", 
+            "official_kot_defense_info12": "1 HP, attacks 1 dog at a time, quick reload, \nwhen taking damage, the dog that hit the cat takes 25% of its HP damage", 
+            "official_kot_defense_info13": "20 lives, attacks 6 dogs at a time, \nlong reload, 3 damage", 
+            "official_kot_defense_info14": "1 life, spawns a toad every wave", 
+            "official_kot_defense_info15": "1 life, spawns a good dog every wave", 
+            "official_kot_defense_info16": "5 lives, attacks everyone in its area of ​​\ndamage, \nfast reload, 0.5 damage", 
+            "official_kot_defense_info17": "50 lives, attacks 30 dogs at a time, super fast reload, 10 damage"
+        }
+    },
+    "targets": {
+        "ru": {
+            "target_no": "",
+            "target_any": ", цель: любая",
+            "target_most": ", цель: больше всего хп",
+            "target_least": ", цель: меньше всего хп",
+            "target_fastest": ", цель: самый быстрый",
+            "target_slowest": ", цель: самый медленный",
+            "target_end": ", цель: ближе к концу",
+            "target_beginning": ", цель: ближе к началу",
+            "target_max": ", цель: убивать максимум за выстрел"
+        },
+        "en": {
+            "target_no": "",
+            "target_any": ", target: any",
+            "target_most": ", target: most hp",
+            "target_least": ", target: least hp",
+            "target_fastest": ", target: fastest",
+            "target_slowest": ", target: slowest",
+            "target_end": ", target: closer to the end",
+            "target_beginning": ", target: closer to the beginning",
+            "target_max": ", target: kill max per shot"
+        }
+    }
+}
+
+translate_text = {
+    "ru": {
+        "wave_text_info": "На этой волне будут ",
+        "health_id": "Жизней ",
+        "load_pls_wait": "Пожалуйста подождите",
+        "load": "Загрузка ",
+        "load_main_data": "основных данных",
+        "load_modif_data": "модифицированных данных",
+        "load_data_packs": "дата паков",
+        "load_class": "классов",
+        "load_def": "функций",
+        "load_baff_and_debaff": "бафов и дебафов",
+        "load_game": "игры",
+        "load_texts": "текста",
+        "dog_info_boom": " жизней, взрываеться и наносит ",
+        "dog_info_boom2": " урона всем котам в зоне поражения",
+        "dog_info_life_damage": " жизней, лечит собак, наносит 1 урон",
+        "dog_info_defolt_life_damage": " жизней, урон ",
+        "dog_info_speed": ", скорость ",
+        "cmd_cure": "Вылечит тех кого вы указали",
+        "cmd_spawn": "Заспванит того кого вы указали",
+        "cmd_random": "случайно заспавнит ентити",
+        "cmd_money": "Установит указанное число денег",
+        "cmd_wave": "Установит указанную волну",
+        "cmd_budget": "Установит бюджет для игры",
+        "cmd_kill": "Убьёт тех кого вы указали",
+        "cmd_store": "Разблокирует магазин (иногда не работает)",
+        "cmd_stop": "Остановит игру",
+        "cmd_resum": "Возобновит игру",
+        "cmd_baff_debaff": "Включит баффы и дебаффы",
+        "cmd_save": "Сохранит игру",
+        "cmd_load": "Загрузит игру",
+        "cmd_reset_game": "СБРОСИТ ИГРУ",
+        "cmd_language": "Изменит язык",
+        "cmd_coordinates": "Выведет координаты курсора",
+        "cmd_training": "Включит обучение",
+        "save_mods_in_world": "В мире использовались моды:\n",
+        "save_mods_not_in_world": "В мире не использовались моды\n",
+        "save_world_created": "Мир был создан ",
+        "save_in_world": "В мире ",
+        "save_entyti": " существ ",
+        "save_wave": " волна, ",
+        "save_money": " денег",
+        "save_health": " жизней, ",
+        "lost_right": "Вы проиграли. Нажмите ПКМ, чтобы начать заново.",
+        "info_play": "Играть проще не куда!",
+        "info_info": "Не дай собакам дойти до правой стороны экрана\nСтавь котов чтобы они помогали отбивать нападения\nПри нажатие ПКМ по коту он продастся за половину его цены\nПри нажатие ЛКМ по собаке ей наносится урон\nЕсть вид собак 'в полёте' их может убить только ПВО\nВ паузе есть настройки",
+        "RPC_record": "Рекорд: ",
+        "RPC_Menu": "Меню",
+        "menu_welcome": "Добро пожаловать в Kot Defense",
+        "menu_record": "Ваш рекорд: ",
+        "menu_event": 'Ивент "Магический лес"',
+        "menu_you": "У вас ",
+        "menu_mods": " модификаций",
+        "buff_select": "Выберите бафф",
+        "debuff_select": "Выберите дебаф",
+        "win_text_event_1": "Поздравляю ! Вы прошли ивент, отправьте скришот этого экрана\nв тех поддержку чтобы получить бонус ваш код: ",
+        "win_text_event_2": "\nНажмите ПКМ чтобы выйти",
+        "win_text_game": "Поздравляю ! Вы официально прошли игру.\nДальше будет бесконечная игра\nНажмите ПКМ чтобы продолжить играть",
+        "pause": "Пауза. Нажмите ПКМ, чтобы снять с паузы ",
+        "skip": "Скип"
+    },
+    "en": {
+        "wave_text_info": "This wave will have ",
+        "health_id": "Lives ",
+        "load_pls_wait": "Please wait",
+        "load": "loading ",
+        "load_main_data": "main data",
+        "load_modif_data": "modified data",
+        "load_data_packs": "data packs",
+        "load_class": "classes",
+        "load_def": "features",
+        "load_baff_and_debaff": "buffs and debuffs",
+        "load_game": "game",
+        "load_texts": "texts",
+        "dog_info_boom": " lives, explodes and deals ",
+        "dog_info_boom2": " damage to all cats in the affected area",
+        "dog_info_life_damage": " lives, heals dogs, deals 1 damage",
+        "dog_info_defolt_life_damage": " lives, damage ",
+        "dog_info_speed": ", speed ",
+        "cmd_cure": "Will cure those you indicated",
+        "cmd_spawn": "Will spawn one you indicated",
+        "cmd_random": "Accidentally dormant entities",
+        "cmd_money": "Set a certain number of moneys",
+        "cmd_wave": "Set a certain number of wave",
+        "cmd_budget": "Set a certain number of budget",
+        "cmd_kill": "Will kill those you indicated",
+        "cmd_store": "Unlocks store (sometimes does not work)",
+        "cmd_stop": "Will stop game",
+        "cmd_resum": "Will resume game",
+        "cmd_baff_debaff": "Will enable buffs and debuffs",
+        "cmd_save": "Will save game",
+        "cmd_load": "Will load game",
+        "cmd_reset_game": "RESET GAME",
+        "cmd_language": "Change language",
+        "cmd_coordinates": "Will display the coordinates of the cursor",
+        "cmd_training": "Will include training",
+        "save_mods_in_world": "Mods used in the world:\n",
+        "save_mods_not_in_world": "Mods were not used in the world\n",
+        "save_world_created": "the world was created on ",
+        "save_in_world": "there are ",
+        "save_entyti": " creatures in the world",
+        "save_wave": " wave, ",
+        "save_health": " health, ",
+        "save_money": " money",
+        "lost_right": "You lost. right click to start over.",
+        "info_play": "It couldn't be easier to play",
+        "info_info": "Don't let the dogs reach the right side of the screen\nput cats to help fight off attacks\nif you right-click on a cat, it will sell for half its price\nif you left-click on a dog, it will be damaged\nthere is a view of dogs 'in flight', only air defense can kill them\nthere are settings in the pause",
+        "RPC_record": "Record: ",
+        "RPC_Menu": "Menu",
+        "menu_welcome": "Welcome to Kot Defense",
+        "menu_record": "Your record: ",
+        "menu_event": 'Event "Magic forest"',
+        "menu_you": "You have ",
+        "menu_mods": " modifications",
+        "buff_select": "Select buff",
+        "debuff_select": "Select debuff",
+        "win_text_event_1": "Congratulations! you completed the event, send a screenshot of this screen\nto technical support to receive a bonus your code: ",
+        "win_text_event_2": "\npress RMB  to exit",
+        "win_text_game": "congratulations! you have officially completed the game.\nthe game will be endless\npress RMB to continue playing",
+        "pause": "Paused. Press RMB to unpause game",
+        "skip": "Skip"
+    }
+}
+
+translate_baffs = {
+    "ru": {
+        "debaff_hard": "игра станет сложнее",
+        "debaff_all_cats_damage": "некоторым котам на поле боя нанесут 10 урона",
+        "debaff_maxium_money": "меньше на максимальное число денег которое у вас было",
+        "debaff_frogs": "превращает 20% котов в лягушек",
+        "baff_maxium_money": "+максимальное число денег которое у вас было",
+        "baff_main_heart": "+1 главных сердец",
+        "baff_lives_all_cats": "+30 жизней некоторым котам на поле боя",
+        "baff_ez": "игра станет легче",
+        "baff_works": "коты работники дают на 5$ больше",
+        "baff_shield": "магический щит, защищает котов от вражеских собак"
+    },
+    "en": {
+        "debaff_hard": "game will become more difficult",
+        "debaff_all_cats_damage": "some cats on the battlefield will be dealt 10 damage",
+        "debaff_maxium_money": "less by the maximum amount of money you had",
+        "debaff_frogs": "turns 20% of cats into frogs",
+        "baff_maxium_money": "+maximum amount of money you had",
+        "baff_main_heart": "+1 main health",
+        "baff_lives_all_cats": "+30 lives to some cats on the battlefield",
+        "baff_ez": "game will become easier",
+        "baff_works": "cat workers give $5 more",
+        "baff_shield": "magic shield, protects cats from enemy dogs"
+    }
+}
 
 def loading_text(lo):
+    global translate, translate_dogs, translate_cats, translate_text
     fonte = pygame.font.Font(None, 75)
-    text = fonte.render("Пожалуйста подождите", True, text2_color)
+    text = fonte.render(translate_text[translate]["load_pls_wait"], True, text2_color)
     text_rect = text.get_rect(center=(width/2, height/2))
-    text2 = fonte.render(f"Загрузка {lo}...", True, text2_color)
+    text2 = fonte.render(translate_text[translate]["load"]+f"{lo}...", True, text2_color)
     text_rect2 = text.get_rect(center=(width/2-50, height/2+70))
     screen.fill(background_color)
     screen.blit(text, text_rect)
     screen.blit(text2, text_rect2)
     pygame.display.flip()
 
-loading_text('основных данных')
+loading_text(translate_text[translate]["load_main_data"])
 
 #загрузка шрифтов
 font = pygame.font.Font("Data/Fonts/segoe-ui-symbol.ttf", 35)
 font2 = pygame.font.Font(None, 25)
+fontSkip = pygame.font.Font(None, 40)
 
 def start_script(script, type2):
     if type2 == script.type:
@@ -151,7 +422,7 @@ exit_image = pygame.transform.scale(exit_image, (350, 120))
 
 pygame.display.set_icon(icon)
 
-loading_text('модифицированных данных')
+loading_text(translate_text[translate]["load_modif_data"])
 
 #загрузка данных
 folder_path = r'Data\\Mods\\'
@@ -175,11 +446,14 @@ for root, dirs, files in os.walk(folder_path):
                         print(f"An error occurred: {e}")
 
 
-loading_text('дата паков')
+loading_text(translate_text[translate]["load_data_packs"])
 #Загрузка дата паков
 music_path = r'Data/Sounds/music.mp3'
 event1_music = r'Data/Sounds/event1_music.mp3'
 music_path2 = r'Data/Sounds/music2.mp3'
+music_path3 = r'Data/Sounds/music3.mp3'
+music_path4 = r'Data/Sounds/music4.mp3'
+music_path5 = r'Data/Sounds/music5.mp3'
 folder_path = r'Data\DataPacks'
 
 for root, dirs, files in os.walk(folder_path):
@@ -221,6 +495,41 @@ for root, dirs, files in os.walk(folder_path):
                 music_path2 = file_path
             except:
                 pass
+        elif file_name == 'music3.mp3':
+            try:
+                music_path3 = file_path
+            except:
+                pass
+        elif file_name == 'music4.mp3':
+            try:
+                music_path4 = file_path
+            except:
+                pass
+        elif file_name == 'music5.mp3':
+            try:
+                music_path5 = file_path
+            except:
+                pass
+        elif file_name == 'bump.mp3':
+            try:
+                dog_bump = pygame.mixer.Sound(file_name)
+            except:
+                pass
+        elif file_name == 'boom.mp3':
+            try:
+                boom = pygame.mixer.Sound(file_name)
+            except:
+                pass
+        elif file_name == 'click.mp3':
+            try:
+                click = pygame.mixer.Sound(file_name)
+            except:
+                pass
+        elif file_name == 'sirena.mp3':
+            try:
+                sirena = pygame.mixer.Sound(file_name)
+            except:
+                pass
         elif file_name == 'cwa_image.png':
             cwa_image = pygame.image.load(file_path)
             cwa_image = pygame.transform.scale(cwa_image, (210, 90))
@@ -234,31 +543,22 @@ for root, dirs, files in os.walk(folder_path):
                     except Exception as e:
                         print(f"An error occurred: {e}")
 
+global music_files
+music_files = [music_path, music_path3, music_path4, music_path5]
 try:
     music2 = music_path2
-    pygame.mixer.music.load(music_path)
-    pygame.mixer.music.play(-1)
-    pygame.mixer.music.set_volume(0.1)
-    try:
-        if music_playing:
-            pygame.mixer.music.pause()
-        else:   
-            pygame.mixer.music.unpause()
-        save_game_settings()
-    except:
-        pass
 except:
     pass
 
-loading_text('классов')
+loading_text(translate_text[translate]["load_class"])
 
 #классы
 class Checkbox:
     def __init__(self, x, y, text, checked=False, check_id=-1):
         self.x = x
         self.y = y
-        self.text = text
         self.checked = checked
+        self.text = text
         self.font = pygame.font.SysFont(None, 30)
         self.id = check_id
 
@@ -266,7 +566,7 @@ class Checkbox:
         checkbox = pygame.Rect(self.x, self.y, 20, 20)
         pygame.draw.rect(surface, (0, 0, 0), checkbox, 2)
 
-        if not self.checked:
+        if self.checked:
             pygame.draw.line(surface, (0, 0, 0), (self.x+5, self.y+10), (self.x+10, self.y+15), 2)
             pygame.draw.line(surface, (0, 0, 0), (self.x+10, self.y+15), (self.x+15, self.y+5), 2)
 
@@ -278,18 +578,43 @@ class Checkbox:
         self.checked = not self.checked
         if self.id == 0:
             music_playing = self.checked
-            try:
-                if music_playing:
-                    pygame.mixer.music.pause()
-                else:   
-                    pygame.mixer.music.unpause()
-                save_game_settings()
-            except:
-                pass
+            play_music()
+            save_game_settings()
+
+class NotificationSystem:
+    def __init__(self, text, color=(255, 255, 255), font_size=30, speed=1, fade_speed=2, time=2, x = screen.get_width()-20, y = screen.get_height() - 150, waiting = 0):
+        global Notifications
+        self.font = pygame.font.Font(None, font_size)
+        self.text_surface = self.font.render(text, True, color)
+        self.rect = self.text_surface.get_rect(bottomright=(x, y))
+        self.speed = speed
+        self.alpha = 255
+        self.fade_speed = fade_speed
+        self.frames = 60 * time
+        self.waiting = waiting * 60
+        Notifications.append(self)
+
+    def update(self):
+        global Notifications
+        try:
+            self.waiting -= 1
+            if self.waiting <= 0:
+                if self.frames < 0:
+                    self.rect.bottom -= self.speed
+                    self.alpha -= self.fade_speed
+                self.frames -= 1
+                if self.alpha <= 0:
+                    Notifications.remove(self)
+                    del self
+                    return
+                self.text_surface.set_alpha(self.alpha)
+                screen.blit(self.text_surface, self.rect)
+        except:
+            pass
 
 class BuyCat:
     def __init__(self, moneys, info_self, aura_radius, cat_health, dogs_count, reload, damage_cat, mega, wawe, wawedel, path_my_image, size_x, size_y, ico_image_path):
-        global buy_cats, scripts, buy_no_cats, wave, event_game, cats_moneys
+        global buy_cats, scripts, buy_no_cats, wave, event_game, cats_moneys, translate, translate_cats
         for script in scripts:
             exec(str(start_script(script, 'create_buy_cat')))
         image = pygame.transform.scale(pygame.image.load(path_my_image), (size_x, size_y))
@@ -314,6 +639,7 @@ class BuyCat:
         self.blacklist = []
         self.wave = wawe
         self.delet_wave = wawedel
+        self.targetDeff = 0
         self.path_my_image = path_my_image
         self.size_x = size_x
         self.size_y = size_y
@@ -399,7 +725,7 @@ class BuyCat:
             pass
     
     def info_cat(self, pos):
-        global cats_boost, cat_works_boost, xexe, scripts
+        global cats_boost, cat_works_boost, xexe, scripts, translate_cats, translate
         for script in scripts:
             exec(str(start_script(script, 'info_buy_cat')))
         try:
@@ -409,7 +735,14 @@ class BuyCat:
                 if xexe >0 and self.rect.x < 100:
                     return
                 if self.rect.collidepoint(pos):
-                    info(self.info, (pos[0] + 15, pos[1] + 5))
+                    try:
+                        info2 = translate_cats["description"][translate][str(self.info)]
+                    except:
+                        try:
+                            info2 = info_self
+                        except:
+                            info2 = "ERROR INFO"
+                    info(info2, (pos[0] + 15, pos[1] + 5))
         except:
             pass
     
@@ -437,6 +770,7 @@ class BuyCat:
                                 new_cat.dds = mo
                                 new_cat.blacklist.extend(self.blacklist)
                                 new_cat.parent = self
+                                new_cat.target = self.targetDeff
                                 cats.append(new_cat)
                 else:
                     # if self.rect.collidepoint(pos):
@@ -452,6 +786,7 @@ class BuyCat:
                         new_cat.dds = 1
                         new_cat.blacklist.extend(self.blacklist)
                         new_cat.parent = self
+                        new_cat.target = self.targetDeff
                         cats.append(new_cat)
         except:
             pass
@@ -517,6 +852,7 @@ class Cat:
         self.money = cat_money
         self.reload = reload * 60
         self.Maxreload = reload * 60
+        self.speed = reload
         self.damage = damage_cat
         self.unable_to_place = False
         self.mega = mega
@@ -524,10 +860,22 @@ class Cat:
         self.stope = False
         self.blacklist = []
         self.dds = 0
+        self.target = 0
         self.path_my_image = path_my_image
         self.size_x = size_x
         self.size_y = size_y
         self.parent = None
+        self.targetList = {
+            -1: "target_no",
+            0: "target_any",
+            1: "target_most",
+            2: "target_least",
+            3: "target_fastest",
+            4: "target_slowest",
+            5: "target_end",
+            6: "target_beginning"
+            # 7: "target_max"
+        }
         if xee != None:
             self.rect.x = xee
             self.follow_mouse = False
@@ -538,7 +886,7 @@ class Cat:
             cats.append(self)
 
     def update(self, pos):
-        global scripts
+        global scripts, shift_pressed
         self.stope = False
         for script in scripts:
             exec(str(start_script(script, 'update_cat')))
@@ -548,11 +896,12 @@ class Cat:
                 rect22 = pygame.Rect(0, height-155, 1400, 160)
                 rect33 = pygame.Rect(0, 0, 1400, 150)
                 if self.follow_mouse:
-                    self.rect.center = pos
+                    if not shift_pressed:
+                        self.rect.center = pos
                     self.image.set_alpha(128)
                     cat_collides = any(self.rect.colliderect(c.rect) for c in cats if c != self)
                     dog_collides = any(self.rect.colliderect(d.rect) for d in dogs)
-                    if not rect22.collidepoint(self.rect.center) and not rect33.collidepoint(self.rect.center) and not pause_rect.collidepoint(self.rect.center) and not cat_collides and not dog_collides:
+                    if not rect22.collidepoint(pos) and not rect33.collidepoint(pos) and not pause_rect.collidepoint(pos) and not cat_collides and not dog_collides and self.rect.x < width and self.rect.x > 0 and self.rect.y > 0 and self.rect.y < height:
                         self.unable_to_place = True
                         self.image = self.original_image.copy()
                         self.image.set_alpha(128)
@@ -583,7 +932,7 @@ class Cat:
     def save(self):
         global all_cats, cats
         if self.follow_mouse == False:
-            all_cats.append(fr"Cat({self.rect.x}, {self.rect.y}, {self.aura_radius}, {self.dogs_count}, {self.health}, {self.money}, {self.reload}, {self.damage}, {self.mega}, r'{self.path_my_image}', {self.size_x}, {self.size_y})")
+            all_cats.append(f"new_cat=Cat({self.rect.x}, {self.rect.y}, {self.aura_radius}, {self.dogs_count}, {self.health}, {self.money}, {round(self.Maxreload/60)}, {self.damage}, {self.mega}, r'{self.path_my_image}', {self.size_x}, {self.size_y})\nnew_cat.maxhealth={self.maxhealth}\nnew_cat.reload = {self.reload}\nnew_cat.blacklist = {self.blacklist}\nnew_cat.target = {self.target}")
     
     def draw(self, screen, online):
         global cat, scripts, catown2, catown, cursor_pos, pos
@@ -608,18 +957,34 @@ class Cat:
             pass
     
     def info_ca(self, screen, pos):
-        global scripts
+        global scripts, translate_text, translate, translate_cats
         self.stope = False
         for script in scripts:
             exec(str(start_script(script, 'info_cat')))
         try:
             if self.rect.collidepoint(pos) and self.follow_mouse == False and self.stope == False:
-                info(f'{round(self.health,1)} жизней', (pos[0] + 15, pos[1] + 5))
+                info(f'{round(self.health,1)} ' + translate_text[translate]["health_id"] + translate_cats['targets'][translate][self.targetList[self.target]], (pos[0] + 15, pos[1] + 5))
         except:
             pass
     
-    def remove_dogs_periodically(self, custom):
-        global money, cat_works_boost, cats_boost, scripts
+    def sorte(self, listis):
+        sorted_list = listis
+        if self.target == 1:
+            sorted_list = sorted(listis, key=lambda entiti: entiti.maxhealth, reverse=True)
+        elif self.target == 2:
+            sorted_list = sorted(listis, key=lambda entiti: entiti.maxhealth)
+        elif self.target == 3:
+            sorted_list = sorted(listis, key=lambda entiti: entiti.speed, reverse=True)
+        elif self.target == 4:
+            sorted_list = sorted(listis, key=lambda entiti: entiti.speed)
+        elif self.target == 5:
+            sorted_list = sorted(listis, key=lambda entiti: entiti.rect.x, reverse=True)
+        elif self.target == 6:
+            sorted_list = sorted(listis, key=lambda entiti: entiti.rect.x)
+        return sorted_list
+    
+    def remove_dogs_periodically(self, custom = None):
+        global money, cat_works_boost, cats_boost, scripts, cats, dogs
         self.stope = False
         try:
             if not self.follow_mouse:
@@ -631,6 +996,7 @@ class Cat:
                 if self.reload == 0 or cutm:
                     self.reload = self.Maxreload
                     count_attacs = 0
+                    cutm = True
                     if cutm:
                         if self.mega == 2:
                             money += self.damage+cat_works_boost
@@ -643,7 +1009,7 @@ class Cat:
                             dogs.append(new_dog)
                             new_dog.sigma = True
                         elif self.mega == 4:
-                            for cat in list(cats):
+                            for cat in self.sorte(list(cats)):
                                 if count_attacs < self.dogs_count:
                                     if pygame.math.Vector2(self.rect.center).distance_to(pygame.math.Vector2(cat.rect.center)) <= self.aura_radius:
                                         if cat.maxhe > cat.health:
@@ -658,10 +1024,10 @@ class Cat:
                     if self.stope == False:
                         if self.mega == 1 or self.mega == 8:
                             if self.mega == 8:
-                                for dog in list(cats):
+                                for dog in self.sorte(list(cats)):
                                     if pygame.math.Vector2(self.rect.center).distance_to(pygame.math.Vector2(dog.rect.center)) <= self.aura_radius and dog != self:
                                         dog.bump((self.damage) / 500)
-                            for dog in list(dogs):
+                            for dog in self.sorte(list(dogs)):
                                 if self.blacklist == []:
                                     blackdog = False
                                 else:
@@ -699,21 +1065,31 @@ class Cat:
             pass
     
     def handle_mouse_click(self, pos, mo):
-        global cats, dogs, scripts, catown, catown2, all_cats, money, ctrl_pressed
+        global cats, dogs, scripts, catown, catown2, all_cats, money, ctrl_pressed, shift_pressed
         self.stope = False
         try:
             for script in scripts:
                 exec(str(start_script(script, 'handle_mouse_click_cat')))
             if mo == 1:
                 if self == catown and self.stope == False:
-                    rect22 = pygame.Rect(0, height-100, 1400, 100)
-                    rect33 = pygame.Rect(0, 0, 1400, 100)
+                    self.old_rect = self.rect
+                    self.rect.center = pos
+                    pause_rect = pause_image.get_rect(topleft=(width-55, 10))
+                    rect22 = pygame.Rect(0, height-155, 1400, 160)
+                    rect33 = pygame.Rect(0, 0, 1400, 150)
+                    cat_collides = any(self.rect.colliderect(c.rect) for c in cats if c != self)
+                    dog_collides = any(self.rect.colliderect(d.rect) for d in dogs)
+                    if rect22.collidepoint(self.rect.center) or rect33.collidepoint(self.rect.center) or pause_rect.collidepoint(self.rect.center) or cat_collides or dog_collides or self.rect.x > width or self.rect.x < 0 or self.rect.y < 0 or self.rect.y > height:
+                        if shift_pressed or ctrl_pressed:
+                            self.unable_to_place = False
+                        else:
+                            self.rect.center = self.old_rect.center
                     if self.unable_to_place == True:
                         rect = pygame.Rect(0, height-100, 1400, 100)
                         self.follow_mouse = False
                         catown = None
                         money -= self.money
-                        if ctrl_pressed and money >= self.money:
+                        if ctrl_pressed or shift_pressed and money >= self.money:
                             self.parent.buy(pos, 2)
             else:
                 if self == catown2 and self.stope == False:
@@ -724,8 +1100,17 @@ class Cat:
                         self.follow_mouse = False
                         money -= self.money
                         catown = None
-                        if ctrl_pressed and money >= self.money:
+                        if ctrl_pressed or shift_pressed and money >= self.money:
                             self.parent.buy(pos, 2)
+        except:
+            pass
+    def targetChanged(self, pos):
+        try:
+            if self.rect.collidepoint(pos) and self.follow_mouse == False and self.target>-1:
+                if len(list(self.targetList))-3 < self.target:
+                    self.target = 0
+                else:
+                    self.target += 1
         except:
             pass
     def cwa(self):
@@ -773,7 +1158,7 @@ class CreateDog:
         self.size_x = size_x
         self.size_y = size_y
     
-    def create(self, custom_X, custom_Y):
+    def create(self, custom_X = None, custom_Y = None):
         global dogs, scripts
         for script in scripts:
             exec(str(start_script(script, 'spawn_dog')))
@@ -783,7 +1168,7 @@ class CreateDog:
             else:
                 xx = custom_X
             if custom_Y == None:
-                yy = random.randint(115, height - 255)
+                yy = random.randint(100+self.size_y/2, height - 255)
             else:
                 yy = custom_Y
             new_dog = Dog(xx, yy, self.health, self.money, self.speed, self.damage, self.mega, self.reload, self.type, self.path_my_image, self.size_x, self.size_y)
@@ -835,8 +1220,7 @@ class Dog:
     
     def save(self):
         global all_dogs
-        
-        all_dogs.append(fr"Dog({self.rect.x}, {self.rect.y}, {self.health}, {self.money}, {self.speed}, {self.damage}, {self.mega}, {self.reload}, {self.typee}, r'{self.path_my_image}', {self.size_x}, {self.size_y})")
+        all_dogs.append(f"new_dog=Dog({self.rect.x}, {self.rect.y}, {self.health}, {self.money}, {self.speed}, {self.damage}, {self.mega}, {round(self.Maxreload/60)}, {self.typee}, r'{self.path_my_image}', {self.size_x}, {self.size_y})\nnew_dog.reload = {self.reload}\nnew_dog.who = {self.who}\nnew_dog.maxhealth = {self.maxhealth}\nnew_dog.damagecats = {self.damagecats}\nnew_dog.radius = {self.radius}")
 
     def move(self):
         global dog_damag_boost, scripts, dogs
@@ -907,19 +1291,19 @@ class Dog:
                 pygame.draw.circle(circle_surface, (255, 0, 0, 100), (self.aura_radius, self.aura_radius), self.aura_radius, 2)
                 screen.blit(circle_surface, (self.rect.centerx - self.aura_radius, self.rect.centery - self.aura_radius))
                 if self.rect.collidepoint(pos):
-                    info(f'{round(self.health,1)} жизней, взрываеться и наносит {self.damage+dog_damag_boost} урона всем котам в зоне поражения', (pos[0] + 15, pos[1] + 5))
+                    info(str(round(self.health,1)) + translate_text[translate]["dog_info_boom"] + str(self.damage+dog_damag_boost) + translate_text[translate]["dog_info_boom2"], (pos[0] + 15, pos[1] + 5))
                 self.stope = True
             if self.mega == 12:
                 circle_surface = pygame.Surface((self.aura_radius * 2, self.aura_radius * 2), pygame.SRCALPHA)
                 pygame.draw.circle(circle_surface, (255, 0, 0, 100), (self.aura_radius, self.aura_radius), self.aura_radius, 2)
                 screen.blit(circle_surface, (self.rect.centerx - self.aura_radius, self.rect.centery - self.aura_radius))
                 if self.rect.collidepoint(pos):
-                    info(f'{round(self.health,1)} жизней, лечит собак, наносит 1 урон', (pos[0] + 15, pos[1] + 5))
+                    info(str(round(self.health,1)) + translate_text[translate]["dog_info_life_damage"], (pos[0] + 15, pos[1] + 5))
                 self.stope = True
             for script in scripts:
                 exec(str(start_script(script, 'info_dog')))
             if self.stope == False and self.rect.collidepoint(pos):
-                info(f'{round(self.health,1)} жизней, урон {self.damage+dog_damag_boost}, скорость {self.speed}', (pos[0] + 15, pos[1] + 5))
+                info(str(round(self.health,1))  + translate_text[translate]["dog_info_defolt_life_damage"]+str(self.damage+dog_damag_boost)+ translate_text[translate]["dog_info_speed"] +str(self.speed), (pos[0] + 15, pos[1] + 5))
         except:
             pass
         
@@ -991,10 +1375,14 @@ class Dog:
                 if self.rect.colliderect(cat2.rect):
                     if cat2.follow_mouse == False:
                         moveE = False
-                if self.rect.colliderect(cat2.rect):
                     if moveE == False:
                         if cat2.mega == 5:
+                            try:
+                                dog_bump.play()
+                            except:
+                                pass
                             self.bump(cat2.damage*(1/100)*self.maxhealth, True, [])
+                            cat2.bump(self.damage+dog_damag_boost)
             for dog2 in list(dogs):
                 if self.mega == 14 and dog2.mega != 14 and self.rect.colliderect(dog2.rect):
                     dog2.bump(self.damage+dog_damag_boost, True, [])
@@ -1003,7 +1391,7 @@ class Dog:
                 else:
                     if self.mega == 12:
                         for dog3 in list(dogs):
-                            if dog3.mega != 12 and dog.mega != 14:
+                            if dog3.mega != 12 and dog3.mega != 14:
                                 distance = ((self.rect.x - dog3.rect.x)**2 + (self.rect.y - dog3.rect.y)**2)**0.5
                                 if distance <= 200:
                                     if dog3.maxhealth > dog3.health:
@@ -1017,7 +1405,7 @@ class Dog:
                 self.reload -= 1
             else:
                 cutm = self.Maxreload == reloade
-            if self.reload == 0 or cutm:
+            if self.reload <= 0 or cutm:
                 self.reload = self.Maxreload
                 stra = True
                 
@@ -1070,21 +1458,20 @@ class Dog:
                                     pass
                                 cat2.bump(self.damage+dog_damag_boost)
                                 self.stope = True
-                elif self.mega == 2 or self.mega == 7 or self.mega == 8:
+                if self.mega == 2 or self.mega == 7 or self.mega == 8:
                     boomp = False
                     for cat3 in list(cats):
                         if self.rect.colliderect(cat3.rect):
-                                if moveE == False:
-                                    boomp = True
+                                boomp = True
                     if boomp == True:
                         for cat2 in list(cats):
                             distance = ((self.rect.x - cat2.rect.x)**2 + (self.rect.y - cat2.rect.y)**2)**0.5
-                            if distance <= self.aura_radius+30:
+                            if distance <= self.aura_radius+self.size_x:
                                 cat2.bump(self.damage+dog_damag_boost)
-                        for dog2 in list(cats):
+                        for dog2 in list(dogs):
                             if dog2.mega == 14:
-                                distance = ((self.rect.x - cat2.rect.x)**2 + (self.rect.y - cat2.rect.y)**2)**0.5
-                                if distance <= self.aura_radius+30:
+                                distance = ((self.rect.x - dog2.rect.x)**2 + (self.rect.y - dog2.rect.y)**2)**0.5
+                                if distance <= self.aura_radius:
                                     dog2.bump(self.damage+dog_damag_boost)
                         try:
                             boom.play()
@@ -1117,63 +1504,106 @@ class Dog:
         except:
             pass
 
-loading_text('функций')
+class CMD_waiting:
+    def __init__(self, cmd_line, waiting):
+        global cmd_queue
+        self.cmd = cmd_line
+        self.wait = waiting*60
+        cmd_queue.append(self)
+    def update(self):
+        self.wait -= 1
+        if self.wait <= 0:
+            text_input(self.cmd)
+            cmd_queue.remove(self)
+            del self
+
+loading_text(translate_text[translate]["load_def"])
+
+def cmd_ui(offset_x=0, offset_y=0, offset_size=0):
+    fonte = pygame.font.Font(None, 30)
+    text_surface = fonte.render(input_text, True, text2_color)
+    screen.blit(text_surface, (10+offset_x, 10+offset_y))
+    text_surface = fonte.render(hint, True, hint_color_def)
+    screen.blit(text_surface, (10+offset_x, 40+offset_y))
 
 def save_game_settings():
-    global scripts, music_playing, best_score
+    global scripts, music_playing, best_score, wave, first
     for script in scripts:
         exec(str(start_script(script, 'save')))
     try:
-        score = f"best_score={score}\nmusic_playing={music_playing}"
-        with open('Data/Save/settings.pickle', 'wb') as file:
+        if best_score < wave:
+            best_score = wave
+        score = f"global music_playing,best_score,first\nbest_score={best_score}\nmusic_playing={music_playing}\nfirst={first}"
+        with open(r'Data/Save/settings.pickle', 'wb') as file:
             pickle.dump(score, file)
         load_game_settings()
     except:
         pass
 
 def load_game_settings():
-    global scripts, music_playing, best_score
+    global scripts, music_playing, best_score,first
     for script in scripts:
         exec(str(start_script(script, 'load')))
     best_score = 0
     try:
-        with open('Data/Save/settings.pickle', 'rb') as file:
+        music_play_old = music_playing
+        with open(r'Data/Save/settings.pickle', 'rb') as file:
             exec(str(pickle.load(file)))
+        if music_play_old != music_playing:
+            play_music()
     except FileNotFoundError:
         music_playing = False
     return best_score
+
+def play_music(randome = True):
+    global music_files, music_playing
+    try:
+        if randome == True:
+            random_file = random.choice(music_files)
+            pygame.mixer.music.load(random_file)
+        pygame.mixer.music.set_volume(0.1)
+        pygame.mixer.music.play()
+        if music_playing:
+            pygame.mixer.music.unpause()
+        else:   
+            pygame.mixer.music.pause()
+    except:
+        pass
+
+play_music()
 
 def spawn_cats(custom_budget = None, xxx = None, yyy = None):
     global scripts, cats, cats_moneys
     for script in scripts:
         exec(str(start_script(script, 'spawn_cats')))
-    # try:
-    while True:
-        cat_value = random.choice(list(cats_moneys.keys()))
-        cat_values = list(cats_moneys.keys())
-        cat_value = random.choice(cat_values)
-        spermatozoid2 = False
-        fork = False
-        all_buy_cats = buy_cats + buy_no_cats
-        for cat_value2 in cats_moneys:
-            fork = True
-            if cat_value2 <= custom_budget:
-                spermatozoid2 = True
+    try:
+        while True:
+            cat_value = random.choice(list(cats_moneys.keys()))
+            cat_values = list(cats_moneys.keys())
+            cat_value = random.choice(cat_values)
+            spermatozoid2 = False
+            fork = False
+            all_buy_cats = buy_cats + buy_no_cats
+            for cat_value2 in cats_moneys:
+                fork = True
+                if cat_value2 <= custom_budget:
+                    spermatozoid2 = True
+                    break
+            if spermatozoid2 == False and fork == True or custom_budget <= 0:
                 break
-        if spermatozoid2 == False and fork == True or custom_budget <= 0:
-            break
-        if custom_budget >= cat_value:
-            cats_moneys[cat_value].random_buy(xxx, yyy)
-            custom_budget -= cat_value
-    # except:
-        # pass
+            if custom_budget >= cat_value:
+                cats_moneys[cat_value].random_buy(xxx, yyy)
+                custom_budget -= cat_value
+    except:
+        pass
 
 def spawn_dogs(custom_budget = None, xxx = None, yyy = None):
-    global health, dogs, cats, cat, dogs_variants, del_cat, money, catown, dogs_moneys, budget, frame_count, frame_count2, frame_count3, frame_count4, plustime, new_wey, wave, for_mega_wave, pause, music_playing, dog_damag_boost, cat_works_boost, cats_boost, upping, buy_cats, xexe, mx, dogs_class, scripts, mods_count_11d23s2saaa, catown2, pos, cursor_pos, bonus, new_music, event_game, maxMoney, input_text, running, input_active, ctrl_pressed, shift_pressed
+    global dogs_spawning, health, dogs, cats, cat, dogs_variants, del_cat, money, catown, dogs_moneys, budget, frame_count, frame_count2, frame_count3, frame_count4, plustime, new_wey, wave, for_mega_wave, pause, music_playing, dog_damag_boost, cat_works_boost, cats_boost, upping, buy_cats, xexe, mx, dogs_class, scripts, mods_count_11d23s2saaa, catown2, pos, cursor_pos, bonus, new_music, event_game, maxMoney, input_text, hint, running, input_active, ctrl_pressed, shift_pressed
+    global multipiller, unmultipiller, summa
     online = 0
-    multipiller = 2
-    unmultipiller = 5
-    summa = 5
+    multipiller = 2.5
+    unmultipiller = 10
+    summa = 10
     for script in scripts:
         exec(str(start_script(script, 'spawn_dogs')))
     if custom_budget != None:
@@ -1194,15 +1624,16 @@ def spawn_dogs(custom_budget = None, xxx = None, yyy = None):
         if plustime < 50 and wave >= 4:
             plustime += 5
         if for_mega_wave == 0:
-            remaining_budget = remaining_budget * multipiller
+            remaining_budget = round(remaining_budget * multipiller)
         if for_mega_wave == -1:
             upping = False
             for_mega_wave = 4
+        dogs_changed()
         while remaining_budget > 0:
-            dog_type = random.choice(list(dogs_variants.keys()))
-            dog_cost = dogs_variants[dog_type]
-            dog_mon = dogs_moneys[dog_type]
-            dog_class = dogs_class[dog_type]
+            dog_name = str(random.choice(list(dogs_spawning)))
+            dog_cost = dogs_variants[dog_name]
+            dog_mon = dogs_moneys[dog_name]
+            dog_class = dogs_class[dog_name]
             if dog_cost <= remaining_budget:
                 dog_class.create(xxx, yyy)
                 remaining_budget -= dog_cost
@@ -1218,11 +1649,11 @@ def spawn_dogs(custom_budget = None, xxx = None, yyy = None):
         new_wey -= 1
 
 def show_lose_screen():
-    global scripts, input_text, running, input_active, ctrl_pressed, shift_pressed
+    global scripts, input_text, hint, running, input_active, ctrl_pressed, shift_pressed, wave
     for script in scripts:
         exec(str(start_script(script, 'lose_screen')))
     font = pygame.font.Font(None, 70)
-    text = font.render("Вы проиграли. Нажмите ПКМ, чтобы начать заново.", True, text2_color)
+    text = font.render(translate_text[translate]["lost_right"], True, text2_color)
     text_rect = text.get_rect(center=(width/2, height/2))
     screen.fill(background_color)
     screen.blit(text, text_rect)
@@ -1235,6 +1666,8 @@ def show_lose_screen():
             if event.type == pygame.QUIT:
                 pygame.quit()
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 3 and started:
+                if wave == 50:
+                    play_music()
                 started = False
                 menu()
                 return
@@ -1242,8 +1675,7 @@ def show_lose_screen():
                 exec(str(start_script(script, 'lose_event')))
         for script in scripts:
             exec(str(start_script(script, 'lose_ui')))
-        text_surface = font.render(input_text, True, text2_color)
-        screen.blit(text_surface, (10, 10))
+        cmd_ui()
 
 def info(text, position):
     global scripts
@@ -1266,7 +1698,7 @@ def info(text, position):
 
 
 # def loading_online():
-    # global client, input_text, running, input_active, ctrl_pressed, shift_pressed
+    # global client, input_text, hint, running, input_active, ctrl_pressed, shift_pressed
     # running = True
     # port2 = ""
     # fonte = pygame.font.Font(None, 75)
@@ -1305,7 +1737,7 @@ def info(text, position):
     # start(2)
 
 # def menu_mult():
-    # global music_playing, port, server_socket, user, adres, input_text, running, input_active, ctrl_pressed, shift_pressed
+    # global music_playing, port, server_socket, user, adres, input_text, hint, running, input_active, ctrl_pressed, shift_pressed
     # mods_count_11d23s2saaa = 0
     # music_playing = True
     # clock = pygame.time.Clock()
@@ -1365,13 +1797,12 @@ def info(text, position):
         # text3_rect = (20, height - fonte.get_height() - 10)
         # screen.blit(text, text_rect)
         # screen.blit(text3, text3_rect)
-        # text_surface = font.render(input_text, True, text2_color)
-        # screen.blit(text_surface, (10, 10))
+        # cmd_ui()
         # pygame.display.flip()
         # clock.tick(60)
 
 def game_info():
-    global music_playing, input_text, running, input_active, ctrl_pressed, shift_pressed
+    global music_playing, input_text, hint, running, input_active, ctrl_pressed, shift_pressed
     running = True
     clock = pygame.time.Clock()
     for script in scripts:
@@ -1392,30 +1823,30 @@ def game_info():
         fonte2 = pygame.font.Font(None, 65)
         for script in scripts:
             exec(str(start_script(script, 'game_info_ui')))
-        text = fonte.render("Играть проще не куда!", True, text2_color)
-        text2 = fonte2.render("Не дай собакам дойти до правой стороны экрана\nСтавь котов чтобы они помогали отбивать нападения\nПри нажатие ПКМ по коту он продастся за половину его цены\nПри нажатие ЛКМ по собаке ей наносится урон\nЕсть вид собак 'в полёте' их может убить только ПВО\nВ паузе есть настройки", True, text2_color)
+        text = fonte.render(translate_text[translate]["info_play"], True, text2_color)
+        text2 = fonte2.render(translate_text[translate]["info_info"], True, text2_color)
         text_rect = text.get_rect(center=(width/2, 70))
         text2_rect = text2.get_rect(center=(width/2+5, 70+200))
         screen.fill(background_color)
         screen.blit(back_image, back_rect)
         screen.blit(text, text_rect)
         screen.blit(text2, text2_rect)
-        text_surface = font.render(input_text, True, text2_color)
-        screen.blit(text_surface, (10, 10))
+        cmd_ui()
         pygame.display.flip()
         clock.tick(60)
 
 def menu():
-    global music_playing, RPC,new_music, event_game, input_text, running, input_active, ctrl_pressed, shift_pressed, best_score
+    global music_playing, RPC,new_music, event_game, input_text, hint, running, input_active, ctrl_pressed, shift_pressed, best_score,first,Notifications, translate_text
+    Notifications = []
     mods_count_11d23s2saaa = 0
     music_playing = True
     best_wawe = load_game_settings()
     new_music= False
     event_game=None
-    try:
-        RPC.update(state=f"Рекорд: {best_wawe}", details=f"Меню", large_image="kotdefense", large_text="Kot Defense", small_text=f"Рекорд: {best_wawe}")
-    except:
-        pass
+    # try:
+    RPC.update(state=translate_text[translate]["RPC_record"]+str(best_wawe), details=translate_text[translate]["RPC_Menu"], large_image="kotdefense", large_text="Kot Defense", small_text=translate_text[translate]["RPC_record"]+str(best_wawe))
+    # except:
+        # pass
     clock = pygame.time.Clock()
     running = True
     for script in scripts:
@@ -1436,8 +1867,13 @@ def menu():
                 exec(str(start_script(script, 'main_menu_event')))
             CMD_codes(event)
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and play_rect.collidepoint(pos):
-                new_music = True
-                start(0)
+                if first == False:
+                    start(0)
+                else:
+                    event_game=-2
+                    first = False
+                    save_game_settings()
+                    start(0)
                 return
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and info_rect.collidepoint(pos):
                 game_info()
@@ -1447,12 +1883,10 @@ def menu():
                 return
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and play2_rect.collidepoint(pos):
                 event_game=1
-                new_music = True
                 start(0)
                 return
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and loading_rect.collidepoint(pos):
                 event_game=-1
-                new_music = True
                 start(0)
                 return
             # elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and mult_rect.collidepoint(pos):
@@ -1461,12 +1895,12 @@ def menu():
         fonte = pygame.font.Font(None, 75)
         for script in scripts:
             exec(str(start_script(script, 'main_menu_ui')))
-        text = fonte.render("Добро пожаловать в Kot Defense", True, text2_color)
+        text = fonte.render(translate_text[translate]["menu_welcome"], True, text2_color)
         fonte = pygame.font.Font(None, 45)
         fonte2 = pygame.font.Font(None, 35)
-        text2 = fonte.render(f"Ваш рекорд: {best_wawe}", True, text2_color)
-        text4 = fonte2.render(f'Ивент "Магический лес"', True, text2_color)
-        text3 = fonte.render(f"У вас {mods_count_11d23s2saaa} модификаций", True, text2_color)
+        text2 = fonte.render(translate_text[translate]["menu_record"]+ str(best_wawe), True, text2_color)
+        text4 = fonte2.render(translate_text[translate]["menu_event"], True, text2_color)
+        text3 = fonte.render(translate_text[translate]["menu_you"]+str(mods_count_11d23s2saaa) + translate_text[translate]["menu_mods"], True, text2_color)
         text_rect = text.get_rect(center=(width/2, 70))
         text2_rect = (20, height - fonte.get_height() - 10)
         text3_rect = (20, height - fonte.get_height() - 43)
@@ -1483,8 +1917,7 @@ def menu():
         screen.blit(text2, text2_rect)
         screen.blit(text3, text3_rect)
         screen.blit(text4, text4_rect)
-        text_surface = font.render(input_text, True, text2_color)
-        screen.blit(text_surface, (10, 10))
+        cmd_ui()
         pygame.display.flip()
         clock.tick(60)
 
@@ -1494,11 +1927,52 @@ def outlining(text, color, text_rect_x, text_rect_y, outlining2, font):
     screen.blit(font.render(text, True, color), (text_rect_x, text_rect_y - outlining2))
     screen.blit(font.render(text, True, color), (text_rect_x, text_rect_y + outlining2))
 
+def dogs_changed():
+    global dogs_spawning, translate, translate_text, translate_dogs, budget, dog_damag_boost, money, health, cat_works_boost, cats_boost, cats, dogs, bad_list, good_list, maxMoney, input_text, hint, running, input_active, ctrl_pressed, shift_pressed
+    global dogs_spawning, multipiller, unmultipiller, summa, dogs_while_spawn, dogs_spawn_count
+    gebudged = budget
+    dogs_spawning = []
+    dogs_vibran = []
+    # for i in range(5):
+        # gebudged += summa
+        # gebudged += round(gebudged/unmultipiller)
+    dogs_varik = list(dogs_variants)
+    for dog3 in dogs_while_spawn:
+        dogs_spawning.append(dog3)
+        dogs_vibran.append(dog3)
+    dogs_spawn_count2 = dogs_spawn_count
+    for dog3 in dogs_varik:
+        if dogs_variants[dog3] < gebudged and dog3 not in dogs_vibran:
+            dogs_spawn_count2 -= 1
+    if dogs_spawn_count2 <= 0:
+        dogs_spawn_count2 = dogs_spawn_count
+    else:
+        dogs_spawn_count2 = dogs_spawn_count-dogs_spawn_count2
+    errors_count = 100 + len(dogs_varik)
+    while dogs_spawn_count2 > 0:
+        dog3 = random.choice(dogs_varik)
+        dogs_vibran.append(dog3)
+        if dogs_variants[dog3] < gebudged and dog3 not in dogs_while_spawn and dog3 not in dogs_spawning:
+            dogs_spawning.append(dog3)
+            dogs_vibran.append(dog3)
+            dogs_spawn_count2 -= 1
+        errors_count -= 1
+        if errors_count < 0:
+            print("ERROR")
+            dogs_spawn_count2 = 0
+            break
+    
+    
+    if wave >1:
+        translated_dogs = [translate_dogs[translate].get(dog5, dog5) for dog5 in dogs_spawning]
+        NotificationSystem(translate_text[translate]["wave_text_info"]+", ".join(translated_dogs), time=10)
+    return gebudged
+
 def omg(wave2, online):
     global scripts
     for script in scripts:
         exec(str(start_script(script, 'bonus')))
-    global budget, dog_damag_boost, money, health, cat_works_boost, cats_boost, cats, dogs, bad_list, good_list, maxMoney, input_text, running, input_active, ctrl_pressed, shift_pressed
+    global dogs_spawning, budget, dog_damag_boost, money, health, cat_works_boost, cats_boost, cats, dogs, bad_list, good_list, maxMoney, input_text, hint, running, input_active, ctrl_pressed, shift_pressed, translate_baffs
     dog_damag_boost = 0
     ggbudget = round(budget/5)
     
@@ -1525,6 +1999,16 @@ def omg(wave2, online):
         else:
             errors = False
     
+    
+    g1t = translate_baffs[translate][g1]
+    g2t = translate_baffs[translate][g2]
+    g3t = translate_baffs[translate][g3]
+    
+    b1t = translate_baffs[translate][b1]
+    b2t = translate_baffs[translate][b2]
+    b3t = translate_baffs[translate][b3]
+    
+    
     starte = True
     loade = True
     clock = pygame.time.Clock()
@@ -1540,7 +2024,7 @@ def omg(wave2, online):
                 exec(str(start_script(script, 'bonus_loade_event')))
         for script in scripts:
             exec(str(start_script(script, 'bonus_loade_ui')))
-        loading_text('бафов и дебафов')
+        loading_text(translate_text[translate]["load_baff_and_debaff"])
         pygame.display.flip()
         timer -= 1
         if timer <=0:
@@ -1561,9 +2045,9 @@ def omg(wave2, online):
         
         font = pygame.font.Font(None, 100)
         if baffe == True:
-            text = font.render("Выберите баф", True, text2_color)
+            text = font.render(translate_text[translate]["buff_select"], True, text2_color)
         else:
-            text = font.render("Выберите дебаф", True, text2_color)
+            text = font.render(translate_text[translate]["debuff_select"], True, text2_color)
         text_rect = text.get_rect(center=(width/2, 130))
         screen.blit(text, text_rect)
         for event in pygame.event.get():
@@ -1584,16 +2068,14 @@ def omg(wave2, online):
                     g = g3
                 if rect1.collidepoint(pos) or rect2.collidepoint(pos) or rect3.collidepoint(pos):
                     if baffe == False:
-                        if b == 'собаки наносят больше урона':
-                            dog_damag_boost += 1
-                        elif b == 'игра станет сложнее':
+                        if b == 'debaff_hard':
                             budget += ggbudget
-                        elif b == 'некоторым котам на поле боя нанесут 10 урона':
+                        elif b == 'debaff_all_cats_damage':
                             for cat in cats:
                                 cat.bump(10)
-                        elif b == f'-Максимальное число денег которое у вас было':
+                        elif b == f'debaff_maxium_money':
                             money -= maxMoney
-                        elif b == f'превращает 20% котов в лягушек':
+                        elif b == f'debaff_frogs':
                             zzzcats = round(len(cats) * 0.2)
                             random_cats = random.sample(cats, zzzcats)
                             for cat2 in random_cats:
@@ -1601,46 +2083,37 @@ def omg(wave2, online):
                         game(online)
                         return
                     else:
-                        if g == f'+Максимальное число денег которое у вас было':
+                        if g == f'baff_maxium_money':
                             money += maxMoney
-                        elif g == '+1 главных сердец':
+                        elif g == 'baff_main_heart':
                             health += 1
-                        elif g == '+30 жизней некоторым котам на поле боя':
+                        elif g == 'baff_lives_all_cats':
                             for cat in cats:
                                 cat.bump(-30)
-                        elif g == 'Игра станет легче':
-                            if budget - ggbudget >1:
-                                budget -= ggbudget
-                            else:
-                                budget = 1
-                        elif g == 'Коты работники дают на 5$ больше':
+                        elif g == 'baff_works':
                             cat_works_boost += 1
-                        elif g == 'Коты наносят больше урона':
-                            cats_boost += 5
-                        elif g == 'Магический щит, защищает котов от вражеских заклинаний':
+                        elif g == 'baff_shield':
                             shild = Cat(random.randint(0, width-60), random.randint(115, height - 255), 0, 2000, 0, 5000, 0, 0, 0, r"Data\Img\cat_shield.png", 60, 60)
-                            cats.append(shild)
                         baffe = False
         if baffe == True:
             if rect1.collidepoint(pos):
-                info(g1, (pos[0] + 15, pos[1] + 5))
+                info(g1t, (pos[0] + 15, pos[1] + 5))
             if rect2.collidepoint(pos):
-                info(g2, (pos[0] + 15, pos[1] + 5))
+                info(g2t, (pos[0] + 15, pos[1] + 5))
             if rect3.collidepoint(pos):
-                info(g3, (pos[0] + 15, pos[1] + 5))
+                info(g3t, (pos[0] + 15, pos[1] + 5))
         else:
             if rect1.collidepoint(pos):
-                info(b1, (pos[0] + 15, pos[1] + 5))
+                info(b1t, (pos[0] + 15, pos[1] + 5))
             if rect2.collidepoint(pos):
-                info(b2, (pos[0] + 15, pos[1] + 5))
+                info(b2t, (pos[0] + 15, pos[1] + 5))
             if rect3.collidepoint(pos):
-                info(b3, (pos[0] + 15, pos[1] + 5))
-        text_surface = font.render(input_text, True, text2_color)
-        screen.blit(text_surface, (10, 10))
+                info(b3t, (pos[0] + 15, pos[1] + 5))
+        cmd_ui()
         pygame.display.flip()
 
 def new_cat_unblock():
-    global buy_cats, xexe, mx, input_text, running, input_active, ctrl_pressed, shift_pressed
+    global buy_cats, xexe, mx, input_text, hint, running, input_active, ctrl_pressed, shift_pressed
     for script in scripts:
         exec(str(start_script(script, 'new_cat_unblock')))
     buy_cats = sorted(buy_cats, key=lambda x: x.money)
@@ -1659,11 +2132,13 @@ def new_cat_unblock():
 
 #старт игры
 def start(online):
-    loading_text('игры')
-    global health, Number, TimeStart, event_game, dogs, cats, cat, dogs_variants, del_cat, money, catown, dogs_moneys, budget, frame_count, frame_count2, frame_count3, frame_count4, plustime, new_wey, wave, for_mega_wave, pause, music_playing, dog_damag_boost, cat_works_boost, cats_boost, upping, buy_cats, xexe, mx, dogs_class, __dangerous_keywords_pp2irooodjhjjjkjkn, scripts, bad_list, good_list, catown2, bonus, new_music, buy_no_cats, event_game, maxMoney, cat_unblock, cats_moneys, cats_dogs_spawns
+    global final_wave, end_boss, training_step, translate, translate_text, translate_dogs, start_budget, boss_steps, health, Number, TimeStart, event_game, dogs, cats, cat, dogs_variants, del_cat, money, catown, dogs_moneys, budget, frame_count, frame_count2, frame_count3, frame_count4, plustime, new_wey, wave, for_mega_wave, pause, music_playing, dog_damag_boost, cat_works_boost, cats_boost, upping, buy_cats, xexe, mx, dogs_class, __dangerous_keywords_pp2irooodjhjjjkjkn, scripts, bad_list, good_list, catown2, bonus, new_music, buy_no_cats, event_game, maxMoney, cat_unblock, cats_moneys, cats_dogs_spawns
+    global dogs_spawning, Notifications, multipiller, unmultipiller, summa, dogs_while_spawn, dogs_spawn_count
+    loading_text(translate_text[translate]["load_game"])
     for script in scripts:
         exec(str(start_script(script, 'start')))
     del_cat = False
+    boss_steps = 0
     money = 30
     maxMoney = 0
     health = 10
@@ -1674,6 +2149,7 @@ def start(online):
     cats = []
     buy_cats=[]
     buy_no_cats = []
+    dogs_spawning = []
     dog_damag_boost = 0
     cat_works_boost = 0
     cats_boost = 100
@@ -1684,12 +2160,14 @@ def start(online):
     scripts = []
     bad_list = []
     good_list = []
-    budget = 4
+    start_budget = 4
+    budget = start_budget
     if event_game == 1:
         budget = 10
         money = 120
     upping = False
     pause = False
+    end_boss = False
     
     frame_count = 0
     frame_count2 = 0
@@ -1702,8 +2180,12 @@ def start(online):
     for_mega_wave = 4
     TimeStart = int(time.time())
     Number = 0
+    online = 0
+    multipiller = 2.5
+    unmultipiller = 10
+    summa = 10
     
-    if event_game == -1:
+    if event_game == -1 and event_game == -2:
         loading_game(None)
     
     new_dog = CreateDog(3, 1, 'Dog', 2, 2, 1, 1, 1, 0, r'Data\Img\Dog1.png', 60, 60)
@@ -1718,33 +2200,299 @@ def start(online):
     new_dog.damagecats.append(1)
     new_dog.damagecats.append(2)
     new_dog = CreateDog(10000, 8400, 'TrojanDog', 1000, 1, 0, 10, 5, 0, r'Data\Img\Dog6.png', 120, 120) 
-    new_dog = CreateDog(10, 100, 'GostDog', 10, 2, 2, 9, 1.5, 0, r'Data\Img\Dog7.png', 70, 70)
+    new_dog = CreateDog(10, 100, 'GhostDog', 10, 2, 2, 9, 1.5, 0, r'Data\Img\Dog7.png', 70, 70)
     new_dog = CreateDog(30, 300, 'Woolf', 20, 2, 4, 11, 2.5, 0, r'Data\Img\Dog1.png', 70, 70)
     new_dog = CreateDog(600, 1000, 'MedicDog', 100, 1, 1, 12, 3, 0, r'Data\Img\Dog2.jpg', 70, 70)
     new_dog = CreateDog(11000, 10000, 'DogTitan', 5000, 1, 20, 1, 5, 0, r'Data\Img\Dog1.png', 150, 150)
     new_dog = CreateDog(21000, 20000, 'ManiakDog', 50, 9, 30, 1, 0.05, 0, r'Data\Img\Dog8.png', 40, 40)
-    new_buy_cat = BuyCat(10, f'4 жизни, атакует 2 собаки за раз, средняя перезарядка, 1 урон', 130, 4, 3, 1, 1, 1, 0, 10, r'Data\Img\Cat1.png', 60, 60, None)
-    new_buy_cat = BuyCat(20, "40 жизни, не атакует собак", 0, 40, 0, 1, 0, 1, 0, 45, r'Data\Img\Cat2.png', 60, 60, None)
-    new_buy_cat = BuyCat(200, f'6 жизней, атакует 3 собаки за раз, долгая перезарядка, 10 урон', 400, 6, 3, 3, 10, 1, 20, -1, r'Data\Img\Cat3.png', 60, 60, None)
-    new_buy_cat = BuyCat(80, f'20 жизнь, атакует 3 собаки за раз, быстрая перезарядка, 1.5 урон', 150, 20, 3, 0.4, 1.5, 1, 10, -1, r'Data\Img\Cat4.png', 60, 60, None)
-    new_buy_cat = BuyCat(70, f'15 жизней, не атакует собак, но зарабатывает 10$ каждую волну', 0, 15, 0, -1, 10, 2, 5, -1, r'Data\Img\Cat5.png', 60, 60, None)
-    new_buy_cat = BuyCat(5000, f'80 жизней, не атакует собак, усиливает\nатаку курсором игрока', 0, 80, 0, 1, 0.1, 3, 25, -1, r'Data\Img\Cat6.png', 60, 60, None)
-    new_buy_cat = BuyCat(300, f'60 жизней, не атакует собак, лечит котов в его радиусе', 160, 60, 9999, 3.2, 0.3, 4, 25, -1, r'Data\Img\Cat7.png', 60, 60, None)
-    new_buy_cat = BuyCat(600, f'60 жизней, атакует 1 собаки за раз, быстрая перезарядка, \nбьёт только взрывучих или в полёте собак, 150 урон', 300, 60, 1, 0.3, 150, 1, 15, -1, r'Data\Img\Cat8.png', 60, 60, None)
+    new_buy_cat = BuyCat(10, f'official_kot_defense_info1', 130, 4, 3, 1, 1, 1, 0, 10, r'Data\Img\Cat1.png', 60, 60, None)
+    new_buy_cat.targetDeff = 0
+    new_buy_cat = BuyCat(20, "official_kot_defense_info2", 0, 40, 0, 1, 0, 1, 0, 45, r'Data\Img\Cat2.png', 60, 60, None)
+    new_buy_cat.targetDeff = -1
+    new_buy_cat = BuyCat(200, f'official_kot_defense_info3', 400, 6, 3, 3, 10, 1, 20, -1, r'Data\Img\Cat3.png', 60, 60, None)
+    new_buy_cat.targetDeff = 1
+    new_buy_cat = BuyCat(80, f'official_kot_defense_info4', 150, 20, 3, 0.4, 1.5, 1, 10, -1, r'Data\Img\Cat4.png', 60, 60, None)
+    new_buy_cat.targetDeff = 2
+    new_buy_cat = BuyCat(70, f'official_kot_defense_info5', 0, 15, 0, -1, 10, 2, 5, -1, r'Data\Img\Cat5.png', 60, 60, None)
+    new_buy_cat.targetDeff = -1
+    new_buy_cat = BuyCat(5000, f'official_kot_defense_info6', 0, 80, 0, 1, 0.1, 3, 25, -1, r'Data\Img\Cat6.png', 60, 60, None)
+    new_buy_cat.targetDeff = -1
+    new_buy_cat = BuyCat(300, f'official_kot_defense_info7', 160, 60, 9999, 3.2, 0.3, 4, 25, -1, r'Data\Img\Cat7.png', 60, 60, None)
+    new_buy_cat.targetDeff = -1
+    new_buy_cat = BuyCat(600, f'official_kot_defense_info8', 300, 60, 1, 0.3, 150, 1, 15, -1, r'Data\Img\Cat8.png', 60, 60, None)
+    new_buy_cat.targetDeff = 0
     new_buy_cat.blacklist.append(1)
     new_buy_cat.blacklist.append(2)
-    new_buy_cat = BuyCat(500, f'30 жизней, атакует 1 собаки за раз, долгая перезарядка, 100 урон', 500, 30, 1, 3, 100, 1, 40, -1, r'Data\Img\Cat9.png', 120, 60, r'Data\Img\Cat9_ico.jpg')
-    new_buy_cat = BuyCat(10000, "1000 жизней, собака получает 5%\nурона при нападение на кота", 0, 1000, 0, 60, 5, 5, 45, -1, r'Data\Img\Cat10.png', 60, 60, None)
-    new_buy_cat = BuyCat(600, f'80 жизней, не атакует собак, лечит котов в его радиусе', 200, 80, 9999, 60, 0.3, 4, 35, -1, r'Data\Img\Cat11.png', 60, 60, None)
-    new_buy_cat = BuyCat(50, f'1 жизнь, атакует 1 собаки за раз, быстрая перезарядка,\nпри получения урона, собака которая ударила кота получает урон 25% от своего хп', 0, 1, 1, 3, 25, 5, 5, -1, r'Data\Img\Cat12.png', 60, 60, None)
-    new_buy_cat = BuyCat(1000, f'20 жизней, атакует 6 собаки за раз,\nдолгая перезарядка, 3 урон', 500, 20, 6, 3, 3, 1, 45, -1, r'Data\Img\Cat13.png', 60, 60, None)
-    new_buy_cat = BuyCat(100, f'1 жизня, каждую волну спавнит жабу', 0, 1, 1, -1, 98, 6, 25, -1, r'Data\Img\Cat14.png', 60, 60, None)
-    new_buy_cat = BuyCat(300, f'1 жизня, каждую волну спавнит добрую собаку', 0, 1, 1, -1, 98, 7, 40, -1, r'Data\Img\Cat15.png', 60, 60, None)
-    new_buy_cat = BuyCat(12000, f'5 жизней, атакует всех в её зоне поражения,\nбыстрая перезарядка, 0.5 урон', 600, 5, 99999999, 0.5, 0.5, 8, 30, -1, r'Data\Img\Cat16.png', 120, 120, None)
-    new_buy_cat = BuyCat(15000, f'50 жизни, атакует 30 собак за раз, сверх быстрая перезарядка, 10 урон', 80, 50, 30, 0.1, 10, 1, 30, -1, r'Data\Img\Cat17.png', 40, 40, None)
+    new_buy_cat = BuyCat(500, f'official_kot_defense_info9', 500, 30, 1, 3, 100, 1, 40, -1, r'Data\Img\Cat9.png', 120, 60, r'Data\Img\Cat9_ico.jpg')
+    new_buy_cat.targetDeff = 1
+    new_buy_cat = BuyCat(10000, "official_kot_defense_info10", 0, 1000, 0, 60, 5, 5, 45, -1, r'Data\Img\Cat10.png', 60, 60, None)
+    new_buy_cat.targetDeff = -1
+    new_buy_cat = BuyCat(600, f'official_kot_defense_info11', 200, 80, 9999, 0.6, 0.1, 4, 35, -1, r'Data\Img\Cat11.png', 60, 60, None)
+    new_buy_cat.targetDeff = -1
+    new_buy_cat = BuyCat(50, f'official_kot_defense_info12', 0, 1, 1, 3, 25, 5, 5, -1, r'Data\Img\Cat12.png', 60, 60, None)
+    new_buy_cat.targetDeff = -1
+    new_buy_cat = BuyCat(1000, f'official_kot_defense_info13', 500, 20, 6, 3, 3, 1, 45, -1, r'Data\Img\Cat13.png', 60, 60, None)
+    new_buy_cat.targetDeff = 2
+    new_buy_cat = BuyCat(100, f'official_kot_defense_info14', 0, 1, 1, -1, 98, 6, 25, -1, r'Data\Img\Cat14.png', 60, 60, None)
+    new_buy_cat.targetDeff = -1
+    new_buy_cat = BuyCat(300, f'official_kot_defense_info15', 0, 1, 1, -1, 98, 7, 40, -1, r'Data\Img\Cat15.png', 60, 60, None)
+    new_buy_cat.targetDeff = -1
+    new_buy_cat = BuyCat(12000, f'official_kot_defense_info16', 600, 5, 99999999, 0.5, 0.5, 8, 30, -1, r'Data\Img\Cat16.png', 120, 120, None)
+    new_buy_cat.targetDeff = -1
+    new_buy_cat = BuyCat(15000, f'official_kot_defense_info17', 80, 50, 30, 0.1, 10, 1, 30, -1, r'Data\Img\Cat17.png', 40, 40, None)
+    new_buy_cat.targetDeff = 0
 
-    bad_list.extend(['игра станет сложнее', 'некоторым котам на поле боя нанесут 10 урона', f'-Максимальное число денег которое у вас было', 'превращает 20% котов в лягушек'])
-    good_list.extend([f'+Максимальное число денег которое у вас было', '+1 главных сердец', '+30 жизней некоторым котам на поле боя', 'Игра станет легче', 'Коты работники дают на 5$ больше', 'Магический щит, защищает котов от вражеских заклинаний'])
+    bad_list.extend(['debaff_all_cats_damage', 'debaff_maxium_money', 'debaff_frogs'])
+    good_list.extend(['baff_maxium_money', 'baff_main_heart', 'baff_lives_all_cats', 'baff_works', 'baff_shield'])
+    
+    dogs_while_spawn = ["Dog"]
+    dogs_spawn_count = 7
+    dogs_changed()
+    
+    final_wave = [
+        {
+            "type": 0, 
+            "step": 0,
+            "time": 20,
+            "code": {
+                "dog": "TrojanDog", 
+                "x": -100, 
+                "y": 130, 
+                "y_end": height-255, 
+                "x_random": 0,
+                "y_random": (random.randint(-100, 100) / 10), 
+                "x_add": 0,
+                "y_add": 120,
+                "for_x_set": None,
+                "for_y_set": None,
+                "count": 1,
+                "last_wave": False,
+                "next_wave": False
+            }
+        },
+        {
+            "type": 0, 
+            "step": 1,
+            "time": 40,
+            "code": {
+                "dog": "BomberDog", 
+                "x": -60, 
+                "y": 130, 
+                "y_end": height-255, 
+                "x_random": 0,
+                "y_random": 0, 
+                "x_add": -30,
+                "y_add": 60,
+                "for_x_set": None,
+                "for_y_set": None,
+                "count": 1,
+                "last_wave": False,
+                "next_wave": False
+            }
+        },
+        {
+            "type": 0, 
+            "step": 2,
+            "time": 50,
+            "code": {
+                "dog": "TrojanDog", 
+                "x": -100, 
+                "y": 130, 
+                "y_end": height-255, 
+                "x_random": 0,
+                "y_random": (random.randint(-100, 100) / 10), 
+                "x_add": 0,
+                "y_add": 130,
+                "for_x_set": None,
+                "for_y_set": None,
+                "count": 1,
+                "last_wave": False,
+                "next_wave": False
+            }
+        },
+        {
+            "type": 0, 
+            "step": 3,
+            "time": 60,
+            "code": {
+                "dog": "KiberDog", 
+                "x": -60, 
+                "y": 140, 
+                "y_end": height-255, 
+                "x_random": (random.randint(-100, 100) / 10),
+                "y_random": (random.randint(-100, 100) / 10), 
+                "x_add": "((i+1) * -120)",
+                "y_add": 60,
+                "for_x_set": None,
+                "for_y_set": None,
+                "count": 2,
+                "last_wave": False,
+                "next_wave": False
+            }
+        },
+        {
+            "type": 0, 
+            "step": 4,
+            "time": 90,
+            "code": {
+                "dog": "BoomDog", 
+                "x": -60, 
+                "y": 130, 
+                "y_end": height-255, 
+                "x_random": (random.randint(-100, 100) / 10),
+                "y_random": (random.randint(-100, 100) / 10), 
+                "x_add": 0,
+                "y_add": 60,
+                "for_x_set": "((i+1) * -120)",
+                "for_y_set": 130,
+                "count": 4,
+                "last_wave": False,
+                "next_wave": True
+            }
+        },
+        {
+            "type": 0, 
+            "step": 5,
+            "time": 90,
+            "code": {
+                "dog": "BomberDog", 
+                "x": -350, 
+                "y": 130, 
+                "y_end": height-255, 
+                "x_random": 0,
+                "y_random": 0, 
+                "x_add": -30,
+                "y_add": 60,
+                "for_x_set": None,
+                "for_y_set": None,
+                "count": 1,
+                "last_wave": False,
+                "next_wave": True
+            }
+        },
+        {
+            "type": 0, 
+            "step": 6,
+            "time": 90,
+            "code": {
+                "dog": "BomberDog", 
+                "x": -350, 
+                "y": 595, 
+                "y_end": 130, 
+                "x_random": 0,
+                "y_random": 0, 
+                "x_add": -30,
+                "y_add": -60,
+                "for_x_set": None,
+                "for_y_set": None,
+                "count": 1,
+                "last_wave": False,
+                "next_wave": True
+            }
+        },
+        {
+            "type": 1, 
+            "step": 7,
+            "time": 110,
+            "code": {
+                "budget": 40000,
+                "last_wave": False,
+                "next_wave": False
+            }
+        },
+        {
+            "type": 1, 
+            "step": 8,
+            "time": 125,
+            "code": {
+                "budget": 40000,
+                "last_wave": False,
+                "next_wave": False
+            }
+        },
+        {
+            "type": 0, 
+            "step": 9,
+            "time": 140,
+            "code": {
+                "dog": "BoomDog", 
+                "x": -60, 
+                "y": 130, 
+                "y_end": height-255, 
+                "x_random": (random.randint(-100, 100) / 10),
+                "y_random": (random.randint(-100, 100) / 10), 
+                "x_add": 0,
+                "y_add": 60,
+                "for_x_set": "((i+1) * -70)",
+                "for_y_set": 130,
+                "count": 4,
+                "last_wave": False,
+                "next_wave": True
+            }
+        },
+        {
+            "type": 0, 
+            "step": 10,
+            "time": 150,
+            "code": {
+                "dog": "BomberDog", 
+                "x": -350, 
+                "y": 130, 
+                "y_end": height-255, 
+                "x_random": 0,
+                "y_random": 0, 
+                "x_add": -30,
+                "y_add": 60,
+                "for_x_set": None,
+                "for_y_set": None,
+                "count": 1,
+                "last_wave": False,
+                "next_wave": True
+            }
+        },
+        {
+            "type": 0, 
+            "step": 11,
+            "time": 150,
+            "code": {
+                "dog": "BomberDog", 
+                "x": -350, 
+                "y": 595, 
+                "y_end": 130, 
+                "x_random": 0,
+                "y_random": 0, 
+                "x_add": -30,
+                "y_add": -60,
+                "for_x_set": None,
+                "for_y_set": None,
+                "count": 1,
+                "last_wave": False,
+                "next_wave": True
+            }
+        },
+        {
+            "type": 1, 
+            "step": 12,
+            "time": 125,
+            "code": {
+                "budget": 50000,
+                "last_wave": True,
+                "next_wave": False
+            }
+        }
+    ]
+    
+    #ОБУЧЕНИЕ
+    if event_game == -2:
+        if training_step == 0:
+            budget = 1
+            money = 0
+            new_wey = 9999999999999
+            NotificationSystem("Прочитай описания котов в нижнем меню (наведите курсор на кота)", (0, 100, 000), 30, 2, 2, 10)
+            CMD_waiting("money 10", 12)
+            NotificationSystem("Поставьте первого кота на поле", (0, 100, 000), 30, 2, 2, 10, waiting = 12)
+            NotificationSystem("Нажмите СКИП", (0, 100, 000), 30, 2, 2, 5, waiting = 22)
+    
     folder_path = r'Data\\Mods\\'
     for root, dirs, files in os.walk(folder_path):
         for file_name in files:
@@ -1774,7 +2522,7 @@ def start(online):
     return
 
 def win(online):
-    global music_playing, event_game, input_text, running, input_active, ctrl_pressed, shift_pressed
+    global music_playing, event_game, input_text, hint, running, input_active, ctrl_pressed, shift_pressed
     running = True
     loade = True
     clock = pygame.time.Clock()
@@ -1787,7 +2535,7 @@ def win(online):
             if event.type == pygame.QUIT:
                 running = False
                 loade= False
-        loading_text('текста')
+        loading_text(translate_text[translate]["load_texts"])
         pygame.display.flip()
         timer -= 1
         if timer <=0:
@@ -1813,19 +2561,19 @@ def win(online):
         for script in scripts:
             exec(str(start_script(script, 'win_event')))
         if event_game == 1:
-            text = fonte.render(f"Поздравляю ! Вы прошли ивент, отправьте скришот этого экрана\nв тех поддержку чтобы получить бонус ваш код: {mywincode}\nНажмите ПКМ чтобы выйти", True, text2_color)
+            text = fonte.render(translate_text[translate]["win_text_event_1"]+str(mywincode)+translate_text[translate]["win_text_event_2"], True, text2_color)
         else:
-            text = fonte.render("Поздравляю ! Вы официально прошли игру.\nДальше будет бесконечная игра\nНажмите ПКМ чтобы продолжить играть", True, text2_color)
+            text = fonte.render(translate_text[translate]["win_text_game"], True, text2_color)
+        play_music()
         text_rect = text.get_rect(center=(width/2, height/2))
         screen.fill(background_color)
         screen.blit(text, text_rect)
-        text_surface = font.render(input_text, True, text2_color)
-        screen.blit(text_surface, (10, 10))
+        cmd_ui()
         pygame.display.flip()
         clock.tick(60)
 
 def game(online):
-    global health, TimeStart, Number, dogs, cats, cat, dogs_variants, del_cat, money, catown, dogs_moneys, budget, frame_count, frame_count2, frame_count3, frame_count4, plustime, new_wey, wave, for_mega_wave, pause, music_playing, dog_damag_boost, cat_works_boost, cats_boost, upping, buy_cats, xexe, mx, dogs_class, scripts, mods_count_11d23s2saaa, catown2, pos, cursor_pos, bonus, new_music, event_game, maxMoney, input_text, running, input_active, ctrl_pressed, shift_pressed, stop_game, pos
+    global shift_pressed, translate, translate_text, translate_dogs, Notifications, training_step, final_wave, end_boss, boss_steps, health, TimeStart, Number, dogs, cats, cat, dogs_variants, del_cat, money, catown, dogs_moneys, budget, frame_count, frame_count2, frame_count3, frame_count4, plustime, new_wey, wave, for_mega_wave, pause, music_playing, dog_damag_boost, cat_works_boost, cats_boost, upping, buy_cats, xexe, mx, dogs_class, scripts, mods_count_11d23s2saaa, catown2, pos, cursor_pos, bonus, new_music, event_game, maxMoney, input_text, hint, running, input_active, ctrl_pressed, shift_pressed, stop_game, pos
     running = True
     bonus = False
     clock = pygame.time.Clock()
@@ -1844,15 +2592,9 @@ def game(online):
         try:
             if event_game == 1:
                 pygame.mixer.music.load(event1_music)
+                play_music(False)
             else:
-                pygame.mixer.music.load(music_path)
-            if music_playing:
-                pygame.mixer.music.play(-1)
-                pygame.mixer.music.set_volume(0.1)
-            else:
-                pygame.mixer.music.play(-1)
-                pygame.mixer.music.set_volume(0.1)
-                pygame.mixer.music.pause()
+                play_music()
             new_music = False
         except:
             pass
@@ -1994,6 +2736,44 @@ def game(online):
                     # elif event.button == 3:
                         # data_back[3] = True
             # else:
+            if pygame.mouse.get_pressed()[0] and event.type == pygame.MOUSEBUTTONDOWN and not pause:
+                for cat2 in cats:
+                    cat2.targetChanged(pos)
+            if pygame.mouse.get_pressed()[0] and ctrl_pressed and catown is not None:
+                try:
+                    catown.handle_mouse_click(pos, 1)
+                except:
+                    pass
+            elif pygame.mouse.get_pressed()[0] and shift_pressed and catown is not None:
+                if custom_X2 == None:
+                    custom_X2 = pos[0]
+                    custom_Y2 = pos[1]
+                    line_X = custom_X2-round(custom_X2 / catown.size_x) * catown.size_x
+                    line_Y = custom_Y2-round(custom_Y2 / catown.size_y) * catown.size_y
+                dx = abs(custom_X2 - pos[0])
+                dy = abs(custom_Y2 - pos[1])
+                try:
+                    if dx > dy:
+                        catown.handle_mouse_click((round(pos[0] / catown.size_x) * catown.size_x+line_X, custom_Y2), 1)
+                    else:
+                        catown.handle_mouse_click((custom_X2, round(pos[1] / catown.size_y) * catown.size_y+line_Y), 1)
+                except:
+                    pass
+            elif pygame.mouse.get_pressed()[0] and catown is not None and event.type == pygame.MOUSEBUTTONDOWN and not pause:
+                catown.handle_mouse_click(pos, 1)
+            if pygame.mouse.get_pressed()[2] and ctrl_pressed:
+                for cat in cats:
+                    if cat.rect.collidepoint(pos):
+                        if cat.follow_mouse == False:
+                            cat.sell(0.5)
+            elif event.type == pygame.MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[2] and not pause:
+                for cat in cats:
+                    if cat.rect.collidepoint(pos):
+                        if cat.follow_mouse == False:
+                            cat.sell(0.5)
+            if not shift_pressed:
+                custom_X2 = None
+                custom_Y2 = None
             if event.type == pygame.MOUSEBUTTONDOWN and not pause:
                 if pygame.mouse.get_pressed()[0] and event.button == 1:
                     for dog in list(dogs):
@@ -2007,13 +2787,7 @@ def game(online):
                                 if cat.mega == 3:
                                     damage_combo += cat.damage
                             dog.bump(damage_combo, True, [])
-                for cat in cats:
-                    if pygame.mouse.get_pressed()[2] and cat.rect.collidepoint(pos):
-                        if cat.follow_mouse == False:
-                            cat.sell(0.5)
-                if pygame.mouse.get_pressed()[0] and catown is not None:
-                    catown.handle_mouse_click(pos, 1)
-                if skip_rect.collidepoint(pos) and len(dogs) == 0:
+                if skip_rect.collidepoint(pos) and len(dogs) == 0 and event_game != -2:
                     if wave != 50:
                         if event_game == 1:
                             if wave != 30:
@@ -2025,6 +2799,22 @@ def game(online):
                         bc.buy(pos, 1)
                 if pause_rect.collidepoint(pos) and pygame.mouse.get_pressed()[0] and online == 0:
                     pause = True
+                if event_game == -2:
+                    if skip_rect.collidepoint(pos) and training_step == 0 and len(cats) > 0 and len(dogs) == 0:
+                        spawn_dogs(1, -80, height//2)
+                        training_step += 1
+                        CMD_waiting("money 20", 8)
+                        NotificationSystem("Поставьте ещё 2 кота", (0, 100, 0), 30, 2, 2, 10, waiting = 8)
+                        new_wey = 99999999
+                    if skip_rect.collidepoint(pos) and training_step == 1 and len(dogs) == 0 and len(cats) > 2:
+                        spawn_dogs(6)
+                        training_step += 1
+                        NotificationSystem("На собак можно нажимать тем самым нанося 0.1 урона", (100, 0, 0), 50, 2, 2, 10, waiting = 3)
+                    if skip_rect.collidepoint(pos) and training_step == 3 and len(dogs) == 0 and len(cats) > 0 and wave == 4:
+                        spawn_dogs(100)
+                        new_wey = 99999999
+                        CMD_waiting("mega_wave", 0)
+                        training_step += 1
             if pause:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 3:
@@ -2076,7 +2866,8 @@ def game(online):
                 for dog in list(dogs):
                     dog.move()
                     if dog.rect.x > width+60:
-                        money += 100
+                        if event_game != -2:
+                            money += 100
                         health -= 1
                         dogs.remove(dog)
                         del dog
@@ -2094,13 +2885,47 @@ def game(online):
                 pygame.draw.rect(screen, down_menu_cats, (0, 115, 1400, 5))
             
             pygame.draw.rect(screen, skip_button_color, (width-120, height-118, 100, 100))
-            cat_mon3 = font.render("Skip", True, skip_button_text_color)
-            screen.blit(cat_mon3, (width-101, height-96))
+            cat_mon3 = fontSkip.render(translate_text[translate]["skip"], True, skip_button_text_color)
+            screen.blit(cat_mon3, (width-101, height-84))
             
             for cat in cats:
                 cat.remove_dogs_periodically(None)
             for dog in list(dogs):
                 dog.attack(None)
+            for cmd_linee in cmd_queue:
+                cmd_linee.update()
+            
+            if event_game == -2:
+                if training_step == 2 and len(dogs) == 0:
+                    new_wey = 99999999
+                    NotificationSystem("Котов можно продать на ПКМ", (0, 100, 0), 35, 2, 2, 7, waiting = 1)
+                    NotificationSystem("Каждые 5 волн будут добавляться новые коты в ваше меню", (0, 100, 0), 30, 2, 2, 8, waiting = 8)
+                    NotificationSystem("А так же каждые 5 волн будут <Мега волны> где всё количество собак умножается в два раза", (0, 100, 0), 30, 2, 2, 10, waiting = 17)
+                    CMD_waiting("health 15", 27)
+                    CMD_waiting("money 500", 27)
+                    CMD_waiting("kill all", 27)
+                    CMD_waiting("wave 4", 27)
+                    NotificationSystem("Постройте надёжную защиту, так как мы попробуем отбить <мега волну>", (100, 0, 0), 30, 2, 2, 10, waiting = 27)
+                    NotificationSystem("Если зажать CTRL можно сразу делать клон кота", (0, 100, 0), 35, 2, 2, 10, waiting = 37)
+                    NotificationSystem("Ну и аналогично можно удалять котов зажав CTRL", (0, 100, 0), 30, 2, 2, 10, waiting = 47)
+                    NotificationSystem("А если зажать SHIFT и потянуть в любую сторону можно построить идеальную стену из котов", (0, 100, 0), 30, 2, 2, 10, waiting = 57)
+                    NotificationSystem("Как только будите готовы нажмите СКИП", (0, 100, 0), 30, 2, 2, 10, waiting = 67)
+                    training_step += 1
+                elif training_step == 4 and len(dogs) == 0:
+                    NotificationSystem("Забыл тебе сказать что после <Мега волны> происходит выбор одного <баффа> и <Дебаффа>", (0, 100, 0), 35, 2, 2, 10, waiting = 1)
+                    NotificationSystem("<Бафф> поможет вам играть дальше, а <Дебафф> затруднит", (0, 100, 0), 35, 2, 2, 9, waiting = 11)
+                    NotificationSystem("И кстати, новые коты в нижнем меню, ознакомься с ними", (0, 100, 0), 35, 2, 2, 10, waiting = 20)
+                    NotificationSystem("Чтобы пройти всю игру необходимо победить 50 волн", (100, 0, 0), 40, 2, 2, 10, waiting = 33)
+                    NotificationSystem("Но это будет не скоро :)", (0, 100, 0), 30, 2, 2, 4, waiting = 43)
+                    NotificationSystem("Если у вас будут собаки которые летают их нужно подбить котом ПВО он будет за 600$ на 15-й волне", (0, 100, 0), 30, 2, 2, 13, waiting = 47)
+                    NotificationSystem("Ну и расскажу по мелочам, на эту игру можно ставить <моды> и <дата-паки>", (0, 100, 0), 30, 2, 2, 10, waiting = 60)
+                    NotificationSystem("Всё проверенное есть на нашем <DISCORD> сервере (его можно найти в главном меню)", (0, 100, 0), 30, 2, 2, 10, waiting = 70)
+                    NotificationSystem("Выключить музыку можно в паузе (сверху-справа) и там же выйти в меню", (0, 100, 0), 30, 2, 2, 10, waiting = 80)
+                    NotificationSystem("Дальше будет информация необязательная для обычного игрока, чтобы закончить обучение перезайдите в бой", (0, 100, 0), 30, 2, 2, 10, waiting = 90)
+                    NotificationSystem("В игре присутствует консоль, чтобы её вкл/выкл нажмите Shift+Ctrl+Space", (0, 100, 0), 30, 2, 2, 10, waiting = 100)
+                    NotificationSystem("Дальше можно печатать команды, их можно узнать нажимая на стрелочки верх/низ (в поиске должно быть пусто)", (0, 100, 0), 30, 2, 2, 10, waiting = 110)
+                    NotificationSystem("Спасибо за игру! Чтобы закончить обучение перезайдите в бой", (0, 100, 0), 30, 2, 2, 10, waiting = 120)
+                    training_step += 1
             
             if online == 0:
                 screen.blit(pause_image, (width-55, 10))
@@ -2131,6 +2956,7 @@ def game(online):
                     bc.spawn()
             if stop_game == False:
                 if boss_time == 0 or wave > 50:
+                    xexexe = True
                     if wave == 49 and len(dogs) == 0:
                         wave += 1
                     if len(dogs) == 0 and wave != 50:
@@ -2138,9 +2964,9 @@ def game(online):
                             new_wey = 60
                         elif new_wey == 0:
                             for cat in cats:
-                                cat.remove_dogs_periodically(-1)
+                                cat.remove_dogs_periodically(-60)
                             for dog in list(dogs):
-                                dog.attack(-1)
+                                dog.attack(-60)
                             spawn_dogs()
                             if event_game == 1:
                                 zzzcats = round(len(cats) * 0.05)
@@ -2153,124 +2979,52 @@ def game(online):
                                 pass
                             Number += 1
                 else:
-                    if new_music == False:
+                    if xexexe == True and wave==50:
                         try:
-                            if event_game == 1:
-                                pygame.mixer.music.load(event1_music)
-                            else:
-                                pygame.mixer.music.load(music_path)
-                            if music_playing:
-                                pygame.mixer.music.play(-1)
-                                pygame.mixer.music.set_volume(0.1)
-                            else:
-                                pygame.mixer.music.play(-1)
-                                pygame.mixer.music.set_volume(0.1)
-                                pygame.mixer.music.pause()
-                            new_music = False
+                            pygame.mixer.music.load(music_path2)
+                            play_music(False)
                         except:
                             pass
-                    if boss_time == 20*60:
-                        xb = -60
-                        yb = 0
-                        while yb < height-255:
-                            yb +=120
-                            dog_class = dogs_class['TrojanDog']
-                            dog_class.create(xb, yb+random.randint(-100, 100) / 10)
-                        # dogs_list_data = []
-                        # for dog in dogs:
-                            # data_dog = {'image_path': dog.path_my_image, 'size_x': dog.size_x, 'size_y': dog.size_y, 'type': dog.typee, 'dog_health': dog.health, 'moneys': dog.money, 'speed': dog.speed, 'reload': dog.reload, 'damage_dog': dog.damage, 'xd': dog.rect.x, 'mega': dog.mega, 'yd': dog.rect.y}
-                            # dogs_list_data.append(data_dog)
-                        # data_back2[6] = str(dogs_list_data)
-                    elif boss_time == 40*60:
-                        xb = -60
-                        yb = 55
-                        while yb < height-255:
-                            xb -= 30
-                            yb +=60
-                            dog_class = dogs_class['BomberDog']
-                            dog_class.create(xb, yb)
-                        # dogs_list_data = []
-                        # for dog in dogs:
-                            # data_dog = {'image_path': dog.path_my_image, 'size_x': dog.size_x, 'size_y': dog.size_y, 'type': dog.typee, 'dog_health': dog.health, 'moneys': dog.money, 'speed': dog.speed, 'reload': dog.reload, 'damage_dog': dog.damage, 'xd': dog.rect.x, 'mega': dog.mega, 'yd': dog.rect.y}
-                            # dogs_list_data.append(data_dog)
-                        # data_back2[6] = str(dogs_list_data)
-                    elif boss_time == 50*60:
-                        xb = -60
-                        yb = 0
-                        while yb < height-255:
-                            yb +=120
-                            dog_class = dogs_class['TrojanDog']
-                            dog_class.create(xb, yb+random.randint(-100, 100) / 10)
-                        # dogs_list_data = []
-                        # for dog in dogs:
-                            # data_dog = {'image_path': dog.path_my_image, 'size_x': dog.size_x, 'size_y': dog.size_y, 'type': dog.typee, 'dog_health': dog.health, 'moneys': dog.money, 'speed': dog.speed, 'reload': dog.reload, 'damage_dog': dog.damage, 'xd': dog.rect.x, 'mega': dog.mega, 'yd': dog.rect.y}
-                            # dogs_list_data.append(data_dog)
-                        # data_back2[6] = str(dogs_list_data)
-                    elif boss_time == 60*60:
-                        xb = -60
-                        yb = 55
-                        for i in range(2):
-                            xb = (i+1) * -120
-                            yb = 55
-                            while yb < height-255:
-                                yb +=60
-                                dog_class = dogs_class['KiberDog']
-                                dog_class.create(xb+random.randint(-100, 100) / 10, yb+random.randint(-100, 100) / 10)
-                        # dogs_list_data = []
-                        # for dog in dogs:
-                            # data_dog = {'image_path': dog.path_my_image, 'size_x': dog.size_x, 'size_y': dog.size_y, 'type': dog.typee, 'dog_health': dog.health, 'moneys': dog.money, 'speed': dog.speed, 'reload': dog.reload, 'damage_dog': dog.damage, 'xd': dog.rect.x, 'mega': dog.mega, 'yd': dog.rect.y}
-                            # dogs_list_data.append(data_dog)
-                        # data_back2[6] = str(dogs_list_data)
-                    elif boss_time == 90*60:
-                        xb = -60
-                        yb = 55
-                        for i in range(4):
-                            xb = (i+1) * -70
-                            yb = 55
-                            while yb < height-255:
-                                yb +=60
-                                dog_class = dogs_class['BoomDog']
-                                dog_class.create(xb+random.randint(-100, 100) / 10, yb+random.randint(-100, 100) / 10)
-                        xb = -350
-                        yb = 55
-                        yb2 = 595
-                        while yb < height-255:
-                            xb -= 30
-                            yb +=60
-                            yb2 -=60
-                            dog_class = dogs_class['BomberDog']
-                            dog_class.create(xb, yb)
-                            dog_class = dogs_class['BomberDog']
-                            dog_class.create(xb, yb2)
-                            # dogs_list_data = []
-                            # for dog in dogs:
-                                # data_dog = {'image_path': dog.path_my_image, 'size_x': dog.size_x, 'size_y': dog.size_y, 'type': dog.typee, 'dog_health': dog.health, 'moneys': dog.money, 'speed': dog.speed, 'reload': dog.reload, 'damage_dog': dog.damage, 'xd': dog.rect.x, 'mega': dog.mega, 'yd': dog.rect.y}
-                                # dogs_list_data.append(data_dog)
-                            # data_back2[6] = str(dogs_list_data)
-                    elif boss_time == 110 *60:
-                        spawn_dogs(30000)
-                    elif boss_time == 140*60:
-                        xb = -60
-                        yb = 55
-                        for i in range(4):
-                            xb = (i+1) * -70
-                            yb = 55
-                            while yb < height-255:
-                                yb +=60
-                                dog_class = dogs_class['BoomDog']
-                                dog_class.create(xb+random.randint(-100, 100) / 10, yb+random.randint(-100, 100) / 10)
-                        xb = -350
-                        yb = 55
-                        yb2 = 595
-                        while yb < height-255:
-                            xb -= 30
-                            yb +=60
-                            yb2 -=60
-                            dog_class = dogs_class['BomberDog']
-                            dog_class.create(xb, yb)
-                            dog_class = dogs_class['BomberDog']
-                            dog_class.create(xb, yb2)
-                    elif boss_time >= 150*60 and len(dogs) == 0:
+                        xexexe = False
+                    
+                    next_wave = False
+                    attapts_spawn = 200
+                    for wave_data in final_wave:
+                        test = len(dogs) == 0 and wave_data["step"]>=boss_steps
+                        if wave_data["time"]*60 == boss_time or test or next_wave:
+                            boss_steps += 1
+                            if wave_data["type"] == 0:
+                                xb = wave_data["code"]["x"]
+                                yb = wave_data["code"]["y"]
+                                for i in range(wave_data["code"]["count"]):
+                                    if wave_data["code"]["for_x_set"] != None:
+                                        if isinstance(wave_data["code"]["for_x_set"], str):
+                                            xb =eval(wave_data["code"]["for_x_set"])
+                                        else:
+                                            xb = wave_data["code"]["for_x_set"]
+                                    if wave_data["code"]["for_y_set"] != None:
+                                        if isinstance(wave_data["code"]["for_y_set"], str):
+                                            yb = eval(wave_data["code"]["for_y_set"])
+                                        else:
+                                            yb = wave_data["code"]["for_y_set"]
+                                    while yb < wave_data["code"]["y_end"] and attapts_spawn > 0:
+                                        attapts_spawn -= 1
+                                        dog_class = dogs_class[wave_data["code"]["dog"]]
+                                        dog_class.create(xb, yb)
+                                        if isinstance(wave_data["code"]["x_add"], str):
+                                            xb +=eval(wave_data["code"]["x_add"])
+                                        else:
+                                            xb += wave_data["code"]["x_add"]
+                                        if isinstance(wave_data["code"]["y_add"], str):
+                                            yb +=eval(wave_data["code"]["y_add"])
+                                        else:
+                                            yb += wave_data["code"]["y_add"]
+                            elif wave_data["type"] == 0:
+                                spawn_dogs(wave_data["code"]["budget"])
+                            next_wave = wave_data["code"]["next_wave"]
+                            end_boss = wave_data["code"]["last_wave"]
+                    
+                    if end_boss and len(dogs) == 0:
                         wave += 1
                         if online == 0:
                             win(online)
@@ -2305,20 +3059,17 @@ def game(online):
             text = "❤️ "+str(health)
             
             health_text = font.render(text, True, text_color)
-            # outlining(text, text_outlining_color, 10, 2, outlining2, font)
             screen.blit(health_text, (10, 2))
             heart_text2 = font.render("❤️", True, heart_color)
             screen.blit(heart_text2, (10, 2))
             
             text = "💵 "+str(money)
             money_text = font.render(text, True, text_color)
-            # outlining(text, text_outlining_color, 10, 34, outlining2, font)
             screen.blit(money_text, (10, 34))
             
             money_text2 = font.render("💵", True, money_color)
             screen.blit(money_text2, (10, 34))
-            text_surface = font.render(input_text, True, text_color)
-            screen.blit(text_surface, (10, 120))
+            cmd_ui(0, 120)
             
             for cat in cats:
                 cat.info_ca(screen, pos)
@@ -2343,11 +3094,13 @@ def game(online):
                     bonus = True
                     upping = True
                     for cat in cats:
-                        cat.remove_dogs_periodically(-2)
+                        cat.remove_dogs_periodically(-120)
                     for dog in list(dogs):
-                        dog.attack(-2)
+                        dog.attack(-120)
                     omg(wave, online)
                     return
+            for noti in Notifications:
+                noti.update()
             for script in scripts:
                 exec(str(start_script(script, 'game_ui')))
             
@@ -2396,7 +3149,7 @@ def game(online):
             for script in scripts:
                 exec(str(start_script(script, 'game_pause')))
             fonte = pygame.font.Font(None, 75)
-            text = fonte.render("Пауза. Нажмите ПКМ, чтобы снять с паузы", True, text2_color) #350, 120
+            text = fonte.render(translate_text[translate]["pause"], True, text2_color) #350, 120
             text_rect = text.get_rect(center=(width/2, height/2))
             screen.fill(background_color)
             screen.blit(text, text_rect)
@@ -2408,187 +3161,459 @@ def game(online):
         pygame.display.flip()
         clock.tick(60)
         if health <=0:
-            try:
-                pygame.mixer.music.load(music_path)
-                pygame.mixer.music.play(-1)
-                pygame.mixer.music.set_volume(0.1)
-                if music_playing:
-                    pygame.mixer.music.play(-1)
-                    pygame.mixer.music.set_volume(0.1)
-                else:
-                    pygame.mixer.music.play(-1)
-                    pygame.mixer.music.set_volume(0.1)
-                    pygame.mixer.music.pause()
-            except:
-                pass
             for script in scripts:
                 exec(str(start_script(script, 'game_die')))
             show_lose_screen()
             return
 
-
-
-global input_text, running, input_active, ctrl_pressed, shift_pressed, checkboxes
-checkbox1 = Checkbox(50, 50, "Music", True, 0)
-checkboxes = [checkbox1]
-input_text = ''
+global input_text, running, input_active, ctrl_pressed, shift_pressed, checkboxes, CMD_commands, hint, CMD_line
+input_text= ''
 running = True
 input_active = False
 ctrl_pressed = False
 shift_pressed = False
+hint = ""
+CMD_line = 0
 
-def text_input():
-    global input_text, all_dogs, best_score, all_cats, running, input_active, ctrl_pressed, shift_pressed, health, dogs, cats, cat, dogs_variants, del_cat, money, catown, dogs_moneys, budget, frame_count, frame_count2, frame_count3, frame_count4, plustime, new_wey, wave, for_mega_wave, pause, music_playing, dog_damag_boost, cat_works_boost, cats_boost, upping, buy_cats, xexe, mx, dogs_class, __dangerous_keywords_pp2irooodjhjjjkjkn, scripts, bad_list, good_list, catown2, bonus, new_music, buy_no_cats, event_game, maxMoney, cat_unblock, stop_game, cats_moneys
-    input_text = str(input_text)
-    # try:
-    if input_text.split()[0] == "health":
-        health = int(input_text.split()[1])
-    elif input_text.split()[0] == "regen":
-        WhoRegen = input_text.split()[1]
-        if WhoRegen == "cats":
-            for cat2 in cats:
-                cat2.health = cat2.maxhealth
-        elif WhoRegen == "dogs":
-            for dog2 in dogs:
-                dog2.health = dog2.maxhealth
-        elif WhoRegen == "all":
-            for dog2 in dogs:
-                dog2.health = dog2.maxhealth
-            for cat2 in cats:
-                cat2.health = cat2.maxhealth
-    # elif input_text.split()[0] == "spawn":
-        # spawn_name = input_text.split()[1]
-        # xs = input_text.split()[2]
-        # ys = input_text.split()[3]
-        # for dog2 in dogs_class:
-            # if spawn_name == dog2:
-                # dog2.CreateDog(xs, ys)
-    elif input_text.split()[0] == "random":
-        try:
-            WhoRan = input_text.split()[1]
-        except:
-            WhoRan = None
-        try:
-            xs = int(input_text.split()[3])
-        except:
-            xs = None
-        try:
-            ys = int(input_text.split()[4])
-        except:
-            ys = None
-        try:
-            custom_budget = int(input_text.split()[2])
-        except:
-            custom_budget = random.randint(1, 400000)
-        if custom_budget < 0:
-            custom_budget = random.randint(1, 400000)
-        if WhoRan == 'dogs' or WhoRan == None:
-            spawn_dogs(custom_budget, xs, ys)
-        if WhoRan == 'cats' or WhoRan == None:
-            spawn_cats(custom_budget, xs ,ys)
-    elif input_text.split()[0] == "money":
-        money = int(input_text.split()[1])
-    elif input_text.split()[0] == "wave":
-        wave = int(input_text.split()[1])
-        budget = 0
-        for wave in range(1, wave + 1):
-            budget += 5
-            budget += round(budget / 5)
-    elif input_text.split()[0] == "budget":
-        budget = int(input_text.split()[1])
-    # elif input_text.split()[0] == "budget_to_wave":
-        # budget = int(input_text.split()[1])
-        # wave = 0
-        # for budget in range(1, budget + 1):
-            # wave += 5
-            # wave += round(wave / 5)
-            # if wave >= budget:
-                # break
-    elif input_text.split()[0] == "mega_wave":
-        for_mega_wave = 0
-    elif input_text.split()[0] == "kill":
-        WhiKill = input_text.split()[1]
-        if WhiKill == "cats":
-            while len(cats) != 0:
-                for cat2 in cats:
-                    cat2.bump(cat2.maxhealth)
-        elif WhiKill == "dogs":
-            while len(dogs) != 0:
-                for dog2 in dogs:
-                    dog2.bump(dog2.maxhealth, [], False)
-        elif WhiKill == "all":
-            while len(dogs) != 0 or len(cats) != 0:
-                for dog2 in dogs:
-                    dog2.bump(dog2.maxhealth, [], False)
-                for cat2 in cats:
-                    cat2.bump(cat2.maxhealth)
-    elif input_text.split()[0] == "shop":
-        for cd2 in buy_no_cats:
-            cd2.unblock = True
-        input_text = ''
-        game(0)
-    elif input_text.split()[0] == "stop":
-        stop_game = True
-    elif input_text.split()[0] == "play":
-        stop_game = False
-    elif input_text.split()[0] == "baffdebaff":
-        omg(wave, 0)
-    elif input_text.split()[0] == "load":
-        loading_game(None)
-    elif input_text.split()[0] == "save":
-        save_game(None)
-    elif input_text.split()[0] == "RESET_GAME":
-        best_score = 0
-        music_playing = True
-        save_game_settings()
-        try:
-            if music_playing:
-                pygame.mixer.music.pause()
-            else:   
-                pygame.mixer.music.unpause()
-            save_game_settings()
-        except:
-            pass
-        menu()
+CMD_commands = [
+    {
+        "info": translate_text[translate]["cmd_cure"],
+        "vals": {
+            "health": None,
+            "int": "Int value",
+        }
+    },
+    {
+        "info": translate_text[translate]["cmd_cure"],
+        "vals": {
+            "regen": None,
+            "type": "cats/dogs/all",
+        }
+    },
+    {
+        "info": translate_text[translate]["cmd_spawn"],
+        "vals": {
+            "spawn": None,
+            "dogs": "Dog names example: Dog,BoomDog",
+            "x": "*Int value,String X",
+            "y": "*Int value,String Y",
+        }
+    },
+    {
+        "info": translate_text[translate]["cmd_random"],
+        "vals": {
+            "random": None,
+            "type": "*cats/dogs/all",
+            "x": "*Int value,String X",
+            "y": "*Int value,String Y",
+            "budget": "*Int value,Budget on which to buy game",
+        }
+    },
+    {
+        "info": translate_text[translate]["cmd_money"],
+        "vals": {
+            "money": None,
+            "int": "Int value",
+        }
+    },
+    {
+        "info": translate_text[translate]["cmd_wave"],
+        "vals": {
+            "wave": None,
+            "int": "Int value",
+        }
+    },
+    {
+        "info": translate_text[translate]["cmd_budget"],
+        "vals": {
+            "wave": None,
+            "int": "Int value",
+        }
+    },
+    {
+        "info": translate_text[translate]["cmd_kill"],
+        "vals": {
+            "kill": None,
+            "type": "cats/dogs/all",
+        }
+    },
+    {
+        "info": translate_text[translate]["cmd_store"],
+        "vals": {
+            "shop": None,
+        }
+    },
+    {
+        "info": translate_text[translate]["cmd_stop"],
+        "vals": {
+            "stop": None,
+        }
+    },
+    {
+        "info": translate_text[translate]["cmd_resum"],
+        "vals": {
+            "play": None,
+        }
+    },
+    {
+        "info": translate_text[translate]["cmd_baff_debaff"],
+        "vals": {
+            "baffdebaff": None,
+        }
+    },
+    {
+        "info": translate_text[translate]["cmd_save"],
+        "vals": {
+            "save": None,
+        }
+    },
+    {
+        "info": translate_text[translate]["cmd_load"],
+        "vals": {
+            "load": None,
+        }
+    },
+    {
+        "info": translate_text[translate]["cmd_reset_game"],
+        "vals": {
+            "RESET_GAME": None,
+        }
+    },
+    {
+        "info": translate_text[translate]["cmd_language"],
+        "vals": {
+            "language": None,
+            "lang": "language"
+        }
+    },
+    {
+        "info": translate_text[translate]["cmd_coordinates"],
+        "vals": {
+            "coordinates": None
+        }
+    },
+    {
+        "info": translate_text[translate]["cmd_training"],
+        "vals": {
+            "training": None,
+            "step": "*Training step"
+        }
+    }
+]
+
+def text_input(input_text2 = None):
+    global hint, training_step, start_budget, first, CMD_line, translate, input_text, hint, all_dogs, best_score, all_cats, running, input_active, ctrl_pressed, shift_pressed, health, dogs, cats, cat, dogs_variants, del_cat, money, catown, dogs_moneys, budget, frame_count, frame_count2, frame_count3, frame_count4, plustime, new_wey, wave, for_mega_wave, pause, music_playing, dog_damag_boost, cat_works_boost, cats_boost, upping, buy_cats, xexe, mx, dogs_class, __dangerous_keywords_pp2irooodjhjjjkjkn, scripts, bad_list, good_list, catown2, bonus, new_music, buy_no_cats, event_game, maxMoney, cat_unblock, stop_game, cats_moneys, summa, unmultipiller, translate_baffs, translate_cats, translate_dogs, translate_text, pos
+    if input_text2 == None:
+        input_text= str(input_text)
     else:
-        for script in scripts:
-            exec(str(start_script(script, 'cmd')))
-    # except:
-        # pass
+        input_text = str(input_text2)
+    try:
+        if input_text.split()[0] == "health":
+            health = int(input_text.split()[1])
+        elif input_text.split()[0] == "regen":
+            WhoRegen = input_text.split()[1]
+            if WhoRegen == "cats":
+                for cat2 in cats:
+                    cat2.health = cat2.maxhealth
+            elif WhoRegen == "dogs":
+                for dog2 in dogs:
+                    dog2.health = dog2.maxhealth
+            elif WhoRegen == "all":
+                for dog2 in dogs:
+                    dog2.health = dog2.maxhealth
+                for cat2 in cats:
+                    cat2.health = cat2.maxhealth
+        elif input_text.split()[0] == "spawn":
+            spawn_name = input_text.split()[1].split(",")
+            try:
+                xs = int(input_text.split()[2])
+            except:
+                xs = None
+            try:
+                ys = int(input_text.split()[3])
+            except:
+                ys = None
+            attepts = 0
+            good = 0
+            good_wait = len(spawn_name)
+            if any(item in dogs_class for item in spawn_name):
+                while True:
+                    for dog3 in dogs_class:
+                        if len(spawn_name) <= 1 and spawn_name[0] == dog3:
+                            dogs_class[dog3].create(xs, ys)
+                            input_text= ''
+                            return
+                        else:
+                            for na in spawn_name:
+                                if na == dog3:
+                                    spawn_name.remove(na)
+                                    dogs_class[dog3].create(xs, ys)
+                            good += 1
+                    if attepts >= 500+good_wait:
+                        print("ERROR")
+                        input_text= ''
+                        return
+                    attepts += 1
+                    if good_wait == good:
+                        input_text= ''
+                        return
+            else:
+                for dog2 in dogs_class:
+                    if spawn_name.lower() == dog2.lower():
+                        print(f"ERROR! Dog not found. Did you mean <{dog2}>?")
+                        input_text= ''
+                        return
+                print("ERROR! Dog not found.")
+        elif input_text.split()[0] == "random":
+            try:
+                WhoRan = input_text.split()[1]
+            except:
+                WhoRan = None
+            try:
+                xs = int(input_text.split()[3])
+            except:
+                xs = None
+            try:
+                ys = int(input_text.split()[4])
+            except:
+                ys = None
+            try:
+                custom_budget = int(input_text.split()[2])
+            except:
+                custom_budget = random.randint(1, 400000)
+            if custom_budget < 0:
+                custom_budget = random.randint(1, 400000)
+            if WhoRan == 'dogs' or WhoRan == None or WhoRan == "All":
+                spawn_dogs(custom_budget, xs, ys)
+            if WhoRan == 'cats' or WhoRan == None or WhoRan == "All":
+                spawn_cats(custom_budget, xs ,ys)
+        elif input_text.split()[0] == "money":
+            money = int(input_text.split()[1])
+        elif input_text.split()[0] == "wave":
+            old_wave = wave
+            wave = int(input_text.split()[1])
+            if wave - old_wave > 0:
+                for i in range(wave - old_wave):
+                    budget += summa
+                    budget += round(budget/unmultipiller)
+            else:
+                budget = start_budget
+                for i in range(wave):
+                    budget += summa
+                    budget += round(budget/unmultipiller)
+        elif input_text.split()[0] == "budget":
+            budget = int(input_text.split()[1])
+        # elif input_text.split()[0] == "budget_to_wave":
+            # budget = int(input_text.split()[1])
+            # wave = 0
+            # for budget in range(1, budget + 1):
+                # wave += 5
+                # wave += round(wave / 5)
+                # if wave >= budget:
+                    # break
+        elif input_text.split()[0] == "mega_wave":
+            for_mega_wave = 0
+        elif input_text.split()[0] == "kill":
+            WhiKill = input_text.split()[1]
+            attepts = 0
+            if WhiKill == "cats":
+                while len(cats) != 0:
+                    old_cats = len(cats)
+                    for cat2 in cats:
+                        cat2.health = 0
+                        cat2.bump(cat2.maxhealth)
+                        try: 
+                            cats.remove(cat2)
+                            del cat2
+                        except:
+                            pass
+                    if old_cats == len(cats):
+                        attepts += 1
+                        if attepts >= 500:
+                            print("ERROR")
+                            break
+            elif WhiKill == "dogs":
+                while len(dogs) != 0:
+                    old_dogs = len(dogs)
+                    for dog2 in dogs:
+                        dog2.health = 0
+                        dog2.bump(dog2.maxhealth, [], False)
+                        try: 
+                            dogs.remove(dog2)
+                            del dog2
+                        except:
+                            pass
+                    if old_dogs == len(dogs):
+                        attepts += 1
+                        if attepts >= 500:
+                            print("ERROR")
+                            break
+            elif WhiKill == "all":
+                while len(dogs) != 0 or len(cats) != 0:
+                    old_dogs = len(dogs)
+                    old_cats = len(cats)
+                    for dog2 in dogs:
+                        dog2.health = 0
+                        dog2.bump(dog2.maxhealth, [], False)
+                        try: 
+                            dogs.remove(dog2)
+                            del dog2
+                        except:
+                            pass
+                    for cat2 in cats:
+                        cat2.health = 0
+                        cat2.bump(cat2.maxhealth)
+                        try: 
+                            cats.remove(cat2)
+                            del cat2
+                        except:
+                            pass
+                    if old_dogs != 0:
+                        old_dogs = old_dogs == len(dogs)
+                    if old_cats != 0:
+                        old_cats = old_cats == len(cats)
+                    if old_cats or old_dogs:
+                        attepts += 1
+                        if attepts >= 500:
+                            print("ERROR")
+                            break
+        elif input_text.split()[0] == "shop":
+            for cd2 in buy_no_cats:
+                cd2.unblock = True
+            input_text= ''
+            hint = ''
+            game(0)
+        elif input_text.split()[0] == "stop":
+            stop_game = True
+        elif input_text.split()[0] == "play":
+            stop_game = False
+        elif input_text.split()[0] == "baffdebaff":
+            input_text= ''
+            omg(wave, 0)
+        elif input_text.split()[0] == "load":
+            loading_game(None)
+        elif input_text.split()[0] == "save":
+            save_game(None)
+        elif input_text.split()[0] == "RESET_GAME":
+            best_score = 0
+            music_playing = True
+            first = True
+            save_game_settings()
+            try:
+                if music_playing:
+                    pygame.mixer.music.pause()
+                else:   
+                    pygame.mixer.music.unpause()
+                save_game_settings()
+            except:
+                pass
+            input_text= ''
+            hint = ''
+            menu()
+        elif input_text.split()[0] == "language":
+            lang = input_text.split()[1]
+            if lang in translate_baffs and lang in translate_cats and lang in translate_dogs and lang in translate_text and lang in translate_dogs:
+                translate = lang
+            else:
+                NotificationSystem("ERROR: Language is not found, translate_baffs: " + str(lang in translate_baffs) +" translate_cats: " + str(lang in translate_cats) +" translate_dogs: " + str(lang in translate_dogs) +" translate_text: " + str(lang in translate_text) +" translate_dogs: " + str(lang in translate_dogs), (255, 0, 0), 25, 3, 2, 10)
+        elif input_text.split()[0] == "coordinates":
+            print(pos)
+        elif input_text.split()[0] == "training":
+            try:
+                training_step = int(input_text.split()[1])
+            except:
+                training_step = 0
+            event_game = -2
+            input_text= ''
+            hint = ''
+            start(0)
+            return
+        else:
+            for script in scripts:
+                exec(str(start_script(script, 'cmd')))
+    except:
+        pass
     
-    input_text = ''
+    input_text= ''
+    
+def hint_def(name_list, hint_clear):
+    global input_text, hint, running, input_active, ctrl_pressed, shift_pressed, CMD_commands, CMD_line
+    if len(input_text.split()) > 0:
+        hint = next((list(command["vals"].items())[0][0] for command in CMD_commands if input_text.split()[0] in list(command["vals"].items())[0][0]), None)
+        if any(input_text.split()[0] in names2 for names2 in name_list):
+            for command in CMD_commands:                        
+                if input_text.split()[0] in list(command["vals"].items())[0][0]:
+                    if len(list(command["vals"].items())) > len(input_text.split()):
+                        hint += " "+list(command["vals"].items())[len(input_text.split())][1]
+                    hint += " - "+command["info"]
+                    return hint
+    else:
+        if hint_clear:
+            hint = ""
 
 def CMD_codes(event):
-    global input_text, running, input_active, ctrl_pressed, shift_pressed
+    global input_text, hint, running, input_active, ctrl_pressed, shift_pressed, CMD_commands, CMD_line
     for script in scripts:
         exec(str(start_script(script, 'cmd_event')))
-    if event.type == pygame.KEYDOWN:
-        if event.key == pl.K_LCTRL:
-            ctrl_pressed = True
-        if event.key == pl.K_LSHIFT:
-            shift_pressed = True
-        if ctrl_pressed and shift_pressed and event.key == pl.K_SPACE:
-            input_active = not input_active
-        elif input_active:
-            if event.key == pl.K_RETURN:
-                if input_text:
-                    # try:
-                    text_input()
-                    # except:
-                        # pass
-            elif event.key == pl.K_BACKSPACE:
-                input_text = input_text[:-1]
-            else:
-                input_text += event.unicode
+    try:
+        if event.type == pygame.KEYDOWN:
+            keys = pygame.key.get_pressed()
+            name_list = [list(command["vals"].keys())[0] if command["vals"] else None for command in CMD_commands]
+            if event.key == pl.K_LCTRL:
+                ctrl_pressed = True
+            if event.key == pl.K_LSHIFT:
+                shift_pressed = True
+            if ctrl_pressed and shift_pressed and event.key == pl.K_SPACE:
+                input_active = not input_active
+            elif input_active:
+                hint_clear = True
+                if event.key == pl.K_RETURN:
+                    if input_text:
+                        text_input()
+                        hint_def(name_list, hint_clear)
+                elif keys[pygame.K_LCTRL] and keys[pygame.K_BACKSPACE]:
+                    if len(input_text.split()) > 1:
+                        input_text= " ".join(input_text.split()[:-1])
+                    else:
+                        input_text= ""
+                    hint_def(name_list, hint_clear)
+                elif event.key == pl.K_BACKSPACE:
+                    input_text= input_text[:-1]
+                    hint_def(name_list, hint_clear)
+                elif input_active and event.key == pl.K_TAB:
+                    if len(input_text.split()) > 0:
+                        if any(input_text.split()[0] in names2 for names2 in name_list):
+                            if input_text.split()[0] != next((list(command["vals"].items())[0][0] for command in CMD_commands if input_text.split()[0] in list(command["vals"].items())[0][0]), None):
+                                input_text = next((list(command["vals"].items())[0][0] for command in CMD_commands if input_text.split()[0] in list(command["vals"].items())[0][0]), None)
+                                hint_def(name_list, hint_clear)
+                elif input_active and event.key == pl.K_DOWN:
+                    if any(hint == names2 for names2 in name_list) or hint == "":
+                        CMD_line -= 1
+                        if CMD_line < 0:
+                            CMD_line = len(CMD_commands)-1
+                        hint = name_list[CMD_line]
+                        hint_clear = False
+                elif input_active and event.key == pl.K_UP:
+                    if any(hint == names2 for names2 in name_list) or hint == "":
+                        CMD_line += 1
+                        if CMD_line >= len(CMD_commands):
+                            CMD_line = 0
+                        hint = name_list[CMD_line]
+                        hint_clear = False
+                else:
+                    input_text+= event.unicode
+                    hint_def(name_list, hint_clear)
 
-    if event.type == pygame.KEYUP:
-        if event.key == pl.K_LCTRL:
-            ctrl_pressed = False
-        if event.key == pl.K_LSHIFT:
-            shift_pressed = False
+        if event.type == pygame.KEYUP:
+            if event.key == pl.K_LCTRL:
+                ctrl_pressed = False
+            if event.key == pl.K_LSHIFT:
+                shift_pressed = False
+    except: 
+        pass
 
 def loading_game(folder_path):
-    global input_text, all_dogs, all_cats, running, input_active, ctrl_pressed, shift_pressed, health, dogs, cats, cat, dogs_variants, del_cat, money, catown, dogs_moneys, budget, frame_count, frame_count2, frame_count3, frame_count4, plustime, new_wey, wave, for_mega_wave, pause, music_playing, dog_damag_boost, cat_works_boost, cats_boost, upping, buy_cats, xexe, mx, dogs_class, __dangerous_keywords_pp2irooodjhjjjkjkn, scripts, bad_list, good_list, catown2, bonus, new_music, buy_no_cats, event_game, maxMoney, cat_unblock, stop_game, cats_moneys
+    global input_text, hint, all_dogs, all_cats, running, input_active, ctrl_pressed, shift_pressed, health, dogs, cats, cat, dogs_variants, del_cat, money, catown, dogs_moneys, budget, frame_count, frame_count2, frame_count3, frame_count4, plustime, new_wey, wave, for_mega_wave, pause, music_playing, dog_damag_boost, cat_works_boost, cats_boost, upping, buy_cats, xexe, mx, dogs_class, __dangerous_keywords_pp2irooodjhjjjkjkn, scripts, bad_list, good_list, catown2, bonus, new_music, buy_no_cats, event_game, maxMoney, cat_unblock, stop_game, cats_moneys
     # all_cats2 = []
     # for cat22 in all_cats:
         # all_cats2.append(cat22)
@@ -2624,12 +3649,11 @@ def loading_game(folder_path):
     for buyCat in buy_cats:
         buyCat.spawn()
     
-    print(len(buy_cats))
     new_cat_unblock()
     
 
 def save_game(folder_path):
-    global input_text, all_dogs, all_cats, running, input_active, ctrl_pressed, shift_pressed, health, dogs, cats, cat, dogs_variants, del_cat, money, catown, dogs_moneys, budget, frame_count, frame_count2, frame_count3, frame_count4, plustime, new_wey, wave, for_mega_wave, pause, music_playing, dog_damag_boost, cat_works_boost, cats_boost, upping, buy_cats, xexe, mx, dogs_class, __dangerous_keywords_pp2irooodjhjjjkjkn, scripts, bad_list, good_list, catown2, bonus, new_music, buy_no_cats, event_game, maxMoney, cat_unblock, stop_game, cats_moneys
+    global input_text, hint, all_dogs, all_cats, running, input_active, ctrl_pressed, shift_pressed, health, dogs, cats, cat, dogs_variants, del_cat, money, catown, dogs_moneys, budget, frame_count, frame_count2, frame_count3, frame_count4, plustime, new_wey, wave, for_mega_wave, pause, music_playing, dog_damag_boost, cat_works_boost, cats_boost, upping, buy_cats, xexe, mx, dogs_class, __dangerous_keywords_pp2irooodjhjjjkjkn, scripts, bad_list, good_list, catown2, bonus, new_music, buy_no_cats, event_game, maxMoney, cat_unblock, stop_game, cats_moneys
     root = tk.Tk()
     root.withdraw()
     if folder_path == None:
@@ -2646,14 +3670,14 @@ def save_game(folder_path):
                 ]
             global text
             if len(folder_names)>0:
-                text = "В мире использовались моды:\n"
+                text = translate_text[translate]["save_mods_in_world"]
                 for ModName in folder_names:
                     text += str(ModName) + "\n"
             else:
-                text = "В мире не использовались моды\n"
-            text += f"Мир был создан {time.strftime('%d.%m.%Y %H:%M', time.localtime(time.time()))}"
-            text += f"В мире {len(dogs)+len(cats)} существ\n"
-            text += f"{wave} волна, {health} жизней, {money} денег\n"
+                text = translate_text[translate]["save_mods_not_in_world"]
+            text += translate_text[translate]["save_world_created"] + str(time.strftime('%d.%m.%Y %H:%M', time.localtime(time.time())))
+            text += translate_text[translate]["save_in_world"] + str(len(dogs)+len(cats)) + translate_text[translate]["save_entyti"]
+            text += str(wave) + translate_text[translate]["save_wave"] + str(health) + translate_text[translate]["save_health"] + str(money) + translate_text[translate]["save_money"]
             for script in scripts:
                 exec(str(start_script(script, 'world save')))
             file.write(text)
@@ -2688,6 +3712,8 @@ def save_game(folder_path):
                     pass
         with open(game_path, 'wb') as file:
             pickle.dump(fileData, file)
-
+load_game_settings()
+checkbox1 = Checkbox(50, 50, "Music", music_playing, 0)
+checkboxes = [checkbox1]
 menu()
 pygame.quit()
