@@ -193,22 +193,22 @@ class SettingsWindow(QWidget):
             entry.setText(filepath)
 
     def save_settings(self):
-        try:
-            current_widget = self.tab_widget.currentWidget()
-            tab_name = self.tab_widget.tabText(self.tab_widget.currentIndex())
-            self.prefix = tab_name
-            mod_name = os.path.join("Mods", self.entrys["mod"])
-            settings = [self.entrys[entry] for _, entry in self.fields.items()]
-            
-            self.create_mod_folders(mod_name)
-            if "ico_image_path" not in self.entrys:
-                self.entrys["ico_image_path"] = None
-            self.copy_images(self.entrys["path_my_image"], self.entrys["ico_image_path"], mod_name)
-            self.write_to_main_py(mod_name, *settings[1:])
+        # try:
+        current_widget = self.tab_widget.currentWidget()
+        tab_name = self.tab_widget.tabText(self.tab_widget.currentIndex())
+        self.prefix = tab_name
+        mod_name = os.path.join("Mods", self.entrys["mod"])
+        settings = [self.entrys[entry] for _, entry in self.fields.items()]
+        
+        self.create_mod_folders(mod_name)
+        if "ico_image_path" not in self.entrys:
+            self.entrys["ico_image_path"] = None
+        self.copy_images(self.entrys["path_my_image"], self.entrys["ico_image_path"], mod_name)
+        self.write_to_main_py(mod_name, *settings[1:])
 
-            print(f"Mod {mod_name} was saved in 'Mods' folder")
-        except:
-            pass
+        print(f"Mod {mod_name} was saved in 'Mods' folder")
+        # except:
+            # pass
 
     def create_mod_folders(self, mod_name):
         folders = ["Data", "Data/Img", "Data/Songs", "Data/Saves", "Data/Fonts", "Data/Scripts"]
