@@ -1220,7 +1220,7 @@ class Dog:
     
     def save(self):
         global all_dogs
-        all_dogs.append(f"new_dog=Dog({self.rect.x}, {self.rect.y}, {self.health}, {self.money}, {self.speed}, {self.damage}, {self.mega}, {round(self.Maxreload/60)}, {self.typee}, r'{self.path_my_image}', {self.size_x}, {self.size_y})\nnew_dog.reload = {self.reload}\nnew_dog.who = {self.who}\nnew_dog.maxhealth = {self.maxhealth}\nnew_dog.damagecats = {self.damagecats}\nnew_dog.radius = {self.radius}")
+        all_dogs.append(f"new_dog=Dog({self.rect.x}, {self.rect.y}, {self.health}, {self.money}, {self.speed}, {self.damage}, {self.mega}, {round(self.Maxreload/60)}, {self.typee}, r'{self.path_my_image}', {self.size_x}, {self.size_y})\nnew_dog.reload = {self.reload}\nnew_dog.who = {self.who}\nnew_dog.maxhealth = {self.maxhealth}\nnew_dog.damagecats = {self.damagecats}\nnew_dog.aura_radius = {self.aura_radius}")
 
     def move(self):
         global dog_damag_boost, scripts, dogs
@@ -1843,10 +1843,10 @@ def menu():
     best_wawe = load_game_settings()
     new_music= False
     event_game=None
-    # try:
-    RPC.update(state=translate_text[translate]["RPC_record"]+str(best_wawe), details=translate_text[translate]["RPC_Menu"], large_image="kotdefense", large_text="Kot Defense", small_text=translate_text[translate]["RPC_record"]+str(best_wawe))
-    # except:
-        # pass
+    try:
+        RPC.update(state=translate_text[translate]["RPC_record"]+str(best_wawe), details=translate_text[translate]["RPC_Menu"], large_image="kotdefense", large_text="Kot Defense", small_text=translate_text[translate]["RPC_record"]+str(best_wawe))
+    except:
+        pass
     clock = pygame.time.Clock()
     running = True
     for script in scripts:
@@ -2185,7 +2185,7 @@ def start(online):
     unmultipiller = 10
     summa = 10
     
-    if event_game == -1 and event_game == -2:
+    if event_game == -1:
         loading_game(None)
     
     new_dog = CreateDog(3, 1, 'Dog', 2, 2, 1, 1, 1, 0, r'Data\Img\Dog1.png', 60, 60)
