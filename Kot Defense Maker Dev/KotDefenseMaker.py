@@ -241,12 +241,12 @@ class SettingsWindow(QWidget):
             save_text = f"CreateDog({self.entrys['moneys']}, {self.entrys['bugete']}, '{self.entrys['name']}', {self.entrys['health']}, {self.entrys['speed']}, {self.entrys['damage_dog']}, {entrys['unikal']}, {self.entrys['reload']}, {self.entrys['typedog']}, r'{self.entrys['path_my_image']}', {self.entrys['size_x']}, {self.entrys['size_y']})"
         block = False
         if os.path.isfile(main_path):
-            with open(main_path, "r") as file:
+            with open(main_path, "r", encoding="utf-8") as file:
                 for line in file:
                   if line.strip() == save_text:
                     block = True
         if block == False:
-            with open(main_path, "a") as f:
+            with open(main_path, "a", encoding="utf-8") as f:
                 f.write(save_text+'\n')
         else:
             error_box("Ошибка", "У вас уже есть точно такое же существо", QMessageBox.Critical)
@@ -347,3 +347,5 @@ app.setStyle("Fusion")
 settings_window = SettingsWindow()
 setStyle(settings_window)
 sys.exit(app.exec())
+
+os.system("pause")
