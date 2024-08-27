@@ -3,35 +3,26 @@ import os
 import random
 from pypresence import Presence
 import pickle
-# import socket
-# import json
 import tkinter as tk
 from tkinter import filedialog
-import time
-import webbrowser
 import pygame.locals as pl
-
-# Инициализация Pygame
 pygame.init()
 try:
     pygame.mixer.init()
 except:
     pass
 
+global mods_count, port, event_game, stop_game, new_cat, all_cats, all_dogs, training_step, cmd_queue,first, wave
 client_id = '1210980897281802330'
-
 try:
     RPC = Presence(client_id)
     RPC.connect()
     RPC.update(details=f"Загрузка", large_image="kotdefense", large_text="Kot Defense")
 except:
     pass
-
-global __dangerous_keywords_pp2irooodjhjjjkjkn, mods_count_11d23s2saaa, port, event_game, stop_game, new_cat, all_cats, all_dogs, training_step, cmd_queue,first, wave
 first = False
 wave = 0
-__dangerous_keywords_pp2irooodjhjjjkjkn= ['os.system', 'os.popen']
-mods_count_11d23s2saaa = 0
+mods_count = 0
 port = random.randint(1, 65535)
 scripts = []
 event_game = None
@@ -44,7 +35,7 @@ training_step = 0
 width = 1400
 height = 800
 screen = pygame.display.set_mode((width, height))
-pygame.display.set_caption("Kot Defense 2.0")
+pygame.display.set_caption("Kot Defense 2.1")
 
 text_color = (255, 255, 255)
 text_outlining_color = (0, 0, 0)
@@ -214,6 +205,7 @@ translate_text = {
         "cmd_language": "Изменит язык",
         "cmd_coordinates": "Выведет координаты курсора",
         "cmd_training": "Включит обучение",
+        "cmd_event": "Изменит ивент",
         "save_mods_in_world": "В мире использовались моды:\n",
         "save_mods_not_in_world": "В мире не использовались моды\n",
         "save_world_created": "Мир был создан ",
@@ -275,6 +267,7 @@ translate_text = {
         "cmd_language": "Change language",
         "cmd_coordinates": "Will display the coordinates of the cursor",
         "cmd_training": "Will include training",
+        "cmd_event": "Will change the event",
         "save_mods_in_world": "Mods used in the world:\n",
         "save_mods_not_in_world": "Mods were not used in the world\n",
         "save_world_created": "the world was created on ",
@@ -306,24 +299,24 @@ translate_text = {
 translate_baffs = {
     "ru": {
         "debaff_hard": "игра станет сложнее",
-        "debaff_all_cats_damage": "некоторым котам на поле боя нанесут 10 урона",
-        "debaff_maxium_money": "меньше на максимальное число денег которое у вас было",
+        "debaff_all_cats_damage": "некоторые коты получат 15% урона от своих жизней",
+        "debaff_maxium_money": "отнимает 15% ваших денег",
         "debaff_frogs": "превращает 20% котов в лягушек",
-        "baff_maxium_money": "+максимальное число денег которое у вас было",
+        "baff_maxium_money": "добавить 10% ваших денег",
         "baff_main_heart": "+1 главных сердец",
-        "baff_lives_all_cats": "+30 жизней некоторым котам на поле боя",
+        "baff_lives_all_cats": "добавит 10% жизней всем котам на поле боя",
         "baff_ez": "игра станет легче",
         "baff_works": "коты работники дают на 5$ больше",
         "baff_shield": "магический щит, защищает котов от вражеских собак"
     },
     "en": {
         "debaff_hard": "game will become more difficult",
-        "debaff_all_cats_damage": "some cats on the battlefield will be dealt 10 damage",
-        "debaff_maxium_money": "less by the maximum amount of money you had",
+        "debaff_all_cats_damage": "some cats will take 15% damage from their HP",
+        "debaff_maxium_money": "takes away 15% of your money",
         "debaff_frogs": "turns 20% of cats into frogs",
-        "baff_maxium_money": "+maximum amount of money you had",
+        "baff_maxium_money": "add 10% of your money",
         "baff_main_heart": "+1 main health",
-        "baff_lives_all_cats": "+30 lives to some cats on the battlefield",
+        "baff_lives_all_cats": "will add 10% HP to all cats on the battlefield",
         "baff_ez": "game will become easier",
         "baff_works": "cat workers give $5 more",
         "baff_shield": "magic shield, protects cats from enemy dogs"
@@ -360,10 +353,6 @@ class Script:
         with open(file_path, 'r', encoding='utf-8') as file:
             self.code = file.read()
             dangerous = False
-            # for keyword in __dangerous_keywords_pp2irooodjhjjjkjkn:
-                # if keyword in self.code:
-                    # dangerous = True
-                    # break
         if dangerous == False:
             scripts.append(self)
             del self
@@ -432,18 +421,10 @@ for root, dirs, files in os.walk(folder_path):
             file_path = os.path.join(root, file_name)
             with open(file_path, 'r', encoding='utf-8') as file:
                 code = file.read()
-                dangerous = False
-                for keyword in __dangerous_keywords_pp2irooodjhjjjkjkn:
-                    if keyword in code:
-                        dangerous = True
-                        break
-                if dangerous == True:
-                    pass
-                else:
-                    try:
-                        exec(code)
-                    except Exception as e:
-                        print(f"An error occurred: {e}")
+                try:
+                    exec(code)
+                except Exception as e:
+                    print(f"An error occurred: {e}")
 
 
 loading_text(translate_text[translate]["load_data_packs"])
@@ -553,6 +534,19 @@ except:
 loading_text(translate_text[translate]["load_class"])
 
 #классы
+def load_image(path, size_x, size_y):
+    try:
+        image = pygame.transform.scale(pygame.image.load(path), (size_x, size_y))
+        return image
+    except:
+        try:
+            return pygame.transform.scale(pygame.image.load(r"Data/Img/error.png"), (size_x, size_y))
+        except:
+            try:
+                return pygame.transform.scale(pygame.image.load(r"Data/Img/error.png"), (60, 60))
+            except:
+                return None
+
 class Checkbox:
     def __init__(self, x, y, text, checked=False, check_id=-1):
         self.x = x
@@ -609,6 +603,35 @@ class NotificationSystem:
                     return
                 self.text_surface.set_alpha(self.alpha)
                 screen.blit(self.text_surface, self.rect)
+        except:
+            pass
+
+class effect:
+    def __init__(self, id=0, color=(255, 255, 255), fade_start=255, fade_end=0, speed=1, time=2, x = screen.get_width()-20, y = screen.get_height() - 150, waiting = 0):
+        global Notifications
+        self.font = pygame.font.Font(None, font_size)
+        self.text_surface = self.font.render(text, True, color)
+        self.rect = self.text_surface.get_rect(bottomright=(x, y))
+        self.speed = speed
+        self.alpha = 255
+        self.fade_speed = fade_speed
+        self.frames = 60 * time
+        self.waiting = waiting * 60
+        Notifications.append(self)
+
+    def update(self):
+        global effects
+        try:
+            self.waiting -= 1
+            if self.waiting <= 0:
+                if self.frames < 0:
+                    self.alpha -= self.fade_speed
+                self.frames -= 1
+                if self.alpha <= 0:
+                    Notifications.remove(self)
+                    del self
+                    return
+                bg_surface.fill((self.color, self.alpha))
         except:
             pass
 
@@ -739,7 +762,7 @@ class BuyCat:
                         info2 = translate_cats["description"][translate][str(self.info)]
                     except:
                         try:
-                            info2 = info_self
+                            info2 = self.info
                         except:
                             info2 = "ERROR INFO"
                     info(info2, (pos[0] + 15, pos[1] + 5))
@@ -773,11 +796,6 @@ class BuyCat:
                                 new_cat.target = self.targetDeff
                                 cats.append(new_cat)
                 else:
-                    # if self.rect.collidepoint(pos):
-                        # if catown2:
-                            # catown2.sell(1)
-                            # catown2 = None
-                        # else:
                     if money >= self.money:
                         new_cat = Cat(None, None, self.aura_radius, self.health, self.dogs_count, self.money, self.reload, self.damage, self.mega, self.path_my_image, self.size_x, self.size_y) 
                         for script in scripts:
@@ -890,29 +908,29 @@ class Cat:
         self.stope = False
         for script in scripts:
             exec(str(start_script(script, 'update_cat')))
+        if self.stope:
+            return
         try:
-            if self.stope == False:
-                pause_rect = pause_image.get_rect(topleft=(width-55, 10))
-                rect22 = pygame.Rect(0, height-155, 1400, 160)
-                rect33 = pygame.Rect(0, 0, 1400, 150)
-                if self.follow_mouse:
-                    if not shift_pressed:
-                        self.rect.center = pos
-                    self.image.set_alpha(128)
-                    cat_collides = any(self.rect.colliderect(c.rect) for c in cats if c != self)
-                    dog_collides = any(self.rect.colliderect(d.rect) for d in dogs)
-                    if not rect22.collidepoint(pos) and not rect33.collidepoint(pos) and not pause_rect.collidepoint(pos) and not cat_collides and not dog_collides and self.rect.x < width and self.rect.x > 0 and self.rect.y > 0 and self.rect.y < height:
-                        self.unable_to_place = True
-                        self.image = self.original_image.copy()
-                        self.image.set_alpha(128)
-                    else:
-                        self.unable_to_place = False
-                        self.image.fill((255, 50, 50), special_flags=pygame.BLEND_RGBA_MULT) 
-
-                else:
+            pause_rect = pause_image.get_rect(topleft=(width - 55, 10))
+            rect22 = pygame.Rect(0, height - 155, 1400, 160)
+            rect33 = pygame.Rect(0, 0, 1400, 150)
+            if self.follow_mouse:
+                if not shift_pressed:
+                    self.rect.center = pos
+                self.image.set_alpha(128)
+                cat_collides = any(self.rect.colliderect(c.rect) for c in cats if c != self)
+                dog_collides = any(self.rect.colliderect(d.rect) for d in dogs)
+                if not rect22.collidepoint(pos) and not rect33.collidepoint(pos) and not pause_rect.collidepoint(pos) and not cat_collides and not dog_collides and self.rect.x < width and self.rect.x > 0 and self.rect.y > 0 and self.rect.y < height:
+                    self.unable_to_place = True
                     self.image = self.original_image.copy()
-                    if rect22.collidepoint(self.rect.center):
-                        self.sell(1)
+                    self.image.set_alpha(128)
+                else:
+                    self.unable_to_place = False
+                    self.image.fill((255, 50, 50), special_flags=pygame.BLEND_RGBA_MULT) 
+            else:
+                self.image = self.original_image.copy()
+                if rect22.collidepoint(self.rect.center):
+                    self.sell(1)
         except:
             pass
     
@@ -935,33 +953,40 @@ class Cat:
             all_cats.append(f"new_cat=Cat({self.rect.x}, {self.rect.y}, {self.aura_radius}, {self.dogs_count}, {self.health}, {self.money}, {round(self.Maxreload/60)}, {self.damage}, {self.mega}, r'{self.path_my_image}', {self.size_x}, {self.size_y})\nnew_cat.maxhealth={self.maxhealth}\nnew_cat.reload = {self.reload}\nnew_cat.blacklist = {self.blacklist}\nnew_cat.target = {self.target}")
     
     def draw(self, screen, online):
-        global cat, scripts, catown2, catown, cursor_pos, pos
+        global scripts, catown2, catown, pos
         self.stope = False
+        
         for script in scripts:
             exec(str(start_script(script, 'draw_cat')))
         try:
-            if self.aura_radius > 0 and self.stope == False: 
-                if online != 0:
-                    if catown2 != None or catown != None or self.rect.collidepoint(pos) or self.rect.collidepoint(cursor_pos):
-                        circle_surface = pygame.Surface((self.aura_radius * 2, self.aura_radius * 2), pygame.SRCALPHA)
-                        pygame.draw.circle(circle_surface, (255, 255, 255, 100), (self.aura_radius, self.aura_radius), self.aura_radius, 2)
-                        screen.blit(circle_surface, (self.rect.centerx - self.aura_radius, self.rect.centery - self.aura_radius))
-                else:
-                    if catown != None or self.rect.collidepoint(pos):
-                        circle_surface = pygame.Surface((self.aura_radius * 2, self.aura_radius * 2), pygame.SRCALPHA)
-                        pygame.draw.circle(circle_surface, (255, 255, 255, 100), (self.aura_radius, self.aura_radius), self.aura_radius, 2)
-                        screen.blit(circle_surface, (self.rect.centerx - self.aura_radius, self.rect.centery - self.aura_radius))
+            if self.stope:
+                return
 
+            if len(cats) > 40:
+                if pygame.math.Vector2(self.rect.center).distance_to(pygame.math.Vector2(pos)) <= 500:
+                    if self.aura_radius > 0:
+                        if catown is not None:
+                            self._draw_aura(screen)
+            else:
+                if self.aura_radius > 0:
+                    if catown is not None or self.rect.collidepoint(pos):
+                        self._draw_aura(screen)
             screen.blit(self.image, self.rect)
         except:
             pass
+
+    def _draw_aura(self, screen):
+        if self.aura_radius < 1400:
+            circle_surface = pygame.Surface((self.aura_radius * 2, self.aura_radius * 2), pygame.SRCALPHA)
+            pygame.draw.circle(circle_surface, (255, 255, 255, 100), (self.aura_radius, self.aura_radius), self.aura_radius, 2)
+            screen.blit(circle_surface, (self.rect.centerx - self.aura_radius, self.rect.centery - self.aura_radius))
     
     def info_ca(self, screen, pos):
         global scripts, translate_text, translate, translate_cats
         self.stope = False
-        for script in scripts:
-            exec(str(start_script(script, 'info_cat')))
         try:
+            for script in scripts:
+                exec(str(start_script(script, 'info_cat')))
             if self.rect.collidepoint(pos) and self.follow_mouse == False and self.stope == False:
                 info(f'{round(self.health,1)} ' + translate_text[translate]["health_id"] + translate_cats['targets'][translate][self.targetList[self.target]], (pos[0] + 15, pos[1] + 5))
         except:
@@ -983,71 +1008,69 @@ class Cat:
             sorted_list = sorted(listis, key=lambda entiti: entiti.rect.x)
         return sorted_list
     
-    def remove_dogs_periodically(self, custom = None):
-        global money, cat_works_boost, cats_boost, scripts, cats, dogs
-        self.stope = False
-        try:
-            if not self.follow_mouse:
-                cutm = False
-                if custom == None:
-                    self.reload -= 1
-                else:
-                    cutm = self.Maxreload == custom
-                if self.reload == 0 or cutm:
-                    self.reload = self.Maxreload
-                    count_attacs = 0
-                    cutm = True
-                    if cutm:
-                        if self.mega == 2:
-                            money += self.damage+cat_works_boost
-                        elif self.mega == 6:
-                            new_dog = Dog(self.rect.x, self.rect.y, 12, 0, 3, 1, 14, 1, 0, r'Data\Img\cwa_image.png', 60, 60)
-                            dogs.append(new_dog)
-                            new_dog.sigma = True
-                        elif self.mega == 7:
-                            new_dog = Dog(self.rect.x, self.rect.y, 25, 0, 2, 3, 14, 1, 0, r'Data\Img\CatDog.jpg', 60, 60)
-                            dogs.append(new_dog)
-                            new_dog.sigma = True
-                        elif self.mega == 4:
-                            for cat in self.sorte(list(cats)):
-                                if count_attacs < self.dogs_count:
-                                    if pygame.math.Vector2(self.rect.center).distance_to(pygame.math.Vector2(cat.rect.center)) <= self.aura_radius:
-                                        if cat.maxhe > cat.health:
-                                            cat.bump(-self.damage)
-                                        if cat.maxhe < cat.health:
-                                            cat.health = cat.maxhe
-                                else:
-                                    break
-                    for script in scripts:
-                        exec(str(start_script(script, 'remove_dogs_periodically')))
-                    count_attacs = 0
-                    if self.stope == False:
-                        if self.mega == 1 or self.mega == 8:
-                            if self.mega == 8:
-                                for dog in self.sorte(list(cats)):
-                                    if pygame.math.Vector2(self.rect.center).distance_to(pygame.math.Vector2(dog.rect.center)) <= self.aura_radius and dog != self:
-                                        dog.bump((self.damage) / 500)
-                            for dog in self.sorte(list(dogs)):
-                                if self.blacklist == []:
-                                    blackdog = False
-                                else:
-                                    blackdog = True
-                                    for blackitem in self.blacklist:
-                                        if dog.typee == blackitem:
-                                            blackdog = False
-                                if blackdog == False and dog.mega != 14:
+    def remove_dogs_periodically(self, custom=None):
+            global money, cat_works_boost, cats_boost, scripts, cats, dogs
+            self.stope = False
+            try:
+                if not self.follow_mouse:
+                    cutm = False
+                    if custom is None:
+                        self.reload -= 1
+                    else:
+                        cutm = self.Maxreload == custom
+                    if self.reload == 0 or cutm:
+                        self.reload = self.Maxreload
+                        count_attacs = 0
+                        cutm = True
+                        if cutm:
+                            if self.mega == 2:
+                                money += self.damage + cat_works_boost
+                            elif self.mega == 6:
+                                dogs.append(Dog(self.rect.x, self.rect.y, 12, 0, 3, 1, 14, 1, 0, r'Data\Img\cwa_image.png', 60, 60))
+                                dogs[-1].sigma = True
+                            elif self.mega == 7:
+                                dogs.append(Dog(self.rect.x, self.rect.y, 25, 0, 2, 3, 14, 1, 0, r'Data\Img\CatDog.jpg', 60, 60))
+                                dogs[-1].sigma = True
+                            elif self.mega == 4:
+                                for cat in self.sorte(list(cats)):
                                     if count_attacs < self.dogs_count:
-                                        if pygame.math.Vector2(self.rect.center).distance_to(pygame.math.Vector2(dog.rect.center)) <= self.aura_radius+dog.size_x-60:
-                                            count_attacs += 1
-                                            try:
-                                                dog_bump.play()
-                                            except:
-                                                pass
-                                            dog.bump(self.damage, True, self)
+                                        if pygame.math.Vector2(self.rect.center).distance_to(pygame.math.Vector2(cat.rect.center)) <= self.aura_radius:
+                                            if cat.maxhe > cat.health:
+                                                cat.bump(-self.damage)
+                                            if cat.maxhe < cat.health:
+                                                cat.health = cat.maxhe
                                     else:
                                         break
-        except:
-            pass
+                        for script in scripts:
+                            exec(str(start_script(script, 'remove_dogs_periodically')))
+                        count_attacs = 0
+                        if self.stope == False:
+                            if self.mega == 1 or self.mega == 8:
+                                if self.mega == 8:
+                                    for dog in self.sorte(list(dogs)):
+                                        if pygame.math.Vector2(self.rect.center).distance_to(pygame.math.Vector2(dog.rect.center)) <= self.aura_radius and dog != self:
+                                            dog.bump((self.damage) / 500)
+                                for dog in self.sorte(list(dogs)):
+                                    if self.blacklist == []:
+                                        blackdog = False
+                                    else:
+                                        blackdog = True
+                                        for blackitem in self.blacklist:
+                                            if dog.typee == blackitem:
+                                                blackdog = False
+                                    if blackdog == False and dog.mega != 14:
+                                        if count_attacs < self.dogs_count:
+                                            if pygame.math.Vector2(self.rect.center).distance_to(pygame.math.Vector2(dog.rect.center)) <= self.aura_radius + dog.size_x - 60:
+                                                count_attacs += 1
+                                                try:
+                                                    dog_bump.play()
+                                                except:
+                                                    pass
+                                                dog.bump(self.damage, True, self)
+                                        else:
+                                            break
+            except:
+                pass
     
     def sell(self, mn):
         global money, pause, scripts, cats
@@ -1128,24 +1151,11 @@ class Cat:
 class CreateDog:
     def __init__(self, money_dog, bugete, name, health_dog, speed, damage_dog, unikal, reload, typedog, path_my_image, size_x, size_y):
         global dogs_variants, dogs_moneys, dogs_class, scripts
-        for script in scripts:
-            exec(str(start_script(script, 'create_dog')))
-        try:
-            image = pygame.transform.scale(pygame.image.load(path_my_image), (size_x, size_y))
-        except:
-            try:
-                image = pygame.transform.scale(pygame.image.load(r"Data/Img/error.png"), (size_x, size_y))
-            except:
-                try:
-                    image = pygame.transform.scale(pygame.image.load(r"Data/Img/error.png"), (60, 60))
-                except:
-                    if self in cats:
-                        cats.remove(self)
-                    del self
-        dogs_variants[name] = bugete
-        dogs_moneys[name] = money_dog
-        dogs_class[name] = self
-        self.image = image
+        
+        self.image = load_image(path_my_image, size_x, size_y)
+        if self.image is None:
+            del self
+            return
         self.speed = speed
         self.health = health_dog
         self.money = money_dog
@@ -1157,23 +1167,27 @@ class CreateDog:
         self.path_my_image = path_my_image
         self.size_x = size_x
         self.size_y = size_y
-    
-    def create(self, custom_X = None, custom_Y = None):
+
+        dogs_variants[name] = bugete
+        dogs_moneys[name] = money_dog
+        dogs_class[name] = self
+
+        for script in scripts:
+            exec(str(start_script(script, 'create_dog')))
+
+    def create(self, custom_X=None, custom_Y=None):
         global dogs, scripts
         for script in scripts:
             exec(str(start_script(script, 'spawn_dog')))
+        
+        xx = random.randint(-900, -60) if custom_X is None else custom_X
+        yy = random.randint(100 + self.size_y // 2, height - 255) if custom_Y is None else custom_Y
+
         try:
-            if custom_X == None:
-                xx = random.randint(-900, -60)
-            else:
-                xx = custom_X
-            if custom_Y == None:
-                yy = random.randint(100+self.size_y/2, height - 255)
-            else:
-                yy = custom_Y
             new_dog = Dog(xx, yy, self.health, self.money, self.speed, self.damage, self.mega, self.reload, self.type, self.path_my_image, self.size_x, self.size_y)
             new_dog.sigma = True
             new_dog.damagecats = self.damagecats
+            new_dog.parent = self
         except:
             pass
 
@@ -1182,20 +1196,13 @@ class Dog:
         global all_dogs, dogs
         for script in scripts:
             exec(str(start_script(script, 'spawn_dog')))
-        try:
-            image = pygame.transform.scale(pygame.image.load(path_my_image), (size_x, size_y))
-        except:
-            try:
-                image = pygame.transform.scale(pygame.image.load("Data/Img/error.png"), (size_x, size_y))
-            except:
-                try:
-                    image = pygame.transform.scale(pygame.image.load("Data/Img/error.png"), (60, 60))
-                except:
-                    if self in cats:
-                        cats.remove(self)
-                    del self
-        self.rect = image.get_rect(topleft=(x, y))
-        self.image = image
+        self.image = load_image(path_my_image, size_x, size_y)
+        if self.image is None:
+            if self in dogs:
+                dogs.remove(self)
+            del self
+            return
+        self.rect = self.image.get_rect(topleft=(x, y))
         self.speed = speed
         self.health = health_dog
         self.money = money_dog
@@ -1216,6 +1223,7 @@ class Dog:
         self.size_x = size_x
         self.size_y = size_y
         self.sigma = False
+        self.parent = None
         dogs.append(self)
     
     def save(self):
@@ -1229,10 +1237,10 @@ class Dog:
         try:
             if self.mega != 14:
                 for dog2 in list(dogs):
-                    if dog2.mega == 14 and moveE == True and self.rect.colliderect(dog2.rect):
+                    if dog2.mega == 14 and moveE and self.rect.colliderect(dog2.rect):
                         moveE = False
                 for cat2 in list(cats):
-                    if self.rect.colliderect(cat2.rect) and moveE == True:
+                    if self.rect.colliderect(cat2.rect) and moveE:
                         if cat2.follow_mouse == False:
                             moveE = False
                 if self.mega == 6:
@@ -1250,29 +1258,30 @@ class Dog:
                         self.stope = True
                 elif self.mega == 9:
                     self.rect.x += self.speed
-                    self.stope == True
+                    self.stope = True
                 for script in scripts:
                     exec(str(start_script(script, 'move_dog')))
-                if moveE and self.stope == False:
+                if moveE and not self.stope:
                     self.rect.x += self.speed
             else:
                 for dog2 in list(dogs):
                     if self.rect.colliderect(dog2.rect) and dog2 != self and dog2.mega != 14:
                         moveE = False
-                if moveE and self.stope == False:
+                if moveE and not self.stope:
                     self.rect.x -= self.speed
                     self.bump(0.03, True, [])
         except:
             pass
+
     def delet(self):
         global dogs
         dogs.remove(self)
         del self
-            
+
     def update(self):
         global scripts, dogs
         try:
-            if self.sigma == True:
+            if self.sigma:
                 for doge in dogs:
                     if doge == self:
                         dogs.remove(doge)
@@ -1291,19 +1300,19 @@ class Dog:
                 pygame.draw.circle(circle_surface, (255, 0, 0, 100), (self.aura_radius, self.aura_radius), self.aura_radius, 2)
                 screen.blit(circle_surface, (self.rect.centerx - self.aura_radius, self.rect.centery - self.aura_radius))
                 if self.rect.collidepoint(pos):
-                    info(str(round(self.health,1)) + translate_text[translate]["dog_info_boom"] + str(self.damage+dog_damag_boost) + translate_text[translate]["dog_info_boom2"], (pos[0] + 15, pos[1] + 5))
+                    info(str(round(self.health, 1)) + translate_text[translate]["dog_info_boom"] + str(self.damage + dog_damag_boost) + translate_text[translate]["dog_info_boom2"], (pos[0] + 15, pos[1] + 5))
                 self.stope = True
             if self.mega == 12:
                 circle_surface = pygame.Surface((self.aura_radius * 2, self.aura_radius * 2), pygame.SRCALPHA)
                 pygame.draw.circle(circle_surface, (255, 0, 0, 100), (self.aura_radius, self.aura_radius), self.aura_radius, 2)
                 screen.blit(circle_surface, (self.rect.centerx - self.aura_radius, self.rect.centery - self.aura_radius))
                 if self.rect.collidepoint(pos):
-                    info(str(round(self.health,1)) + translate_text[translate]["dog_info_life_damage"], (pos[0] + 15, pos[1] + 5))
+                    info(str(round(self.health, 1)) + translate_text[translate]["dog_info_life_damage"], (pos[0] + 15, pos[1] + 5))
                 self.stope = True
             for script in scripts:
                 exec(str(start_script(script, 'info_dog')))
-            if self.stope == False and self.rect.collidepoint(pos):
-                info(str(round(self.health,1))  + translate_text[translate]["dog_info_defolt_life_damage"]+str(self.damage+dog_damag_boost)+ translate_text[translate]["dog_info_speed"] +str(self.speed), (pos[0] + 15, pos[1] + 5))
+            if not self.stope and self.rect.collidepoint(pos):
+                info(str(round(self.health, 1)) + translate_text[translate]["dog_info_defolt_life_damage"] + str(self.damage + dog_damag_boost) + translate_text[translate]["dog_info_speed"] + str(self.speed), (pos[0] + 15, pos[1] + 5))
         except:
             pass
         
@@ -1327,31 +1336,20 @@ class Dog:
                 elif self.mega == 6 and self.val3 == 1:
                     self.health = 0.1
                     self.stope = True
-                    
             for script in scripts:
                 exec(str(start_script(script, 'bump_dog')))
-            if self.stope == False:
+            if not self.stope:
                 self.health -= damage
                 if self.health <= 0:
                     if self.mega == 10:
-                        new_dog = Dog(self.rect.x, self.rect.y, 7, 350, 5, 20, 2, 1, 1, r'Data\Img\Dog3.png', 60, 60)
-                        dogs.append(new_dog)
-                        new_dog.sigma = True
-                        new_dog = Dog(self.rect.x, self.rect.y, 7, 350, 5, 20, 7, 1, 1, r'Data\Img\Dog3.png', 60, 60)
-                        dogs.append(new_dog)
-                        new_dog.sigma = True
-                        new_dog = Dog(self.rect.x, self.rect.y, 7, 350, 5, 20, 8, 1, 1, r'Data\Img\Dog3.png', 60, 60)
-                        dogs.append(new_dog)
-                        new_dog.sigma = True
-                        new_dog = Dog(self.rect.x, self.rect.y, 7, 350, 5, 20, 8, 1, 1, r'Data\Img\Dog3.png', 60, 60)
-                        dogs.append(new_dog)
-                        new_dog.sigma = True
-                        new_dog = Dog(self.rect.x, self.rect.y, 1, 1, 2, 1, 4, 2, 0, r'Data\Img\Dog1.png', 60, 60)
-                        dogs.append(new_dog)
-                        new_dog.sigma = True
-                        new_dog = Dog(self.rect.x, self.rect.y, 1, 1, 2, 1, 5, 2, 0, r'Data\Img\Dog1.png', 60, 60)
-                        dogs.append(new_dog)
-                        new_dog.sigma = True
+                        for i in range(4):
+                            new_dog = Dog(self.rect.x, self.rect.y, 7, 350, 5, 20, 2 if i < 2 else 7, 1, 1, r'Data\Img\Dog3.png', 60, 60)
+                            dogs.append(new_dog)
+                            new_dog.sigma = True
+                        for i in range(2):
+                            new_dog = Dog(self.rect.x, self.rect.y, 1, 1, 2, 1, 4 + i, 2, 0, r'Data\Img\Dog1.png', 60, 60)
+                            dogs.append(new_dog)
+                            new_dog.sigma = True
                         new_dog = Dog(self.rect.x, self.rect.y, 320, 5000, 1, 30, 6, 1, 0, r'Data\Img\Dog4.png', 60, 60)
                         dogs.append(new_dog)
                         new_dog.sigma = True
@@ -1375,30 +1373,29 @@ class Dog:
                 if self.rect.colliderect(cat2.rect):
                     if cat2.follow_mouse == False:
                         moveE = False
-                    if moveE == False:
+                    if not moveE:
                         if cat2.mega == 5:
                             try:
                                 dog_bump.play()
                             except:
                                 pass
-                            self.bump(cat2.damage*(1/100)*self.maxhealth, True, [])
-                            cat2.bump(self.damage+dog_damag_boost)
+                            self.bump(cat2.damage * (1/100) * self.maxhealth, True, [])
+                            cat2.bump(self.damage + dog_damag_boost)
             for dog2 in list(dogs):
-                if self.mega == 14 and dog2.mega != 14 and self.rect.colliderect(dog2.rect):
-                    dog2.bump(self.damage+dog_damag_boost, True, [])
-                if dog2.mega == 14 and dog2 != self and self.rect.colliderect(dog2.rect):
-                    dog2.bump(self.damage+dog_damag_boost, True, [])
+                if (self.mega == 14 and dog2.mega != 14 and self.rect.colliderect(dog2.rect)) or \
+                   (dog2.mega == 14 and dog2 != self and self.rect.colliderect(dog2.rect)):
+                    dog2.bump(self.damage + dog_damag_boost, True, [])
                 else:
                     if self.mega == 12:
                         for dog3 in list(dogs):
                             if dog3.mega != 12 and dog3.mega != 14:
-                                distance = ((self.rect.x - dog3.rect.x)**2 + (self.rect.y - dog3.rect.y)**2)**0.5
+                                distance = ((self.rect.x - dog3.rect.x)*2 + (self.rect.y - dog3.rect.y)*2)*0.5
                                 if distance <= 200:
                                     if dog3.maxhealth > dog3.health:
-                                        if dog3.maxhealth > dog3.health + self.damage+dog_damag_boost:
-                                            dog3.bump(-self.damage-dog_damag_boost, True, [])
+                                        if dog3.maxhealth > dog3.health + self.damage + dog_damag_boost:
+                                            dog3.bump(-self.damage - dog_damag_boost, True, [])
                                         else:
-                                            dog3.bump(-dog3.maxhealth+dog3.health, True, [])
+                                            dog3.bump(-dog3.maxhealth + dog3.health, True, [])
             cutm = False
             stra = False
             if reloade == None:
@@ -1410,69 +1407,58 @@ class Dog:
                 stra = True
                 
                 if self.mega == 6 and stra and self.val3 == 1:
-                    new_dog = Dog(self.rect.x, self.rect.y, 7, 350, 5, 20, 2, 1, 1, r'Data\Img\Dog3.png', 60, 60)
-                    dogs.append(new_dog)
-                    new_dog.sigma = True
-                    new_dog = Dog(self.rect.x, self.rect.y, 7, 350, 5, 20, 7, 1, 1, r'Data\Img\Dog3.png', 60, 60)
-                    dogs.append(new_dog)
-                    new_dog.sigma = True
-                    new_dog = Dog(self.rect.x, self.rect.y, 7, 350, 5, 20, 8, 1, 1, r'Data\Img\Dog3.png', 60, 60)
-                    dogs.append(new_dog)
-                    new_dog.sigma = True
+                    for i in range(3):
+                        new_dog = Dog(self.rect.x, self.rect.y, 7, 350, 5, 20, 2 + i * 5, 1, 1, r'Data\Img\Dog3.png', 60, 60)
+                        dogs.append(new_dog)
+                        new_dog.sigma = True
                     self.val3 = 2
                     self.stope = True
                 if self.mega == 3 and stra:
-                    if self.val2 == True:
-                        self.val2 = False
-                        new_dog = Dog(self.rect.x, self.rect.y, 1, 1, 2, 1, 4, 2, 0, r'Data\Img\Dog1.png', 60, 60)
-                    else:
-                        self.val2 = True
-                        new_dog = Dog(self.rect.x, self.rect.y, 1, 1, 2, 1, 5, 2, 0, r'Data\Img\Dog1.png', 60, 60)
+                    new_dog = Dog(self.rect.x, self.rect.y, 1, 1, 2, 1, 4 + (self.val2), 2, 0, r'Data\Img\Dog1.png', 60, 60)
                     dogs.append(new_dog)
                     new_dog.sigma = True
+                    self.val2 = not self.val2
                     for cat2 in list(cats):
                         if self.rect.colliderect(cat2.rect) and self.mega != 14:
-                            if moveE == False:
+                            if not moveE:
                                 try:
                                     if stra:
                                         dog_bump.play()
                                 except:
                                     pass
-                                cat2.bump(self.damage+dog_damag_boost)
+                                cat2.bump(self.damage + dog_damag_boost)
                                 self.stope = True
                 elif self.mega == 6 and stra:
                     for cat2 in list(cats):
                         if self.rect.colliderect(cat2.rect) and self.mega != 14:
-                            if moveE == False:
+                            if not moveE:
                                 if self.val < 3:
-                                    #self.val += 1
-                                    new_dog = Dog(self.rect.x, self.rect.y, 7, 300, 5, 20, 7, 1, 1, r'Data\Img\Dog3.png', 60, 60)
-                                    dogs.append(new_dog)
-                                    new_dog.sigma = True
-                                    new_dog = Dog(self.rect.x, self.rect.y, 7, 300, 5, 20, 8, 1, 1, r'Data\Img\Dog3.png', 60, 60)
-                                    dogs.append(new_dog)
-                                    new_dog.sigma = True
+                                    for i in range(2):
+                                        new_dog = Dog(self.rect.x, self.rect.y, 7, 300, 5, 20, 7 + i, 1, 1, r'Data\Img\Dog3.png', 60, 60)
+                                        dogs.append(new_dog)
+                                        new_dog.sigma = True
                                 try:
                                     dog_bump.play()
                                 except:
                                     pass
-                                cat2.bump(self.damage+dog_damag_boost)
+                                cat2.bump(self.damage + dog_damag_boost)
                                 self.stope = True
                 if self.mega == 2 or self.mega == 7 or self.mega == 8:
                     boomp = False
                     for cat3 in list(cats):
                         if self.rect.colliderect(cat3.rect):
-                                boomp = True
-                    if boomp == True:
+                            boomp = True
+                            break
+                    if boomp:
                         for cat2 in list(cats):
-                            distance = ((self.rect.x - cat2.rect.x)**2 + (self.rect.y - cat2.rect.y)**2)**0.5
-                            if distance <= self.aura_radius+self.size_x:
-                                cat2.bump(self.damage+dog_damag_boost)
+                            distance = ((self.rect.x - cat2.rect.x)*2 + (self.rect.y - cat2.rect.y)*2)*0.5
+                            if distance <= self.aura_radius + self.size_x:
+                                cat2.bump(self.damage + dog_damag_boost)
                         for dog2 in list(dogs):
                             if dog2.mega == 14:
-                                distance = ((self.rect.x - dog2.rect.x)**2 + (self.rect.y - dog2.rect.y)**2)**0.5
+                                distance = ((self.rect.x - dog2.rect.x)*2 + (self.rect.y - dog2.rect.y)*2)*0.5
                                 if distance <= self.aura_radius:
-                                    dog2.bump(self.damage+dog_damag_boost)
+                                    dog2.bump(self.damage + dog_damag_boost)
                         try:
                             boom.play()
                         except:
@@ -1489,26 +1475,27 @@ class Dog:
                 if self.rect.colliderect(cat.rect):
                     if cat.follow_mouse == False:
                         moveE = False
+                        break 
         except:
             pass
         try:
             if self.stope == False and dog2.mega != 14 and stra:
                 for cat2 in list(cats):
                     if self.rect.colliderect(cat2.rect) and self.mega != 14:
-                        if moveE == False:
+                        if not moveE:
                             try:
                                 dog_bump.play()
                             except:
                                 pass
-                            cat2.bump(self.damage+dog_damag_boost)
+                            cat2.bump(self.damage + dog_damag_boost)
+                            break
         except:
             pass
 
 class CMD_waiting:
     def __init__(self, cmd_line, waiting):
-        global cmd_queue
         self.cmd = cmd_line
-        self.wait = waiting*60
+        self.wait = waiting * 60
         cmd_queue.append(self)
     def update(self):
         self.wait -= 1
@@ -1517,43 +1504,53 @@ class CMD_waiting:
             cmd_queue.remove(self)
             del self
 
+
 loading_text(translate_text[translate]["load_def"])
 
 def cmd_ui(offset_x=0, offset_y=0, offset_size=0):
     fonte = pygame.font.Font(None, 30)
-    text_surface = fonte.render(input_text, True, text2_color)
-    screen.blit(text_surface, (10+offset_x, 10+offset_y))
-    text_surface = fonte.render(hint, True, hint_color_def)
-    screen.blit(text_surface, (10+offset_x, 40+offset_y))
+    screen.blit(fonte.render(input_text, True, text2_color), (10 + offset_x, 10 + offset_y))
+    screen.blit(fonte.render(hint, True, hint_color_def), (10 + offset_x, 40 + offset_y))
+
 
 def save_game_settings():
-    global scripts, music_playing, best_score, wave, first
+    global scripts, music_playing, best_score, first
+
     for script in scripts:
         exec(str(start_script(script, 'save')))
+
     try:
-        if best_score < wave:
-            best_score = wave
-        score = f"global music_playing,best_score,first\nbest_score={best_score}\nmusic_playing={music_playing}\nfirst={first}"
+        best_score = max(best_score, wave)
+
         with open(r'Data/Save/settings.pickle', 'wb') as file:
-            pickle.dump(score, file)
+            pickle.dump(
+                f"global music_playing,best_score,first\nbest_score={best_score}\nmusic_playing={music_playing}\nfirst={first}",
+                file,
+            )
         load_game_settings()
-    except:
+
+    except Exception:
         pass
 
+
 def load_game_settings():
-    global scripts, music_playing, best_score,first
+    global scripts, music_playing, best_score, first
     for script in scripts:
         exec(str(start_script(script, 'load')))
+
     best_score = 0
     try:
         music_play_old = music_playing
         with open(r'Data/Save/settings.pickle', 'rb') as file:
             exec(str(pickle.load(file)))
+
         if music_play_old != music_playing:
             play_music()
+
     except FileNotFoundError:
         music_playing = False
     return best_score
+
 
 def play_music(randome = True):
     global music_files, music_playing
@@ -1572,81 +1569,102 @@ def play_music(randome = True):
 
 play_music()
 
-def spawn_cats(custom_budget = None, xxx = None, yyy = None):
+def spawn_cats(custom_budget=None, xxx=None, yyy=None):
     global scripts, cats, cats_moneys
+    
     for script in scripts:
         exec(str(start_script(script, 'spawn_cats')))
-    try:
-        while True:
-            cat_value = random.choice(list(cats_moneys.keys()))
-            cat_values = list(cats_moneys.keys())
-            cat_value = random.choice(cat_values)
-            spermatozoid2 = False
-            fork = False
-            all_buy_cats = buy_cats + buy_no_cats
-            for cat_value2 in cats_moneys:
-                fork = True
-                if cat_value2 <= custom_budget:
-                    spermatozoid2 = True
-                    break
-            if spermatozoid2 == False and fork == True or custom_budget <= 0:
-                break
-            if custom_budget >= cat_value:
-                cats_moneys[cat_value].random_buy(xxx, yyy)
-                custom_budget -= cat_value
-    except:
-        pass
+    
+    available_cats = [cat_value for cat_value in cats_moneys if cat_value <= custom_budget]
+    if not available_cats:
+        return
 
-def spawn_dogs(custom_budget = None, xxx = None, yyy = None):
-    global dogs_spawning, health, dogs, cats, cat, dogs_variants, del_cat, money, catown, dogs_moneys, budget, frame_count, frame_count2, frame_count3, frame_count4, plustime, new_wey, wave, for_mega_wave, pause, music_playing, dog_damag_boost, cat_works_boost, cats_boost, upping, buy_cats, xexe, mx, dogs_class, scripts, mods_count_11d23s2saaa, catown2, pos, cursor_pos, bonus, new_music, event_game, maxMoney, input_text, hint, running, input_active, ctrl_pressed, shift_pressed
+    while custom_budget > 0:
+        cat_value = random.choice(available_cats)
+        cats_moneys[cat_value].random_buy(xxx, yyy)
+        custom_budget -= cat_value
+        available_cats = [cat_value for cat_value in cats_moneys if cat_value <= custom_budget]
+
+def dop_dogs():
+    global dogs_spawning, health, dogs, cats, cat, dop_budget, dogs_variants, del_cat, money, catown, dogs_moneys, budget, frame_count, frame_count2, frame_count3, frame_count4, plustime, new_wey, wave, for_mega_wave, pause, music_playing, dog_damag_boost, cat_works_boost, cats_boost, upping, buy_cats, xexe, mx, dogs_class, scripts, mods_count, catown2, pos, cursor_pos, bonus, new_music, event_game, maxMoney, input_text, hint, running, input_active, ctrl_pressed, shift_pressed
+    global multipiller, unmultipiller, summa
+    
+    while dop_budget > 0 and len(dogs) <= 100:
+        dog_name = random.choice(list(dogs_spawning))
+        dog_cost = dogs_variants[dog_name]
+        dog_mon = dogs_moneys[dog_name]
+        dog_class = dogs_class[dog_name]
+
+        if dog_cost <= dop_budget and len(dogs) < 80:
+            dog_class.create()
+            dop_budget -= dog_cost
+        else:
+            break
+
+def spawn_dogs(custom_budget=None, xxx=None, yyy=None):
+    global dogs_spawning, health, dogs, cats, cat, dop_budget, dogs_variants, del_cat, money, catown, dogs_moneys, budget, frame_count, frame_count2, frame_count3, frame_count4, plustime, new_wey, wave, for_mega_wave, pause, music_playing, dog_damag_boost, cat_works_boost, cats_boost, upping, buy_cats, xexe, mx, dogs_class, scripts, mods_count, catown2, pos, cursor_pos, bonus, new_music, event_game, maxMoney, input_text, hint, running, input_active, ctrl_pressed, shift_pressed
     global multipiller, unmultipiller, summa
     online = 0
     multipiller = 2.5
     unmultipiller = 10
     summa = 10
+
     for script in scripts:
         exec(str(start_script(script, 'spawn_dogs')))
-    if custom_budget != None:
+
+    if custom_budget is not None:
         old_budget = budget
         budget = custom_budget
-    if online != 2:
-        new_wey = -1
-        if custom_budget == None:
-            budget += summa
-            budget += round(budget/unmultipiller)
-        remaining_budget =0
-        remaining_budget = budget
-        for_mega_wave -= 1
-        if event_game == 1:
-            for_mega_wave = 0
-        save_game_settings()
-        wave += 1
-        if plustime < 50 and wave >= 4:
-            plustime += 5
-        if for_mega_wave == 0:
-            remaining_budget = round(remaining_budget * multipiller)
-        if for_mega_wave == -1:
-            upping = False
-            for_mega_wave = 4
-        dogs_changed()
-        while remaining_budget > 0:
-            dog_name = str(random.choice(list(dogs_spawning)))
-            dog_cost = dogs_variants[dog_name]
-            dog_mon = dogs_moneys[dog_name]
-            dog_class = dogs_class[dog_name]
-            if dog_cost <= remaining_budget:
-                dog_class.create(xxx, yyy)
-                remaining_budget -= dog_cost
-        dogs_list_data = []
-        for dog in dogs:
-            data_dog = {'image_path': dog.path_my_image, 'size_x': dog.size_x, 'size_y': dog.size_y, 'type': dog.typee, 'dog_health': dog.health, 'moneys': dog.money, 'speed': dog.speed, 'reload': dog.reload, 'damage_dog': dog.damage, 'xd': dog.rect.x, 'mega': dog.mega, 'yd': dog.rect.y}
-            dogs_list_data.append(data_dog)
-        # data_back2[6] = str(dogs_list_data)
-        cat_unblock = False
-    if custom_budget != None:
+
+    new_wey = -1
+    if custom_budget is None:
+        budget += summa
+        budget += round(budget / unmultipiller)
+
+    remaining_budget = budget + dop_budget
+    dop_budget = 0
+    for_mega_wave -= 1
+    if event_game == 1:
+        for_mega_wave = 0
+
+    save_game_settings()
+
+    wave += 1
+    if plustime < 50 and wave >= 4:
+        plustime += 5
+
+    if for_mega_wave == 0:
+        remaining_budget = round(remaining_budget * multipiller)
+    if for_mega_wave == -1:
+        upping = False
+        for_mega_wave = 4
+
+    dogs_changed()
+
+    while remaining_budget > 0 and len(dogs) <= 80:
+        dog_name = random.choice(list(dogs_spawning))
+        dog_cost = dogs_variants[dog_name]
+        dog_mon = dogs_moneys[dog_name]
+        dog_class = dogs_class[dog_name]
+
+        if dog_cost <= remaining_budget and len(dogs) < 100:
+            dog_class.create(xxx, yyy)
+            remaining_budget -= dog_cost
+            print(f"Готово: {((budget-remaining_budget+0.000000000000000000001) / budget) * 100:.2f}% ({(dop_budget+budget)-remaining_budget} из {dop_budget+budget}, {len(dogs)} собак)")
+        else:
+            break
+    
+    if remaining_budget >0:
+        dop_budget += remaining_budget
+        print(f"В следующей волне будет на {dop_budget} больше бюджета (дополнительный)")
+
+    cat_unblock = False
+
+    if custom_budget is not None:
         budget = old_budget
     else:
         new_wey -= 1
+
 
 def show_lose_screen():
     global scripts, input_text, hint, running, input_active, ctrl_pressed, shift_pressed, wave
@@ -1697,109 +1715,6 @@ def info(text, position):
     screen.blit(text_surface, text_rect.topleft)
 
 
-# def loading_online():
-    # global client, input_text, hint, running, input_active, ctrl_pressed, shift_pressed
-    # running = True
-    # port2 = ""
-    # fonte = pygame.font.Font(None, 75)
-    # clock = pygame.time.Clock()
-    # while running:
-        # for event in pygame.event.get():
-            # if event.type == pygame.KEYDOWN:
-                # if event.key == pygame.K_RETURN:
-                    # running = False
-                # elif event.key == pygame.K_BACKSPACE:
-                    # port2 = port2[:-1]
-                # else:
-                    # port2 += event.unicode
-    
-        # text = fonte.render("Ведите порт сервера: " + port2, True, text2_color)
-        # text_rect = text.get_rect(center=(width/2, height/2))
-        # screen.fill(background_color)
-        # screen.blit(text, text_rect)
-        # pygame.display.flip()
-        # clock.tick(60)
-    # client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-    # i = 0
-    # connect = False
-    # while True:
-        # i += 1
-        # try:
-            # client.connect((socket.gethostname(), int(port2)))
-            # connect = True
-            # break
-        # except:
-            # pass
-        # if i == 10:
-            # menu_mult()
-            # return
-    # start(2)
-
-# def menu_mult():
-    # global music_playing, port, server_socket, user, adres, input_text, hint, running, input_active, ctrl_pressed, shift_pressed
-    # mods_count_11d23s2saaa = 0
-    # music_playing = True
-    # clock = pygame.time.Clock()
-    # running = True
-    # while running:
-        # host_rect = host_image.get_rect(topleft=(width/2-160, height/2-80))
-        # connect_rect = connect_image.get_rect(topleft=(width/2-180, height/2+80-65))
-        # back_rect = back_image.get_rect(topleft=(width-145, 20))
-        # pos = pygame.mouse.get_pos()
-        # for event in pygame.event.get():
-            # if event.type == pygame.QUIT:
-                # running = False
-            # CMD_codes(event)
-            # if event.type == pygame.KEYDOWN:
-                # if event.key == pygame.K_SPACE:
-                    # if music_playing:
-                        # try:
-                            # pygame.mixer.music.pause()
-                        # except:
-                            # pass
-                    # else:
-                        # try:
-                            # pygame.mixer.music.unpause()
-                        # except:
-                            # pass
-                    # music_playing = not music_playing
-            # if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and back_rect.collidepoint(pos):
-                # menu()
-                # return
-            # elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and connect_rect.collidepoint(pos):
-                # loading_online()
-                # return
-            # elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and host_rect.collidepoint(pos):
-                # fonte = pygame.font.Font(None, 75)
-                # text = fonte.render("Ожидаем подключение игрока...", True, text2_color)
-                # text_rect = text.get_rect(center=(width/2, height/2))
-                # pygame.display.flip()
-                # screen.fill(background_color)
-                # screen.blit(text, text_rect)
-                # screen.blit(text3, text3_rect)
-                # pygame.display.flip()
-                # server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                # server_socket.bind((socket.gethostname(), port))
-                # server_socket.listen()
-                # user, adres = server_socket.accept()
-                # start(1)
-                # return
-        # fonte = pygame.font.Font(None, 75)
-        # text = fonte.render("Выберите действие", True, text2_color)
-        # text_rect = text.get_rect(center=(width/2, 70))
-        # screen.fill(background_color)
-        # screen.blit(back_image, back_rect)
-        # screen.blit(connect_image, connect_rect)
-        # screen.blit(host_image, host_rect)
-        # fonte = pygame.font.Font(None, 45)
-        # text3 = fonte.render(f"Ваш порт: {port}", True, text2_color)
-        # text3_rect = (20, height - fonte.get_height() - 10)
-        # screen.blit(text, text_rect)
-        # screen.blit(text3, text3_rect)
-        # cmd_ui()
-        # pygame.display.flip()
-        # clock.tick(60)
 
 def game_info():
     global music_playing, input_text, hint, running, input_active, ctrl_pressed, shift_pressed
@@ -1838,7 +1753,7 @@ def game_info():
 def menu():
     global music_playing, RPC,new_music, event_game, input_text, hint, running, input_active, ctrl_pressed, shift_pressed, best_score,first,Notifications, translate_text
     Notifications = []
-    mods_count_11d23s2saaa = 0
+    mods_count = 0
     music_playing = True
     best_wawe = load_game_settings()
     new_music= False
@@ -1889,9 +1804,6 @@ def menu():
                 event_game=-1
                 start(0)
                 return
-            # elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and mult_rect.collidepoint(pos):
-                # menu_mult()
-                # return
         fonte = pygame.font.Font(None, 75)
         for script in scripts:
             exec(str(start_script(script, 'main_menu_ui')))
@@ -1900,7 +1812,7 @@ def menu():
         fonte2 = pygame.font.Font(None, 35)
         text2 = fonte.render(translate_text[translate]["menu_record"]+ str(best_wawe), True, text2_color)
         text4 = fonte2.render(translate_text[translate]["menu_event"], True, text2_color)
-        text3 = fonte.render(translate_text[translate]["menu_you"]+str(mods_count_11d23s2saaa) + translate_text[translate]["menu_mods"], True, text2_color)
+        text3 = fonte.render(translate_text[translate]["menu_you"]+str(mods_count) + translate_text[translate]["menu_mods"], True, text2_color)
         text_rect = text.get_rect(center=(width/2, 70))
         text2_rect = (20, height - fonte.get_height() - 10)
         text3_rect = (20, height - fonte.get_height() - 43)
@@ -1910,8 +1822,6 @@ def menu():
         screen.blit(loading_image, loading_rect)
         screen.blit(info_image, info_rect)
         screen.blit(discord_image, discord_rect)
-        #screen.blit(mult_image, mult_rect)
-        #screen.blit(mods_image, mods_rect)
         screen.blit(play2_image, play2_rect)
         screen.blit(text, text_rect)
         screen.blit(text2, text2_rect)
@@ -1929,127 +1839,123 @@ def outlining(text, color, text_rect_x, text_rect_y, outlining2, font):
 
 def dogs_changed():
     global dogs_spawning, translate, translate_text, translate_dogs, budget, dog_damag_boost, money, health, cat_works_boost, cats_boost, cats, dogs, bad_list, good_list, maxMoney, input_text, hint, running, input_active, ctrl_pressed, shift_pressed
-    global dogs_spawning, multipiller, unmultipiller, summa, dogs_while_spawn, dogs_spawn_count
-    gebudged = budget
-    dogs_spawning = []
-    dogs_vibran = []
-    # for i in range(5):
-        # gebudged += summa
-        # gebudged += round(gebudged/unmultipiller)
-    dogs_varik = list(dogs_variants)
-    for dog3 in dogs_while_spawn:
-        dogs_spawning.append(dog3)
-        dogs_vibran.append(dog3)
+    global dogs_spawning, multipiller, unmultipiller, summa, dogs_while_spawn, dogs_spawn_count, dop_budget
+
+    gebudged = budget + dop_budget
+    dogs_spawning.clear()
+    dogs_vibran = list(dogs_while_spawn)
+    dogs_spawning.extend(dogs_while_spawn)
+
     dogs_spawn_count2 = dogs_spawn_count
-    for dog3 in dogs_varik:
+    for dog3 in dogs_variants:
         if dogs_variants[dog3] < gebudged and dog3 not in dogs_vibran:
             dogs_spawn_count2 -= 1
+
     if dogs_spawn_count2 <= 0:
         dogs_spawn_count2 = dogs_spawn_count
     else:
-        dogs_spawn_count2 = dogs_spawn_count-dogs_spawn_count2
-    errors_count = 100 + len(dogs_varik)
-    while dogs_spawn_count2 > 0:
-        dog3 = random.choice(dogs_varik)
-        dogs_vibran.append(dog3)
+        dogs_spawn_count2 = dogs_spawn_count - dogs_spawn_count2
+
+    errors_count = 100 + len(dogs_variants)
+    while dogs_spawn_count2 > 0 and errors_count > 0:
+        dog3 = random.choice(list(dogs_variants))
         if dogs_variants[dog3] < gebudged and dog3 not in dogs_while_spawn and dog3 not in dogs_spawning:
             dogs_spawning.append(dog3)
             dogs_vibran.append(dog3)
             dogs_spawn_count2 -= 1
         errors_count -= 1
-        if errors_count < 0:
-            print("ERROR")
-            dogs_spawn_count2 = 0
-            break
-    
-    
-    if wave >1:
-        translated_dogs = [translate_dogs[translate].get(dog5, dog5) for dog5 in dogs_spawning]
-        NotificationSystem(translate_text[translate]["wave_text_info"]+", ".join(translated_dogs), time=10)
+
+    if errors_count <= 0:
+        print("ERROR: Не удалось добавить всех собак")
+
+    if wave > 1:
+        translated_dogs = [
+            translate_dogs[translate].get(dog5, dog5) for dog5 in dogs_spawning
+        ]
+        NotificationSystem(translate_text[translate]["wave_text_info"] + ", ".join(translated_dogs),time=10,)
+
     return gebudged
 
 def omg(wave2, online):
-    global scripts
+    global scripts, dogs_spawning, budget, dog_damag_boost, money, health, cat_works_boost, cats_boost, cats, dogs, bad_list, good_list, maxMoney, input_text, hint, running, input_active, ctrl_pressed, shift_pressed, translate_baffs
     for script in scripts:
         exec(str(start_script(script, 'bonus')))
-    global dogs_spawning, budget, dog_damag_boost, money, health, cat_works_boost, cats_boost, cats, dogs, bad_list, good_list, maxMoney, input_text, hint, running, input_active, ctrl_pressed, shift_pressed, translate_baffs
+    
     dog_damag_boost = 0
-    ggbudget = round(budget/5)
-    
-    errors = True
-    while errors:
-        g3 = random.choice(list(good_list))
-        g1 = random.choice(list(good_list))
-        g2 = random.choice(list(good_list))
-        if g1 == g2 or g1 == g3:
-            pass
-        elif g3 == g1 or g3 == g2:
-            pass
-        else:
-            errors = False
-    errors = True
-    while errors:
-        b2 = random.choice(list(bad_list))
-        b1 = random.choice(list(bad_list))
-        b3 = random.choice(list(bad_list))
-        if b1 == b2 or b1 == b3:
-            pass
-        elif b3 == b1 or b3 == b2:
-            pass
-        else:
-            errors = False
-    
-    
+    ggbudget = round(budget / 5)
+
+    # Выбираем 3 случайных разных элемента из good_list
+    g1, g2, g3 = random.sample(list(good_list), 3)
+
+    # Выбираем 3 случайных разных элемента из bad_list
+    b1, b2, b3 = random.sample(list(bad_list), 3)
+
     g1t = translate_baffs[translate][g1]
     g2t = translate_baffs[translate][g2]
     g3t = translate_baffs[translate][g3]
-    
+
     b1t = translate_baffs[translate][b1]
     b2t = translate_baffs[translate][b2]
     b3t = translate_baffs[translate][b3]
-    
-    
+
     starte = True
     loade = True
     clock = pygame.time.Clock()
-    timer = 60*3
+    timer = 60 * 3
+
     for script in scripts:
         exec(str(start_script(script, 'bonus_loade')))
+
     while loade:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 starte = False
-                loade= False
+                loade = False
+
             for script in scripts:
                 exec(str(start_script(script, 'bonus_loade_event')))
+
         for script in scripts:
             exec(str(start_script(script, 'bonus_loade_ui')))
+
         loading_text(translate_text[translate]["load_baff_and_debaff"])
         pygame.display.flip()
         timer -= 1
-        if timer <=0:
+
+        if timer <= 0:
             loade = False
+
         clock.tick(60)
+
     baffe = True
+
     while starte:
         for script in scripts:
             exec(str(start_script(script, 'bonus_ui')))
-        rect1 = pygame.Rect((width/2-150/2)-200, height/2-150/2, 150, 150)
-        rect2 = pygame.Rect(width/2-150/2, height/2-150/2, 150, 150)
-        rect3 = pygame.Rect((width/2-150/2)+200, height/2-150/2, 150, 150)
+
+        rect1 = pygame.Rect(width // 2 - 300, height // 2 - 75, 150, 150)
+        rect2 = pygame.Rect(width // 2, height // 2 - 75, 150, 150)
+        rect3 = pygame.Rect(width // 2 + 300, height // 2 - 75, 150, 150)
+
         pos = pygame.mouse.get_pos()
+
         screen.fill(background_color)
-        pygame.draw.rect(screen, green_btn_color, (width/2-150/2, height/2-150/2, 150, 150))
-        pygame.draw.rect(screen, red_btn_color, ((width/2-150/2)-200, height/2-150/2, 150, 150))
-        pygame.draw.rect(screen, blue_btn_color, ((width/2-150/2)+200, height/2-150/2, 150, 150))
-        
+
+        pygame.draw.rect(screen, red_btn_color, rect1)
+        pygame.draw.rect(screen, green_btn_color, rect2)
+        pygame.draw.rect(screen, blue_btn_color, rect3)
+
         font = pygame.font.Font(None, 100)
-        if baffe == True:
-            text = font.render(translate_text[translate]["buff_select"], True, text2_color)
-        else:
-            text = font.render(translate_text[translate]["debuff_select"], True, text2_color)
-        text_rect = text.get_rect(center=(width/2, 130))
+        text = font.render(
+            translate_text[translate]["buff_select"]
+            if baffe
+            else translate_text[translate]["debuff_select"],
+            True,
+            text2_color,
+        )
+        text_rect = text.get_rect(center=(width // 2, 130))
         screen.blit(text, text_rect)
+
         for event in pygame.event.get():
             CMD_codes(event)
             if event.type == pygame.QUIT:
@@ -2057,60 +1963,73 @@ def omg(wave2, online):
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 for script in scripts:
                     exec(str(start_script(script, 'bonus_event')))
+
                 if rect1.collidepoint(pos):
                     b = b1
                     g = g1
-                if rect2.collidepoint(pos):
+                elif rect2.collidepoint(pos):
                     b = b2
                     g = g2
-                if rect3.collidepoint(pos):
+                elif rect3.collidepoint(pos):
                     b = b3
                     g = g3
+
                 if rect1.collidepoint(pos) or rect2.collidepoint(pos) or rect3.collidepoint(pos):
-                    if baffe == False:
-                        if b == 'debaff_hard':
+                    if not baffe:
+                        if b == "debaff_hard":
                             budget += ggbudget
-                        elif b == 'debaff_all_cats_damage':
-                            for cat in cats:
-                                cat.bump(10)
-                        elif b == f'debaff_maxium_money':
-                            money -= maxMoney
-                        elif b == f'debaff_frogs':
+                        elif b == "debaff_all_cats_damage":
+                            cats_all2 = []
+                            while cats_all2 != cats:
+                                for cat9 in cats:
+                                    if cat9 not in cats_all2:
+                                        cat9.bump((15 / 100) * cat9.maxhealth)
+                                        cats_all2.append(cat9)
+                        elif b == "debaff_maxium_money":
+                            money -= round((15 / 100) * money)
+                        elif b == "debaff_frogs":
                             zzzcats = round(len(cats) * 0.2)
                             random_cats = random.sample(cats, zzzcats)
                             for cat2 in random_cats:
                                 cat2.cwa()
+
                         game(online)
                         return
                     else:
-                        if g == f'baff_maxium_money':
-                            money += maxMoney
-                        elif g == 'baff_main_heart':
+                        if g == "baff_maxium_money":
+                            money += round((10 / 100) * money)
+                        elif g == "baff_main_heart":
                             health += 1
-                        elif g == 'baff_lives_all_cats':
-                            for cat in cats:
-                                cat.bump(-30)
-                        elif g == 'baff_works':
-                            cat_works_boost += 1
-                        elif g == 'baff_shield':
-                            shild = Cat(random.randint(0, width-60), random.randint(115, height - 255), 0, 2000, 0, 5000, 0, 0, 0, r"Data\Img\cat_shield.png", 60, 60)
+                        elif g == "baff_lives_all_cats":
+                            cats_all2 = []
+                            while cats_all2 != cats:
+                                for cat9 in cats:
+                                    if cat9 not in cats_all2:
+                                        cat9.bump(((10 / 100) * cat9.maxhealth) * -1)
+                                        cats_all2.append(cat9)
+                        elif g == "baff_works":
+                            cat_works_boost += 5
+                        elif g == "baff_shield":
+                            shild = Cat(random.randint(0, width - 60),random.randint(115, height - 255),0,2000,0,5000,0,0,0,r"Data\Img\cat_shield.png",60,60,)
                         baffe = False
-        if baffe == True:
+
+        if baffe:
             if rect1.collidepoint(pos):
                 info(g1t, (pos[0] + 15, pos[1] + 5))
-            if rect2.collidepoint(pos):
+            elif rect2.collidepoint(pos):
                 info(g2t, (pos[0] + 15, pos[1] + 5))
-            if rect3.collidepoint(pos):
+            elif rect3.collidepoint(pos):
                 info(g3t, (pos[0] + 15, pos[1] + 5))
         else:
             if rect1.collidepoint(pos):
                 info(b1t, (pos[0] + 15, pos[1] + 5))
-            if rect2.collidepoint(pos):
+            elif rect2.collidepoint(pos):
                 info(b2t, (pos[0] + 15, pos[1] + 5))
-            if rect3.collidepoint(pos):
+            elif rect3.collidepoint(pos):
                 info(b3t, (pos[0] + 15, pos[1] + 5))
-        cmd_ui()
+
         pygame.display.flip()
+        clock.tick(60)
 
 def new_cat_unblock():
     global buy_cats, xexe, mx, input_text, hint, running, input_active, ctrl_pressed, shift_pressed
@@ -2133,7 +2052,7 @@ def new_cat_unblock():
 #старт игры
 def start(online):
     global final_wave, end_boss, training_step, translate, translate_text, translate_dogs, start_budget, boss_steps, health, Number, TimeStart, event_game, dogs, cats, cat, dogs_variants, del_cat, money, catown, dogs_moneys, budget, frame_count, frame_count2, frame_count3, frame_count4, plustime, new_wey, wave, for_mega_wave, pause, music_playing, dog_damag_boost, cat_works_boost, cats_boost, upping, buy_cats, xexe, mx, dogs_class, __dangerous_keywords_pp2irooodjhjjjkjkn, scripts, bad_list, good_list, catown2, bonus, new_music, buy_no_cats, event_game, maxMoney, cat_unblock, cats_moneys, cats_dogs_spawns
-    global dogs_spawning, Notifications, multipiller, unmultipiller, summa, dogs_while_spawn, dogs_spawn_count
+    global dogs_spawning, Notifications, multipiller, unmultipiller, summa, dogs_while_spawn, dogs_spawn_count, dop_budget
     loading_text(translate_text[translate]["load_game"])
     for script in scripts:
         exec(str(start_script(script, 'start')))
@@ -2178,12 +2097,13 @@ def start(online):
     wave = 1
     bonus = False
     for_mega_wave = 4
-    TimeStart = int(time.time())
+    TimeStart = int(pygame.time.get_ticks()/1000)
     Number = 0
     online = 0
     multipiller = 2.5
     unmultipiller = 10
     summa = 10
+    dop_budget = 0
     
     if event_game == -1:
         loading_game(None)
@@ -2243,7 +2163,7 @@ def start(online):
     new_buy_cat.targetDeff = 0
 
     bad_list.extend(['debaff_all_cats_damage', 'debaff_maxium_money', 'debaff_frogs'])
-    good_list.extend(['baff_maxium_money', 'baff_main_heart', 'baff_lives_all_cats', 'baff_works', 'baff_shield'])
+    good_list.extend(['baff_maxium_money', 'baff_main_heart', 'baff_lives_all_cats', 'baff_works'])
     
     dogs_while_spawn = ["Dog"]
     dogs_spawn_count = 7
@@ -2479,6 +2399,26 @@ def start(online):
                 "last_wave": True,
                 "next_wave": False
             }
+        },
+        {
+            "type": 0, 
+            "step": 13,
+            "time": 50,
+            "code": {
+                "dog": "ManiakDog", 
+                "x": -100, 
+                "y": 130, 
+                "y_end": height-275, 
+                "x_random": 0,
+                "y_random": (random.randint(-100, 100) / 10), 
+                "x_add": 0,
+                "y_add": 30,
+                "for_x_set": None,
+                "for_y_set": None,
+                "count": 1,
+                "last_wave": False,
+                "next_wave": False
+            }
         }
     ]
     
@@ -2500,18 +2440,10 @@ def start(online):
                 file_path = os.path.join(root, file_name)
                 with open(file_path, 'r', encoding='utf-8') as file:
                     code = file.read()
-                    dangerous = False
-                    for keyword in __dangerous_keywords_pp2irooodjhjjjkjkn:
-                        if keyword in code:
-                            dangerous = True
-                            break
-                    if dangerous == True:
-                        pass
-                    else:
-                        try:
-                            exec(code)
-                        except Exception as e:
-                            print(f"An error occurred: {e}")
+                    try:
+                        exec(code)
+                    except Exception as e:
+                        print(f"An error occurred: {e}")
             pygame.time.delay(50)
         pygame.time.delay(50)
     
@@ -2573,7 +2505,7 @@ def win(online):
         clock.tick(60)
 
 def game(online):
-    global shift_pressed, translate, translate_text, translate_dogs, Notifications, training_step, final_wave, end_boss, boss_steps, health, TimeStart, Number, dogs, cats, cat, dogs_variants, del_cat, money, catown, dogs_moneys, budget, frame_count, frame_count2, frame_count3, frame_count4, plustime, new_wey, wave, for_mega_wave, pause, music_playing, dog_damag_boost, cat_works_boost, cats_boost, upping, buy_cats, xexe, mx, dogs_class, scripts, mods_count_11d23s2saaa, catown2, pos, cursor_pos, bonus, new_music, event_game, maxMoney, input_text, hint, running, input_active, ctrl_pressed, shift_pressed, stop_game, pos
+    global shift_pressed, dop_budget, translate, translate_text, translate_dogs, Notifications, training_step, final_wave, end_boss, boss_steps, health, TimeStart, Number, dogs, cats, cat, dogs_variants, del_cat, money, catown, dogs_moneys, budget, frame_count, frame_count2, frame_count3, frame_count4, plustime, new_wey, wave, for_mega_wave, pause, music_playing, dog_damag_boost, cat_works_boost, cats_boost, upping, buy_cats, xexe, mx, dogs_class, scripts, mods_count, catown2, pos, cursor_pos, bonus, new_music, event_game, maxMoney, input_text, hint, running, input_active, ctrl_pressed, shift_pressed, stop_game, pos
     running = True
     bonus = False
     clock = pygame.time.Clock()
@@ -2598,30 +2530,6 @@ def game(online):
             new_music = False
         except:
             pass
-    # if online == 1:
-        # try:
-            # data_back2[0] = pos_new
-            # data_back2[1] = money
-            # data_back2[2] = health
-            # data_back2[3] = wave
-            # data_back2[4] = for_mega_wave
-            # data_back2[5] = []
-            # user.send(data_back2.encode('utf-8'))
-            
-            # screen.blit(cursor_img, cursor_pos)
-            
-        # except Exception as e:
-            # pass
-            
-    # elif online == 2:
-        # try:
-            # data_back = json.dumps(data_back)
-            # client.send(data_back.encode('utf-8'))
-            
-            # screen.blit(cursor_img, cursor_pos)
-            
-        # except Exception as e:
-            # pass
     while running:
         data_back = [(0, 0), False, False, False]
         data_back2 = [(0, 0), 30, 10, 1, 4, [], []]
@@ -2631,74 +2539,6 @@ def game(online):
         btn_rect = pygame.Rect(20, height-90, 60, 60)
         btn2_rect = pygame.Rect(1140, height-90, 60, 60)
         pos = pygame.mouse.get_pos()
-        # data2 = [0,0,0,0,0,"[{'image_path': r'Data\Img\Cat1.png', 'size_x': 60, 'size_y': 60, 'aura_radius': 130, 'cat_health': 4, 'dogs_count': 3, 'cat_money': 10, 'reload': 1, 'damage_cat': 1, 'xc': 232, 'unable_to_place': True, 'follow_mouse': False, 'mega': 1, 'yc': 411}]"]
-        # if online == 1:
-            # try:
-                # data = user.recv(20971520).decode('utf-8')
-                # data = json.loads(data)
-                
-                # cursor_pos = tuple(data[0])
-                # down = data[1]
-                # up = data[2]
-                # left_or_right = data[3]
-                
-            # except Exception as e:
-                # pass
-                
-        # elif online == 2 and not bonus:
-            # try:
-                # data2 = client.recv(20971520).decode('utf-8')
-                # data2 = json.loads(data2)
-                # cursor_pos = tuple(eval(data2[0]))
-                # money = int(data2[1])
-                # health = int(data2[2])
-                # wave = int(data2[3])
-                # for_mega_wave = int(data2[4])
-                
-                # for cat in cats:
-                    # cat.sell(0)
-                # cats = []
-                # data2[5] = eval(data2[5])
-                # data2[6] = eval(data2[6])
-                # if data2[6] != []:
-                    # for dog in dogs:
-                        # dog.bump(dog.health, False, [])
-                    # for dog_data in data2[6]:
-                        # image_path = dog_data['image_path']
-                        # dog_image = pygame.image.load(image_path)
-                        # dog_image = pygame.transform.scale(dog_image, (dog_data['size_x'], dog_data['size_y']))
-                        # dog = Dog(dog_data['xd'], dog_data['yd'], dog_image, dog_data['dog_health'], dog_data['moneys'], dog_data['speed'], dog_data['damage_dog'], dog_data['mega'], dog_data['reload'], dog_data['type'], image_path, dog_data['size_x'], dog_data['size_y'])
-                        # dogs.append(dog)
-                
-                # for cat_data in data2[5]:
-                    # image_path = cat_data['image_path']
-                    # try:
-                        # cat_image = pygame.image.load(image_path)
-                        # cat_image = pygame.transform.scale(cat_image, (cat_data['size_x'], cat_data['size_y']))
-                        # cat = Cat(cat_image, cat_data['aura_radius'], cat_data['cat_health'], cat_data['dogs_count'], cat_data['cat_money'], cat_data['reload'], cat_data['damage_cat'], cat_data['mega'], image_path, cat_data['size_x'], cat_data['size_y'])
-                        # cat.unable_to_place = cat_data['unable_to_place']
-                        # cat.follow_mouse = cat_data['follow_mouse']
-                        # cat.rect.x = cat_data['xc']
-                        # cat.rect.y = cat_data['yc']
-                        # cats.append(cat)
-                    # except pygame.error:
-                        # cat_image = pygame.image.load('error_img.png')
-                        # cat_image = pygame.transform.scale(cat_image, (cat_data['size_x'], cat_data['size_y']))
-                        # cat = Cat(cat_image, cat_data['aura_radius'], cat_data['cat_health'], cat_data['dogs_count'], cat_data['cat_money'], cat_data['reload'], cat_data['damage_cat'], cat_data['mega'], image_path, cat_data['size_x'], cat_data['size_y'])
-                        # cat.unable_to_place = cat_data['unable_to_place']
-                        # cat.follow_mouse = cat_data['follow_mouse']
-                        # cat.rect.x = cat_data['xc']
-                        # cat.rect.y = cat_data['yc']
-                        # cats.append(cat)
-                
-            # except Exception as e:
-                # pass
-        # if online != 0:
-            # pos_new = json.dumps(pos) 
-        # if online == 2:
-            # data_back[0] = pos
-        
-        
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -2722,20 +2562,6 @@ def game(online):
                     mx -= 80
                     for bc in buy_cats:
                         bc.move(80)
-            # if online == 2:
-                # if event.type == pygame.MOUSEBUTTONDOWN and not pause:
-                    # data_back[1] = True
-                    # if event.button == 1:
-                        # data_back[3] = False
-                    # elif event.button == 3:
-                        # data_back[3] = True
-                # elif event.type == pygame.MOUSEBUTTONUP and not pause:
-                    # data_back[2] = True
-                    # if event.button == 1:
-                        # data_back[3] = False
-                    # elif event.button == 3:
-                        # data_back[3] = True
-            # else:
             if pygame.mouse.get_pressed()[0] and event.type == pygame.MOUSEBUTTONDOWN and not pause:
                 for cat2 in cats:
                     cat2.targetChanged(pos)
@@ -2828,6 +2654,8 @@ def game(online):
                             return
         
         if not pause:
+            if dop_budget > 0 and len(dogs) < 80:
+                dop_dogs()
             if maxMoney < money:
                 maxMoney = money
             if event_game == 1:
@@ -2837,35 +2665,10 @@ def game(online):
                     screen.fill(boss_background_color)
                 else:
                     screen.fill(background_color)
-            
-            # if online == 1:
-                # if down == True:
-                    # if left_or_right == False:
-                        # for dog in list(dogs):
-                            # if dog.rect.collidepoint(cursor_pos):
-                                # try:
-                                    # dog_bump.play()
-                                # except:
-                                    # pass
-                                # damage_combo = 0.1
-                                # for cat in cats:
-                                    # if cat.mega == 3:
-                                        # damage_combo += cat.damage
-                                # dog.bump(damage_combo, True, [])
-                    # for cat in cats:
-                        # if left_or_right == True and cat.rect.collidepoint(cursor_pos):
-                            # cat.sell(0.5)
-                    # if left_or_right == False and catown2 is not None:
-                        # catown2.handle_mouse_click(pos, 2)
-                    # if skip_rect.collidepoint(cursor_pos) and len(dogs) == 0:
-                        # new_wey = 0
-                    # if del_cat == False:
-                        # for bc in buy_cats:
-                            # bc.buy(cursor_pos, 2)
             if stop_game == False:
                 for dog in list(dogs):
                     dog.move()
-                    if dog.rect.x > width+60:
+                    if dog.rect.x > width+dog.size_x/2:
                         if event_game != -2:
                             money += 100
                         health -= 1
@@ -3034,12 +2837,11 @@ def game(online):
                 cat.draw(screen, online)
                 if online == 2:
                     cat.update(pos)
-                # elif cat.dds == 1:
-                    # cat.update(pos)
                 else:
                     cat.update(pos)
             for dog2 in dogs:
-                dog2.update()
+                if dog2.rect.center[0] > (dog2.size_x/2)*-1:
+                    dog2.update()
                 
             for bc in buy_cats:
                 bc.draw()
@@ -3048,9 +2850,6 @@ def game(online):
                 screen.blit(btn_image, (1140, height-90))
             for bc in buy_cats:
                 bc.info_cat(pos)
-            # if online == 1:
-                # for bc in buy_cats:
-                    # bc.info_cat(cursor_pos)
             
             for script in scripts:
                 exec(str(start_script(script, 'game_game')))
@@ -3075,20 +2874,13 @@ def game(online):
                 cat.info_ca(screen, pos)
             for dog in dogs:
                 dog.info_do(pos)
-            # if online != 0:
-                # for cat in cats:
-                    # cat.info_ca(screen, cursor_pos)
-                # for dog in dogs:
-                    # dog.info_do(cursor_pos)
             if for_mega_wave >0:
                 text = "Wave: "+str(wave)
                 wave_text = font.render(text, True, text_color)
-                # outlining(text, text_outlining_color, 10, 66, outlining2, font)
                 screen.blit(wave_text, (10, 66))
             else:
                 text = "Mega wave: "+str(wave)
                 wave_text = font.render(text, True, text_color)
-                # outlining(text, text_outlining_color, 10, 66, outlining2, font)
                 screen.blit(wave_text, (10, 66))
                 if upping == False and len(dogs) == 0 and online == 0 and event_game != 1 and stop_game == False:
                     bonus = True
@@ -3103,48 +2895,6 @@ def game(online):
                 noti.update()
             for script in scripts:
                 exec(str(start_script(script, 'game_ui')))
-            
-            # if online == 1:
-                # try:
-                    # data_back2[0] = pos_new
-                    # data_back2[1] = money
-                    # data_back2[2] = health
-                    # data_back2[3] = wave
-                    # data_back2[4] = for_mega_wave
-                    # cats_list_data = []
-                    # for cat in cats:
-                        # data_cat = {'image_path': cat.path_my_image, 'size_x': cat.size_x, 'size_y': cat.size_y, 'aura_radius': cat.aura_radius, 'cat_health': cat.health, 'dogs_count': cat.dogs_count, 'cat_money': cat.money, 'reload': cat.reload, 'damage_cat': cat.damage, 'xc': cat.rect.x, 'unable_to_place': cat.unable_to_place, 'follow_mouse': cat.follow_mouse, 'mega': cat.mega, 'yc': cat.rect.y}
-                        # cats_list_data.append(data_cat)
-                    # data_back2[5] = str(cats_list_data)
-                    
-                    # data_back2 = json.dumps(data_back2)
-                    
-                    # user.send(data_back2.encode('utf-8'))
-                    
-                    # screen.blit(cursor_img, cursor_pos)
-                    
-                # except Exception as e:
-                    # pass
-                    
-            # elif online == 2:
-                # try:
-                    # data_back = json.dumps(data_back)
-                    # client.send(data_back.encode('utf-8'))
-                    
-                    # screen.blit(cursor_img, cursor_pos)
-                    
-                # except Exception as e:
-                    # pass
-            
-        # elif bonus:
-            # for script in scripts:
-                # exec(str(start_script(script, 'game_pause')))
-            # fonte = pygame.font.Font(None, 75)
-            # text = fonte.render("Ваш напарник выберает бонус, подождите...", True, text2_color)
-            # text_rect = text.get_rect(center=(width/2, height/2))
-            # screen.fill(background_color)
-            # screen.blit(text, text_rect)
-            # pygame.display.flip()
         else:
             for script in scripts:
                 exec(str(start_script(script, 'game_pause')))
@@ -3296,7 +3046,14 @@ CMD_commands = [
         "info": translate_text[translate]["cmd_training"],
         "vals": {
             "training": None,
-            "step": "*Training step"
+            "step": "Training step"
+        }
+    },
+    {
+        "info": translate_text[translate]["cmd_event"],
+        "vals": {
+            "event": None,
+            "num": "Event number"
         }
     }
 ]
@@ -3403,14 +3160,6 @@ def text_input(input_text2 = None):
                     budget += round(budget/unmultipiller)
         elif input_text.split()[0] == "budget":
             budget = int(input_text.split()[1])
-        # elif input_text.split()[0] == "budget_to_wave":
-            # budget = int(input_text.split()[1])
-            # wave = 0
-            # for budget in range(1, budget + 1):
-                # wave += 5
-                # wave += round(wave / 5)
-                # if wave >= budget:
-                    # break
         elif input_text.split()[0] == "mega_wave":
             for_mega_wave = 0
         elif input_text.split()[0] == "kill":
@@ -3528,6 +3277,17 @@ def text_input(input_text2 = None):
             hint = ''
             start(0)
             return
+        elif input_text.split()[0] == "event":
+            try:
+                event_game = int(input_text.split()[1])
+            except:
+                try:
+                    event_game = input_text.split()[1]
+                    input_text= ''
+                    start(0)
+                    return
+                except:
+                    pass
         else:
             for script in scripts:
                 exec(str(start_script(script, 'cmd')))
@@ -3614,11 +3374,6 @@ def CMD_codes(event):
 
 def loading_game(folder_path):
     global input_text, hint, all_dogs, all_cats, running, input_active, ctrl_pressed, shift_pressed, health, dogs, cats, cat, dogs_variants, del_cat, money, catown, dogs_moneys, budget, frame_count, frame_count2, frame_count3, frame_count4, plustime, new_wey, wave, for_mega_wave, pause, music_playing, dog_damag_boost, cat_works_boost, cats_boost, upping, buy_cats, xexe, mx, dogs_class, __dangerous_keywords_pp2irooodjhjjjkjkn, scripts, bad_list, good_list, catown2, bonus, new_music, buy_no_cats, event_game, maxMoney, cat_unblock, stop_game, cats_moneys
-    # all_cats2 = []
-    # for cat22 in all_cats:
-        # all_cats2.append(cat22)
-    # for cat22 in all_cats2:
-        # exec(cat22)
     root = tk.Tk()
     root.withdraw()
     if folder_path == None:
