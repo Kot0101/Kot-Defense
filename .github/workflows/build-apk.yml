@@ -15,6 +15,8 @@ jobs:
   build:
     runs-on: ubuntu-22.04
     timeout-minutes: 300
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout
@@ -28,7 +30,7 @@ jobs:
       # Gradle из p4a требует именно Java 17. На раннере по умолчанию Java 11,
       # и без этого шага сборка падает на "requires Java 17 to run".
       - name: Set up Java 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '17'
@@ -81,6 +83,20 @@ jobs:
           path: bin/*.apk
           retention-days: 30
           if-no-files-found: error
+
+      # Релиз с APK-ассетом можно скачать по прямой ссылке БЕЗ входа в GitHub.
+      # Артефакты выше умеет качать только авторизованный пользователь.
+      - name: Publish release
+        if: success()
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.5.0-${{ github.run_number }}
+          name: Kot Defense Pocket Edition build ${{ github.run_number }}
+          body: |
+            Автоматическая сборка из ветки `main` (коммит ${{ github.sha }}).
+            APK ниже ставится на arm64-устройство, подпись debug.
+          files: bin/*.apk
+          fail_on_unmatched_files: true
 
       - name: Upload build log on failure
         if: failure()
