@@ -573,7 +573,9 @@ class PauseMenu: # НЕ СЦЕНА, ОТКРЫВАЕТСЯ ПО ВЕРХ СЦЕ�
         backgroundImg = Sprite(self.game.pathManager.TEXTURES / "pause_background.png", (877,951), alpha=100)
         self.background = self.objectManager.new_object(backgroundImg, (WIDTH//2-backgroundImg.scale[0]//2, -80))
         self.background.animator = Animator(self.game.animationManager)
-        self.background.animator.play("paused", loop=True, speed=0.2)
+        # Фон паузы не анимируем: вращение/масштаб картинки 877x951 на каждом
+        # кадре обходились дороже, чем всё остальное меню вместе взятое.
+        # self.background.animator.play("paused", loop=True, speed=0.2)
         
         pausedImg = Sprite(self.game.pathManager.TEXTURES / "paused.png", (819,242))
         self.paused = self.objectManager.new_object(pausedImg, (WIDTH//2-pausedImg.scale[0]//2, 60))
@@ -640,9 +642,14 @@ class PauseMenu: # НЕ СЦЕНА, ОТКРЫВАЕТСЯ ПО ВЕРХ СЦЕ�
     def draw(self):
         self.objectManager.draw()
         self.textManager.draw()
-        screen.blit(self.overlay_p2.set_alpha(self.overlay_p2_alpha) or self.overlay_p2, (0, 0))
+        # Вспышка при паузе: блит и заливка только когда она реально видна.
         if self.overlay_p2_alpha > 0:
-            self.overlay_p2.fill((255, 255, 255, 150))
+            if getattr(self, "_flash_overlay", None) is None:
+                surf = pygame.Surface(screen.get_size()).convert()
+                surf.fill((255, 255, 255))
+                self._flash_overlay = surf
+            self._flash_overlay.set_alpha(min(255, int(self.overlay_p2_alpha * 150 / 255)))
+            screen.blit(self._flash_overlay, (0, 0))
         
 class GameScene:
     def __init__(self, game):
@@ -741,6 +748,8 @@ class GameScene:
     
     def pause_toggle(self):
         self.pause = not self.pause
+        # Снимок кадра паузы сбрасываем, чтобы он пересобрался заново.
+        self._pause_frame = None
         self.pauseScene.overlay_p2_alpha = 200
         self.pauseScene.overlay_p_alpha = 100
         self.game.musicManager.state = "paused" if self.pause else "game"
@@ -750,6 +759,11 @@ class GameScene:
         # RPC
         waveText = f"Mega Wave: {str(self.game.waveManager.wave)}" if self.game.waveManager.wave % self.game.waveManager.mega_wave == 0 else f"Wave: {str(self.game.waveManager.wave)}"
         rpc.update(f"{self.game.player.money.value} 💵 {self.game.player.health.value} ❤", waveText)
+
+        # Системная кнопка "Назад" на телефоне: в бою открывает/закрывает паузу.
+        if self.game.input.key_pressed(self.game.input.BACK_KEY):
+            self.pause_toggle()
+
         if self.game.input.key_pressed(pygame.K_SPACE):
             self.pause_toggle()
         if self.pause:
@@ -888,6 +902,18 @@ class GameScene:
         screen.blit(self._grid_surface, (0, 0))
     
     def draw(self):
+        # На паузе мир под меню статичен: блитим готовый снимок кадра
+        # (один быстрый blit вместо десятков полупрозрачных) и анимируем
+        # только котиков в меню.
+        if self.pause:
+            frame = getattr(self, "_pause_frame", None)
+            if frame is not None:
+                screen.blit(frame, (0, 0))
+                # Крупные картинки уже в снимке; сверху только мелкие котики.
+                for obj in (self.pauseScene.cat, self.pauseScene.cat2):
+                    obj.draw()
+                return
+
         if self.settings["background"] == True:
             # screen.fill((101, 155, 94))
             self.background()
@@ -905,14 +931,22 @@ class GameScene:
         self.game.infoBar.draw(self.game.input.mouse_pos)
         
         # Затемнение типо старт волны
-        # Блит 1400x800 с альфой стоит ~3 мс, поэтому рисуем только когда видно.
+        # Раньше здесь каждый кадр делался полноэкранный fill + два блита
+        # 1400x800 с альфой. Теперь картинка собирается один раз, а меняется
+        # только её прозрачность.
         if self.overlay_alpha > 0:
-            self.overlay.set_alpha(self.overlay_alpha)
-            screen.blit(self.overlay, (0, 0))
+            if getattr(self, "_wave_overlay", None) is None:
+                # Обычная поверхность + set_alpha: блит с поверхностной альфой
+                # заметно быстрее, чем per-pixel alpha на 1400x800.
+                surf = pygame.Surface(screen.get_size()).convert()
+                surf.fill((0, 0, 0))
+                self._wave_overlay = surf
+                self._wave_overlay_text_pos = self.overlay_text.rect
+            self._wave_overlay.set_alpha(min(255, int(self.overlay_alpha * 150 / 255)))
+            screen.blit(self._wave_overlay, (0, 0))
             if self.settings["error_fun"] == True:
                 self.settings["background"] = True
-            self.overlay.fill((0, 0, 0, 150))
-            self.overlay.blit(self.overlay_text.surface, self.overlay_text.rect)
+            screen.blit(self.overlay_text.surface, self.overlay_text.rect)
             if self.game.waveManager.wave % self.game.waveManager.mega_wave == 0:
                 self.x2Img.visible = True
                 self.x2Img.sprite.alpha = self.overlay_alpha
@@ -923,11 +957,21 @@ class GameScene:
                 self.settings["background"] = False
         # Затемнение типо пауза аааааааааа гамно коддд x2
         if self.pauseScene.overlay_p_alpha > 0:
-            self.pauseScene.overlay_p.set_alpha(self.pauseScene.overlay_p_alpha)
-            screen.blit(self.pauseScene.overlay_p, (0, 0))
-            self.pauseScene.overlay_p.fill((0, 0, 0, 150))
+            if getattr(self.pauseScene, "_pause_overlay", None) is None:
+                surf = pygame.Surface(screen.get_size()).convert()
+                surf.fill((0, 0, 0))
+                self.pauseScene._pause_overlay = surf
+            self.pauseScene._pause_overlay.set_alpha(
+                min(255, int(self.pauseScene.overlay_p_alpha * 150 / 255))
+            )
+            screen.blit(self.pauseScene._pause_overlay, (0, 0))
         if self.pause and self.pause_visible:
             self.pauseScene.draw()
+
+        # Запоминаем готовый кадр паузы: следующие кадры будут его переиспользовать.
+        if self.pause:
+            self._pause_frame = screen.copy()
+
         eventManager.event("game scene draw")
 
 class UpdateScene:

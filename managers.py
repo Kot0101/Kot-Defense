@@ -128,6 +128,9 @@ class InputManager:
         self._long_press_fired = False
         self.long_press = False
 
+        # Системная кнопка "Назад" на Android приходит как AC_BACK.
+        self.BACK_KEY = getattr(pygame, "K_AC_BACK", getattr(pygame, "K_ESCAPE", 27))
+
     def scancode_pressed(self, scancode):
         return scancode in self.scancodes_pressed
 

@@ -111,6 +111,7 @@ class Sprite:
     _image_cache = {}
     _surface_cache = {}
     _original_images = {}  # Кеш для оригинальных изображений
+    _frame_cache = {}  # Кеш кадров анимации (масштаб/поворот/альфа)
 
     def __init__(self, path=None, scale=None, color=None, size=(100, 100), alpha=255, flip_x=False, flip_y=False, angle=0, mode="Stretch"):
         self.path = datapackM.get(path)
@@ -275,24 +276,46 @@ class Object:
             # Размеры
             target_w = max(1, int(self.rect.width * state.get("scale_x", 1.0)))
             target_h = max(1, int(self.rect.height * state.get("scale_y", 1.0)))
-            
-            img = self.sprite.image.copy()
-            if img:
-                if img.get_size() != (target_w, target_h):
-                    img = pygame.transform.smoothscale(img, (target_w, target_h))
-                if self.sprite.flip_x or self.sprite.flip_y:
-                    img = pygame.transform.flip(img, self.sprite.flip_x, self.sprite.flip_y)
-                
-                # Вращение
-                total_rot = self.sprite.angle + state.get("rotation", 0)
-                if total_rot != 0:
-                    img = pygame.transform.rotate(img, total_rot)
-                    
-                if self.sprite.alpha != 255:
-                    img.set_alpha(self.sprite.alpha)
-            else:
-                img = pygame.Surface((target_w, target_h), pygame.SRCALPHA)
-                img.fill(self.sprite.color)
+            total_rot = self.sprite.angle + state.get("rotation", 0)
+
+            # Квантуем размер: анимация масштаба даёт почти уникальный размер
+            # каждый кадр, из-за чего кэш не срабатывал и огромная картинка
+            # (например фон паузы 877x951) пересобиралась каждый кадр.
+            target_w = max(1, round(target_w / 8) * 8)
+            target_h = max(1, round(target_h / 8) * 8)
+            total_rot = round(total_rot / 5) * 5
+
+            # Кадры анимации кэшируем: иначе каждый кадр копируется и
+            # перемасштабируется вся картинка (для фона паузы 877x951 это
+            # ~3 МБ копирования на кадр).
+            frame_key = (
+                id(self.sprite.image), target_w, target_h,
+                self.sprite.flip_x, self.sprite.flip_y,
+                total_rot, self.sprite.alpha,
+            )
+            img = Sprite._frame_cache.get(frame_key)
+
+            if img is None:
+                img = self.sprite.image.copy()
+                if img:
+                    if img.get_size() != (target_w, target_h):
+                        img = pygame.transform.smoothscale(img, (target_w, target_h))
+                    if self.sprite.flip_x or self.sprite.flip_y:
+                        img = pygame.transform.flip(img, self.sprite.flip_x, self.sprite.flip_y)
+
+                    # Вращение
+                    if total_rot != 0:
+                        img = pygame.transform.rotate(img, total_rot)
+
+                    if self.sprite.alpha != 255:
+                        img.set_alpha(self.sprite.alpha)
+                else:
+                    img = pygame.Surface((target_w, target_h), pygame.SRCALPHA)
+                    img.fill(self.sprite.color)
+
+                if len(Sprite._frame_cache) > 400:
+                    Sprite._frame_cache.clear()
+                Sprite._frame_cache[frame_key] = img
             
             # Расчет позиции с учетом якоря и смещения (offset)
             ratio_x = self.rect.width / 80.0
