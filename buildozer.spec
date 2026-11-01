@@ -18,7 +18,11 @@ version = 1.5.0
 # pygame-ce на десктопе, но python-for-android собирает upstream pygame
 # (рецепт "pygame"). 2.5.2 - ближайшая версия к pygame-ce 2.5.7 по API:
 # игра использует только общий API (gfxdraw, smoothscale, BLEND_RGBA_MULT).
-requirements = python3,pygame==2.5.2
+# cython обязателен: архив pygame с GitHub не содержит сгенерированных .c
+# файлов, и setup.py пытается собрать их на месте. Рецепт cython у p4a
+# ставится и в hostpython (install_in_hostpython = True), без него сборка
+# падает с "You need cython".
+requirements = python3,cython,pygame==2.5.2
 
 icon.filename = %(source.dir)s/Data/textures/icon.png
 presplash.filename = %(source.dir)s/Data/textures/loading.png
