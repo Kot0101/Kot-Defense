@@ -52,24 +52,20 @@ jobs:
           python -m pip install --upgrade pip setuptools wheel
           python -m pip install "buildozer==1.6.0" "cython<3"
 
-      - name: Cache buildozer (SDK/NDK/python-for-android)
+      # Кэшируем ТОЛЬКО тулчейн (SDK/NDK/Gradle), но не сборочные каталоги p4a:
+      # при их кэшировании p4a переиспользует старый дистрибутив с уже собранным
+      # pygame и молча игнорирует изменения в recipes/pygame.
+      - name: Cache Android SDK/NDK and Gradle
         uses: actions/cache@v4
         with:
           path: |
-            .buildozer
-            ~/.buildozer
+            ~/.buildozer/android/platform/android-sdk
+            ~/.buildozer/android/platform/android-ndk-*
+            ~/.buildozer/android/platform/python-for-android
             ~/.gradle
-          key: buildozer-${{ runner.os }}-${{ hashFiles('buildozer.spec') }}
+          key: toolchain-${{ runner.os }}-v1
           restore-keys: |
-            buildozer-${{ runner.os }}-
-
-      # p4a переиспользует готовый дистрибутив из кэша и в упор не замечает,
-      # что локальный рецепт pygame изменился. Сносим дистрибутив и сборку
-      # pygame, чтобы патч Setup реально применился.
-      - name: Drop cached pygame dist
-        run: |
-          rm -rf .buildozer/android/platform/build-*/dists/kotdefense
-          rm -rf .buildozer/android/platform/build-*/build/other_builds/pygame
+            toolchain-${{ runner.os }}-
 
       - name: Build debug APK
         run: |
