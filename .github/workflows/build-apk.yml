@@ -63,6 +63,14 @@ jobs:
           restore-keys: |
             buildozer-${{ runner.os }}-
 
+      # p4a переиспользует готовый дистрибутив из кэша и в упор не замечает,
+      # что локальный рецепт pygame изменился. Сносим дистрибутив и сборку
+      # pygame, чтобы патч Setup реально применился.
+      - name: Drop cached pygame dist
+        run: |
+          rm -rf .buildozer/android/platform/build-*/dists/kotdefense
+          rm -rf .buildozer/android/platform/build-*/build/other_builds/pygame
+
       - name: Build debug APK
         run: |
           export ANDROID_HOME=""
