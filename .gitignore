@@ -1,0 +1,9 @@
+.buildozer/
+bin/
+__pycache__/
+*.pyc
+saves/
+.idea/
+.vscode/
+.kot_ui_no_welcome
+output_project.md

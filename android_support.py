@@ -1,0 +1,234 @@
+"""
+android_support.py - Pocket Edition platform layer.
+
+The game itself stays the same on Windows and on Android
+(python-for-android + pygame-ce / SDL2). This module hides the differences:
+
+  * where the game files live (CWD / Data folder);
+  * how the window is created (fixed 1400x800 vs. a fullscreen phone display);
+  * how frames are presented (letterboxed scaling + flip);
+  * how touch coordinates are converted back to the logical 1400x800 space;
+  * what to do with desktop-only things (mouse cursors, Discord RPC).
+
+Nothing here is imported by the game directly - config.py pulls it in.
+"""
+
+import os
+import sys
+
+# --------------------------------------------------------------------------
+# Platform detection
+# --------------------------------------------------------------------------
+
+IS_ANDROID = bool(
+    os.environ.get("ANDROID_ARGUMENT")
+    or os.environ.get("ANDROID_PRIVATE")
+    or os.environ.get("ANDROID_APP_PATH")
+)
+
+IS_DESKTOP = not IS_ANDROID
+
+
+def _app_dir():
+    """Directory that holds main.py and the Data folder."""
+    if IS_ANDROID:
+        for key in ("ANDROID_PRIVATE", "ANDROID_APP_PATH", "ANDROID_UNPACK"):
+            value = os.environ.get(key)
+            if value and os.path.isdir(value):
+                return value
+    return os.path.dirname(os.path.abspath(__file__))
+
+
+BASE_DIR = _app_dir()
+DATA_DIR = os.path.join(BASE_DIR, "Data")
+SAVE_DIR = os.path.join(BASE_DIR, "saves")
+
+
+def res(*parts):
+    """Absolute path inside the game folder: res("Data", "font", "a.ttf")."""
+    return os.path.join(BASE_DIR, *parts)
+
+
+def ensure_workdir():
+    """Make sure relative paths ("Data/font/x.ttf") resolve on Android too."""
+    try:
+        os.chdir(BASE_DIR)
+    except OSError:
+        pass
+
+
+def ensure_save_dir():
+    try:
+        os.makedirs(SAVE_DIR, exist_ok=True)
+        return SAVE_DIR
+    except OSError:
+        return BASE_DIR
+
+
+# --------------------------------------------------------------------------
+# Display: logical 1400x800 surface + real window, with letterboxing
+# --------------------------------------------------------------------------
+
+class Display:
+    def __init__(self):
+        self.window = None
+        self.logical = None
+        self.scale = 1.0
+        self.offset = (0, 0)
+        self._scaled = None
+        self._scaled_size = None
+        self._patched = False
+
+    # -- setup -------------------------------------------------------------
+    def init(self, width, height, title="Kot Defense", icon_path=None):
+        import pygame
+
+        pygame.display.set_caption(title)
+
+        win_w, win_h = width, height
+        flags = 0
+
+        if IS_ANDROID:
+            try:
+                info = pygame.display.Info()
+                if info.current_w > 0 and info.current_h > 0:
+                    win_w, win_h = info.current_w, info.current_h
+            except Exception:
+                pass
+            flags = pygame.FULLSCREEN
+            # Phone screens are usually 16:9..20:9, the game is 7:4.
+            os.environ.setdefault("SDL_VIDEO_MINIMIZE_ON_FOCUS_LOSS", "0")
+
+        self.window = self._set_mode((win_w, win_h), flags)
+
+        if icon_path:
+            try:
+                pygame.display.set_icon(pygame.image.load(icon_path).convert_alpha())
+            except Exception:
+                pass
+
+        self.logical = pygame.Surface((width, height)).convert()
+        self.scale = 1.0
+        self.offset = (0, 0)
+        self._update_geometry()
+        return self.window, self.logical
+
+    def _set_mode(self, size, flags):
+        import pygame
+
+        # vsync is nice on desktop and unsupported / ignored on some Android builds.
+        for kwargs in ({"vsync": 1}, {}):
+            try:
+                return pygame.display.set_mode(size, flags, **kwargs)
+            except Exception:
+                continue
+        return pygame.display.set_mode(size, flags)
+
+    # -- geometry ----------------------------------------------------------
+    def _update_geometry(self):
+        if self.window is None or self.logical is None:
+            return
+        win_w, win_h = self.window.get_size()
+        lw, lh = self.logical.get_size()
+        if win_w <= 0 or win_h <= 0:
+            self.scale = 1.0
+            self.offset = (0, 0)
+            return
+        self.scale = min(win_w / lw, win_h / lh)
+        if abs(self.scale - 1.0) < 1e-3:
+            self.scale = 1.0
+            self.offset = (0, 0)
+        else:
+            nw = int(lw * self.scale + 0.5)
+            nh = int(lh * self.scale + 0.5)
+            self.offset = ((win_w - nw) // 2, (win_h - nh) // 2)
+
+    def to_logical(self, pos):
+        """Window pixel coordinates -> logical 1400x800 coordinates."""
+        if self.scale == 1.0 and self.offset == (0, 0):
+            return pos
+        x = (pos[0] - self.offset[0]) / self.scale
+        y = (pos[1] - self.offset[1]) / self.scale
+        return (x, y)
+
+    # -- frame -------------------------------------------------------------
+    def present(self):
+        import pygame
+
+        self._update_geometry()
+        win_w, win_h = self.window.get_size()
+        lw, lh = self.logical.get_size()
+
+        if self.scale == 1.0 and self.offset == (0, 0):
+            self.window.blit(self.logical, (0, 0))
+        else:
+            nw, nh = int(lw * self.scale + 0.5), int(lh * self.scale + 0.5)
+            if self._scaled_size != (nw, nh):
+                self._scaled = pygame.Surface((nw, nh)).convert()
+                self._scaled_size = (nw, nh)
+            pygame.transform.scale(self.logical, (nw, nh), self._scaled)
+            if self.offset[0] or self.offset[1]:
+                self.window.fill((0, 0, 0))
+            self.window.blit(self._scaled, self.offset)
+
+        pygame.display.flip()
+
+    # -- input -------------------------------------------------------------
+    def install_event_translation(self):
+        """Rewrite mouse positions of every event into logical coordinates."""
+        import pygame
+
+        if self._patched:
+            return
+        self._patched = True
+        original_get = pygame.event.get
+        display = self
+
+        mouse_types = (
+            pygame.MOUSEMOTION,
+            pygame.MOUSEBUTTONDOWN,
+            pygame.MOUSEBUTTONUP,
+        )
+
+        def get(*args, **kwargs):
+            events = original_get(*args, **kwargs)
+            if display.scale == 1.0 and display.offset == (0, 0):
+                return events
+            result = []
+            for event in events:
+                if event.type in mouse_types and getattr(event, "pos", None) is not None:
+                    data = dict(getattr(event, "dict", {}) or {})
+                    data["pos"] = display.to_logical(event.pos)
+                    result.append(pygame.event.Event(event.type, data))
+                else:
+                    result.append(event)
+            return result
+
+        pygame.event.get = get
+
+
+# --------------------------------------------------------------------------
+# Desktop-only features
+# --------------------------------------------------------------------------
+
+def install_cursor_guard():
+    """Android has no OS cursors: turn pygame.mouse.set_cursor into a no-op."""
+    if not IS_ANDROID:
+        return
+    import pygame
+
+    pygame.mouse.set_cursor = lambda *args, **kwargs: None
+    pygame.mouse.set_visible = lambda *args, **kwargs: None
+
+
+def install_quit_on_back_button():
+    """Android back button arrives as a key/quit event; keep pygame alive."""
+    if not IS_ANDROID:
+        return
+    try:
+        os.environ.setdefault("SDL_ANDROID_BLOCK_ON_PAUSE", "1")
+    except Exception:
+        pass
+
+
+SIZE_HINT = (1400, 800)
