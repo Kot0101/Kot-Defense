@@ -1,0 +1,80 @@
+{
+    "idle": {
+        "duration": 40,
+        "anchor": "center",
+        "keyframes": {
+            "0": {
+                "offset_x": 10.0,
+                "offset_y": 0.0,
+                "scale_x": 1.3,
+                "scale_y": 1.0,
+                "rotation": 0.0,
+                "ease": "liner"
+            },
+            "5": {
+                "offset_x": 5.0,
+                "offset_y": 5.0,
+                "scale_x": 1.0,
+                "scale_y": 1.0,
+                "rotation": 0.0,
+                "ease": "liner"
+            },
+            "10": {
+                "offset_x": 0.0,
+                "offset_y": 10.0,
+                "scale_x": 1.0,
+                "scale_y": 1.3,
+                "rotation": 0.0,
+                "ease": "liner"
+            },
+            "15": {
+                "offset_x": -5.0,
+                "offset_y": 5.0,
+                "scale_x": 1.0,
+                "scale_y": 1.0,
+                "rotation": 0.0,
+                "ease": "liner"
+            },
+            "20": {
+                "offset_x": -10.0,
+                "offset_y": 0.0,
+                "scale_x": 1.3,
+                "scale_y": 1.0,
+                "rotation": 0.0,
+                "ease": "liner"
+            },
+            "25": {
+                "offset_x": -5.0,
+                "offset_y": -5.0,
+                "scale_x": 1.0,
+                "scale_y": 1.0,
+                "rotation": 0.0,
+                "ease": "liner"
+            },
+            "30": {
+                "offset_x": 0.0,
+                "offset_y": -10.0,
+                "scale_x": 1.0,
+                "scale_y": 1.3,
+                "rotation": 0.0,
+                "ease": "liner"
+            },
+            "35": {
+                "offset_x": 5.0,
+                "offset_y": -5.0,
+                "scale_x": 1.0,
+                "scale_y": 1.0,
+                "rotation": 0.0,
+                "ease": "liner"
+            },
+            "40": {
+                "offset_x": 10.0,
+                "offset_y": 0.0,
+                "scale_x": 1.3,
+                "scale_y": 1.0,
+                "rotation": 0.0,
+                "ease": "liner"
+            }
+        }
+    }
+}

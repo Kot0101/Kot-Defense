@@ -1,0 +1,32 @@
+{
+    "idle": {
+        "duration": 140,
+        "anchor": "center",
+        "keyframes": {
+            "0": {
+                "offset_x": 0.0,
+                "offset_y": 1.5,
+                "scale_x": 1.0,
+                "scale_y": 1.0,
+                "rotation": 0.0,
+                "ease": "easeInOutQuad"
+            },
+            "140": {
+                "offset_x": 0.0,
+                "offset_y": 1.5,
+                "scale_x": 1.0,
+                "scale_y": 1.0,
+                "rotation": 0.0,
+                "ease": "linear"
+            },
+            "60": {
+                "offset_x": 0.0,
+                "offset_y": -1.5,
+                "scale_x": 1.0,
+                "scale_y": 1.0,
+                "rotation": 0.0,
+                "ease": "easeInOutQuad"
+            }
+        }
+    }
+}

@@ -1,0 +1,32 @@
+{
+    "idle": {
+        "duration": 16,
+        "anchor": "midbottom",
+        "keyframes": {
+            "0": {
+                "offset_x": 0.0,
+                "offset_y": 0.0,
+                "scale_x": 1.0,
+                "scale_y": 1.0,
+                "rotation": 0.0,
+                "ease": "easeOutQuad"
+            },
+            "8": {
+                "offset_x": 0.0,
+                "offset_y": 0.0,
+                "scale_x": 0.8,
+                "scale_y": 1.5,
+                "rotation": 0.0,
+                "ease": "easeInQuad"
+            },
+            "16": {
+                "offset_x": 0.0,
+                "offset_y": 0.0,
+                "scale_x": 1.0,
+                "scale_y": 1.0,
+                "rotation": 0.0,
+                "ease": "linear"
+            }
+        }
+    }
+}

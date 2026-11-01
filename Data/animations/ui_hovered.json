@@ -1,0 +1,16 @@
+{
+    "idle": {
+        "duration": 0,
+        "anchor": "center",
+        "keyframes": {
+            "0": {
+                "offset_x": 0.0,
+                "offset_y": 0.0,
+                "scale_x": 1.1,
+                "scale_y": 1.1,
+                "rotation": 0.0,
+                "ease": "easeInOutQuad"
+            }
+        }
+    }
+}

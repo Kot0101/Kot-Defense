@@ -1,0 +1,48 @@
+{
+    "idle": {
+        "duration": 60,
+        "anchor": "center",
+        "keyframes": {
+            "0": {
+                "offset_x": 0.0,
+                "offset_y": 0.0,
+                "scale_x": 0.75,
+                "scale_y": 0.8,
+                "rotation": 0.0,
+                "ease": "easeOutQuad"
+            },
+            "30": {
+                "offset_x": 0.0,
+                "offset_y": 0.0,
+                "scale_x": 0.75,
+                "scale_y": 0.8,
+                "rotation": 0.0,
+                "ease": "easeOutQuad"
+            },
+            "15": {
+                "offset_x": 0.0,
+                "offset_y": 0.0,
+                "scale_x": 0.8,
+                "scale_y": 0.75,
+                "rotation": -2.0,
+                "ease": "easeInQuad"
+            },
+            "45": {
+                "offset_x": 0.0,
+                "offset_y": 0.0,
+                "scale_x": 0.8,
+                "scale_y": 0.75,
+                "rotation": 2.0,
+                "ease": "easeInQuad"
+            },
+            "60": {
+                "offset_x": 0.0,
+                "offset_y": 0.0,
+                "scale_x": 0.75,
+                "scale_y": 0.8,
+                "rotation": 0.0,
+                "ease": "linear"
+            }
+        }
+    }
+}

@@ -1,0 +1,414 @@
+{
+    "version": 3,
+    "scene": {
+        "name": "Scene",
+        "type": "Scene",
+        "pos": [
+            0,
+            0
+        ],
+        "size": [
+            1400,
+            800
+        ],
+        "layer": 0,
+        "visible": true,
+        "locked": false,
+        "props": {
+            "sprite_path": "placeholder.png",
+            "anchor": "topleft",
+            "pivot": [
+                0.5,
+                0.5
+            ],
+            "color": [
+                100,
+                100,
+                255
+            ],
+            "text": "Текст",
+            "font_size": 24,
+            "alpha": 255,
+            "flip_x": false,
+            "flip_y": false,
+            "angle": 0,
+            "image_mode": "Stretch",
+            "keep_ratio": true
+        },
+        "children": [
+            {
+                "name": "Image",
+                "type": "Image",
+                "pos": [
+                    700,
+                    400
+                ],
+                "size": [
+                    1450,
+                    850
+                ],
+                "layer": 0,
+                "visible": true,
+                "locked": false,
+                "props": {
+                    "sprite_path": "C:/Users/Константин Морозов/Desktop/Kot Defense Remake/Kot Defense Remake Dev/Data/textures/thumbnail.png",
+                    "anchor": "center",
+                    "pivot": [
+                        0.5,
+                        0.5
+                    ],
+                    "color": [
+                        100,
+                        100,
+                        255
+                    ],
+                    "text": "Текст",
+                    "font_size": 24,
+                    "alpha": 255,
+                    "flip_x": false,
+                    "flip_y": false,
+                    "angle": 0,
+                    "image_mode": "Stretch",
+                    "keep_ratio": true
+                },
+                "children": [
+                    {
+                        "name": "Image_003",
+                        "type": "Image",
+                        "pos": [
+                            390,
+                            -310
+                        ],
+                        "size": [
+                            575,
+                            150
+                        ],
+                        "layer": 5,
+                        "visible": true,
+                        "locked": false,
+                        "props": {
+                            "sprite_path": "C:/Users/Константин Морозов/Desktop/Kot Defense Remake/Kot Defense Remake Dev/Data/textures/title.png",
+                            "anchor": "center",
+                            "pivot": [
+                                0.5,
+                                0.5
+                            ],
+                            "color": [
+                                100,
+                                100,
+                                255
+                            ],
+                            "text": "Текст",
+                            "font_size": 24,
+                            "alpha": 255,
+                            "flip_x": false,
+                            "flip_y": false,
+                            "angle": 0,
+                            "image_mode": "Stretch",
+                            "keep_ratio": true
+                        },
+                        "children": []
+                    },
+                    {
+                        "name": "Image_003_001",
+                        "type": "Image",
+                        "pos": [
+                            20,
+                            -310
+                        ],
+                        "size": [
+                            200,
+                            120
+                        ],
+                        "layer": 6,
+                        "visible": true,
+                        "locked": false,
+                        "props": {
+                            "sprite_path": "C:/Users/Константин Морозов/Desktop/Kot Defense Remake/Kot Defense Remake Dev/Data/textures/OST.png",
+                            "anchor": "center",
+                            "pivot": [
+                                0.5,
+                                0.5
+                            ],
+                            "color": [
+                                100,
+                                100,
+                                255
+                            ],
+                            "text": "Текст",
+                            "font_size": 24,
+                            "alpha": 255,
+                            "flip_x": false,
+                            "flip_y": false,
+                            "angle": 0,
+                            "image_mode": "Stretch",
+                            "keep_ratio": true
+                        },
+                        "children": []
+                    },
+                    {
+                        "name": "Image_005",
+                        "type": "Image",
+                        "pos": [
+                            -670,
+                            210
+                        ],
+                        "size": [
+                            180,
+                            180
+                        ],
+                        "layer": 8,
+                        "visible": true,
+                        "locked": false,
+                        "props": {
+                            "sprite_path": "C:/Users/Константин Морозов/Desktop/Kot Defense Remake/Kot Defense Remake Dev/Data/textures/Cat_Attack.png",
+                            "anchor": "topleft",
+                            "pivot": [
+                                0.5,
+                                0.5
+                            ],
+                            "color": [
+                                100,
+                                100,
+                                255
+                            ],
+                            "text": "Текст",
+                            "font_size": 24,
+                            "alpha": 255,
+                            "flip_x": false,
+                            "flip_y": false,
+                            "angle": 0,
+                            "image_mode": "Stretch",
+                            "keep_ratio": true
+                        },
+                        "children": []
+                    },
+                    {
+                        "name": "Image_005_001",
+                        "type": "Image",
+                        "pos": [
+                            -410,
+                            220
+                        ],
+                        "size": [
+                            140,
+                            150
+                        ],
+                        "layer": 9,
+                        "visible": true,
+                        "locked": false,
+                        "props": {
+                            "sprite_path": "C:/Users/Константин Морозов/Desktop/Kot Defense Remake/Kot Defense Remake Dev/Data/textures/Dog_Base.png",
+                            "anchor": "topleft",
+                            "pivot": [
+                                0.5,
+                                0.5
+                            ],
+                            "color": [
+                                100,
+                                100,
+                                255
+                            ],
+                            "text": "Текст",
+                            "font_size": 24,
+                            "alpha": 255,
+                            "flip_x": true,
+                            "flip_y": false,
+                            "angle": 0,
+                            "image_mode": "Stretch",
+                            "keep_ratio": true
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "name": "Image_002",
+                "type": "Image",
+                "pos": [
+                    700,
+                    400
+                ],
+                "size": [
+                    1450,
+                    850
+                ],
+                "layer": 1,
+                "visible": true,
+                "locked": false,
+                "props": {
+                    "sprite_path": "C:/Users/Константин Морозов/Desktop/Kot Defense Remake/Kot Defense Remake Dev/Data/textures/gradient.png",
+                    "anchor": "center",
+                    "pivot": [
+                        0.5,
+                        0.5
+                    ],
+                    "color": [
+                        100,
+                        100,
+                        255
+                    ],
+                    "text": "Текст",
+                    "font_size": 24,
+                    "alpha": 96,
+                    "flip_x": false,
+                    "flip_y": false,
+                    "angle": 0,
+                    "image_mode": "Stretch",
+                    "keep_ratio": true
+                },
+                "children": [
+                    {
+                        "name": "Label",
+                        "type": "Label",
+                        "pos": [
+                            375,
+                            375
+                        ],
+                        "size": [
+                            290,
+                            4
+                        ],
+                        "layer": 2,
+                        "visible": true,
+                        "locked": false,
+                        "props": {
+                            "sprite_path": "placeholder.png",
+                            "anchor": "topleft",
+                            "pivot": [
+                                0.5,
+                                0.5
+                            ],
+                            "color": [
+                                255,
+                                255,
+                                255
+                            ],
+                            "text": "Текст",
+                            "font_size": 24,
+                            "alpha": 200,
+                            "flip_x": false,
+                            "flip_y": false,
+                            "angle": 0,
+                            "image_mode": "Stretch",
+                            "keep_ratio": true
+                        },
+                        "children": [
+                            {
+                                "name": "Text",
+                                "type": "Text",
+                                "pos": [
+                                    44,
+                                    -5
+                                ],
+                                "size": [
+                                    198,
+                                    28
+                                ],
+                                "layer": 3,
+                                "visible": true,
+                                "locked": false,
+                                "props": {
+                                    "sprite_path": "placeholder.png",
+                                    "anchor": "bottomleft",
+                                    "pivot": [
+                                        0.5,
+                                        0.5
+                                    ],
+                                    "color": [
+                                        255,
+                                        255,
+                                        255
+                                    ],
+                                    "text": "Kot - Kot Defense RAP",
+                                    "font_size": 24,
+                                    "alpha": 255,
+                                    "flip_x": false,
+                                    "flip_y": false,
+                                    "angle": 0,
+                                    "image_mode": "Stretch",
+                                    "keep_ratio": true
+                                },
+                                "children": []
+                            },
+                            {
+                                "name": "Image_001",
+                                "type": "Image",
+                                "pos": [
+                                    20,
+                                    -18
+                                ],
+                                "size": [
+                                    32,
+                                    32
+                                ],
+                                "layer": 4,
+                                "visible": true,
+                                "locked": false,
+                                "props": {
+                                    "sprite_path": "C:/Users/Константин Морозов/Desktop/Kot Defense Remake/Kot Defense Remake Dev/Data/textures/note.png",
+                                    "anchor": "center",
+                                    "pivot": [
+                                        0.5,
+                                        0.5
+                                    ],
+                                    "color": [
+                                        100,
+                                        100,
+                                        255
+                                    ],
+                                    "text": "Текст",
+                                    "font_size": 24,
+                                    "alpha": 255,
+                                    "flip_x": false,
+                                    "flip_y": false,
+                                    "angle": -360,
+                                    "image_mode": "Stretch",
+                                    "keep_ratio": true
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Image_004",
+                        "type": "Image",
+                        "pos": [
+                            -1190,
+                            -900
+                        ],
+                        "size": [
+                            1770,
+                            1400
+                        ],
+                        "layer": 7,
+                        "visible": true,
+                        "locked": false,
+                        "props": {
+                            "sprite_path": "C:/Users/Константин Морозов/Desktop/Kot Defense Remake/Kot Defense Remake Dev/Data/textures/save_fullbackground.png",
+                            "anchor": "topleft",
+                            "pivot": [
+                                0.5,
+                                0.5
+                            ],
+                            "color": [
+                                100,
+                                100,
+                                255
+                            ],
+                            "text": "Текст",
+                            "font_size": 24,
+                            "alpha": 255,
+                            "flip_x": false,
+                            "flip_y": false,
+                            "angle": 220,
+                            "image_mode": "Stretch",
+                            "keep_ratio": true
+                        },
+                        "children": []
+                    }
+                ]
+            }
+        ]
+    }
+}

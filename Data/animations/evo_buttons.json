@@ -1,0 +1,24 @@
+{
+    "idle": {
+        "duration": 1,
+        "anchor": "center",
+        "keyframes": {
+            "0": {
+                "offset_x": 0.0,
+                "offset_y": 0.0,
+                "scale_x": 0.75,
+                "scale_y": 0.75,
+                "rotation": 0.0,
+                "ease": "linear"
+            },
+            "1": {
+                "offset_x": 0.0,
+                "offset_y": 0.0,
+                "scale_x": 0.75,
+                "scale_y": 0.75,
+                "rotation": 0.0,
+                "ease": "linear"
+            }
+        }
+    }
+}

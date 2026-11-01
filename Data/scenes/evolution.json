@@ -1,0 +1,263 @@
+{
+    "version": 3,
+    "scene": {
+        "name": "Scene",
+        "type": "Scene",
+        "pos": [
+            0,
+            0
+        ],
+        "size": [
+            1400,
+            800
+        ],
+        "layer": 0,
+        "visible": true,
+        "locked": false,
+        "props": {
+            "sprite_path": "placeholder.png",
+            "anchor": "topleft",
+            "pivot": [
+                0.5,
+                0.5
+            ],
+            "color": [
+                100,
+                100,
+                255
+            ],
+            "text": "Текст",
+            "font_size": 24,
+            "alpha": 255,
+            "flip_x": false,
+            "flip_y": false,
+            "angle": 0,
+            "image_mode": "Stretch",
+            "keep_ratio": true
+        },
+        "children": [
+            {
+                "name": "Background",
+                "type": "Label",
+                "pos": [
+                    0,
+                    0
+                ],
+                "size": [
+                    1400,
+                    800
+                ],
+                "layer": 0,
+                "visible": true,
+                "locked": false,
+                "props": {
+                    "sprite_path": "placeholder.png",
+                    "anchor": "topleft",
+                    "pivot": [
+                        0.5,
+                        0.5
+                    ],
+                    "color": [
+                        69,
+                        69,
+                        69
+                    ],
+                    "text": "Текст",
+                    "font_size": 24,
+                    "alpha": 255,
+                    "flip_x": false,
+                    "flip_y": false,
+                    "angle": 0,
+                    "image_mode": "Stretch",
+                    "keep_ratio": true
+                },
+                "children": []
+            },
+            {
+                "name": "Exit",
+                "type": "Image",
+                "pos": [
+                    25,
+                    25
+                ],
+                "size": [
+                    75,
+                    75
+                ],
+                "layer": 1,
+                "visible": true,
+                "locked": false,
+                "props": {
+                    "sprite_path": "placeholder.png",
+                    "anchor": "topleft",
+                    "pivot": [
+                        0.5,
+                        0.5
+                    ],
+                    "color": [
+                        100,
+                        100,
+                        255
+                    ],
+                    "text": "Текст",
+                    "font_size": 24,
+                    "alpha": 255,
+                    "flip_x": false,
+                    "flip_y": false,
+                    "angle": 0,
+                    "image_mode": "Stretch",
+                    "keep_ratio": true
+                },
+                "children": []
+            },
+            {
+                "name": "Label",
+                "type": "Text",
+                "pos": [
+                    690,
+                    50
+                ],
+                "size": [
+                    269,
+                    92
+                ],
+                "layer": 2,
+                "visible": true,
+                "locked": false,
+                "props": {
+                    "sprite_path": "placeholder.png",
+                    "anchor": "center",
+                    "pivot": [
+                        0.5,
+                        0.5
+                    ],
+                    "color": [
+                        255,
+                        128,
+                        128
+                    ],
+                    "text": "Evolution",
+                    "font_size": 80,
+                    "alpha": 255,
+                    "flip_x": false,
+                    "flip_y": false,
+                    "angle": 0,
+                    "image_mode": "Stretch",
+                    "keep_ratio": true
+                },
+                "children": []
+            },
+            {
+                "name": "xp",
+                "type": "Text",
+                "pos": [
+                    120,
+                    40
+                ],
+                "size": [
+                    123,
+                    28
+                ],
+                "layer": 3,
+                "visible": true,
+                "locked": false,
+                "props": {
+                    "sprite_path": "placeholder.png",
+                    "anchor": "midleft",
+                    "pivot": [
+                        0.5,
+                        0.5
+                    ],
+                    "color": [
+                        255,
+                        255,
+                        255
+                    ],
+                    "text": "XP 9999/9999",
+                    "font_size": 24,
+                    "alpha": 255,
+                    "flip_x": false,
+                    "flip_y": false,
+                    "angle": 0,
+                    "image_mode": "Stretch",
+                    "keep_ratio": true
+                },
+                "children": []
+            },
+            {
+                "name": "level",
+                "type": "Text",
+                "pos": [
+                    250,
+                    40
+                ],
+                "size": [
+                    91,
+                    28
+                ],
+                "layer": 4,
+                "visible": true,
+                "locked": false,
+                "props": {
+                    "sprite_path": "placeholder.png",
+                    "anchor": "midleft",
+                    "pivot": [
+                        0.5,
+                        0.5
+                    ],
+                    "color": [
+                        111,
+                        255,
+                        85
+                    ],
+                    "text": "(9999999)",
+                    "font_size": 24,
+                    "alpha": 255,
+                    "flip_x": false,
+                    "flip_y": false,
+                    "angle": 0,
+                    "image_mode": "Stretch",
+                    "keep_ratio": true
+                },
+                "children": []
+            },
+            {
+                "name": "xp_copy",
+                "type": "Text",
+                "pos": [
+                    120,
+                    80
+                ],
+                "size": [
+                    212,
+                    46
+                ],
+                "layer": 5,
+                "visible": true,
+                "locked": false,
+                "props": {
+                    "sprite_path": "placeholder.png",
+                    "anchor": "midleft",
+                    "pivot": [
+                        0.5,
+                        0.5
+                    ],
+                    "color": [
+                        255,
+                        255,
+                        255
+                    ],
+                    "text": "Level 9999999",
+                    "font_size": 40,
+                    "alpha": 255,
+                    "flip_x": false,
+                    "flip_y": false,
+                    "angle": 0,
+                    "image_mode": "Stretch",
+                    "keep_ratio": true
+                },
+                "children": []
+            }
+        ]
+    }
+}

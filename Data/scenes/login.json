@@ -1,0 +1,303 @@
+{
+    "version": 3,
+    "scene": {
+        "name": "Scene",
+        "type": "Scene",
+        "pos": [
+            0,
+            0
+        ],
+        "size": [
+            1400,
+            800
+        ],
+        "layer": 0,
+        "visible": true,
+        "locked": false,
+        "props": {
+            "sprite_path": "placeholder.png",
+            "anchor": "topleft",
+            "pivot": [
+                0.5,
+                0.5
+            ],
+            "color": [
+                100,
+                100,
+                255
+            ],
+            "text": "Текст",
+            "font_size": 24,
+            "alpha": 255,
+            "flip_x": false,
+            "flip_y": false,
+            "angle": 0,
+            "image_mode": "Stretch",
+            "keep_ratio": true
+        },
+        "children": [
+            {
+                "name": "save1",
+                "type": "Image",
+                "pos": [
+                    100,
+                    225
+                ],
+                "size": [
+                    350,
+                    525
+                ],
+                "layer": 1,
+                "visible": true,
+                "locked": false,
+                "props": {
+                    "sprite_path": "C:/Users/Константин Морозов/Desktop/Kot Defense Remake/Kot Defense Remake Dev/Data/textures/bar.png",
+                    "anchor": "topleft",
+                    "pivot": [
+                        0.5,
+                        0.5
+                    ],
+                    "color": [
+                        100,
+                        100,
+                        255
+                    ],
+                    "text": "Текст",
+                    "font_size": 24,
+                    "alpha": 255,
+                    "flip_x": false,
+                    "flip_y": false,
+                    "angle": 0,
+                    "image_mode": "Stretch",
+                    "keep_ratio": true
+                },
+                "children": [
+                    {
+                        "name": "text1",
+                        "type": "Text",
+                        "pos": [
+                            180,
+                            90
+                        ],
+                        "size": [
+                            212,
+                            96
+                        ],
+                        "layer": 2,
+                        "visible": true,
+                        "locked": true,
+                        "props": {
+                            "sprite_path": "placeholder.png",
+                            "anchor": "center",
+                            "pivot": [
+                                0.5,
+                                0.5
+                            ],
+                            "color": [
+                                236,
+                                236,
+                                230
+                            ],
+                            "text": "Save 1",
+                            "font_size": 83,
+                            "alpha": 255,
+                            "flip_x": false,
+                            "flip_y": false,
+                            "angle": 0,
+                            "image_mode": "Stretch",
+                            "keep_ratio": true
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "name": "save2",
+                "type": "Image",
+                "pos": [
+                    525,
+                    225
+                ],
+                "size": [
+                    350,
+                    525
+                ],
+                "layer": 1,
+                "visible": true,
+                "locked": false,
+                "props": {
+                    "sprite_path": "C:/Users/Константин Морозов/Desktop/Kot Defense Remake/Kot Defense Remake Dev/Data/textures/bar.png",
+                    "anchor": "topleft",
+                    "pivot": [
+                        0.5,
+                        0.5
+                    ],
+                    "color": [
+                        100,
+                        100,
+                        255
+                    ],
+                    "text": "Текст",
+                    "font_size": 24,
+                    "alpha": 255,
+                    "flip_x": false,
+                    "flip_y": false,
+                    "angle": 0,
+                    "image_mode": "Stretch",
+                    "keep_ratio": true
+                },
+                "children": [
+                    {
+                        "name": "text2",
+                        "type": "Text",
+                        "pos": [
+                            180,
+                            90
+                        ],
+                        "size": [
+                            212,
+                            96
+                        ],
+                        "layer": 2,
+                        "visible": true,
+                        "locked": true,
+                        "props": {
+                            "sprite_path": "placeholder.png",
+                            "anchor": "center",
+                            "pivot": [
+                                0.5,
+                                0.5
+                            ],
+                            "color": [
+                                236,
+                                236,
+                                230
+                            ],
+                            "text": "Save 2",
+                            "font_size": 83,
+                            "alpha": 255,
+                            "flip_x": false,
+                            "flip_y": false,
+                            "angle": 0,
+                            "image_mode": "Stretch",
+                            "keep_ratio": true
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "name": "save3",
+                "type": "Image",
+                "pos": [
+                    950,
+                    225
+                ],
+                "size": [
+                    350,
+                    525
+                ],
+                "layer": 1,
+                "visible": true,
+                "locked": false,
+                "props": {
+                    "sprite_path": "C:/Users/Константин Морозов/Desktop/Kot Defense Remake/Kot Defense Remake Dev/Data/textures/bar.png",
+                    "anchor": "topleft",
+                    "pivot": [
+                        0.5,
+                        0.5
+                    ],
+                    "color": [
+                        100,
+                        100,
+                        255
+                    ],
+                    "text": "Текст",
+                    "font_size": 24,
+                    "alpha": 255,
+                    "flip_x": false,
+                    "flip_y": false,
+                    "angle": 0,
+                    "image_mode": "Stretch",
+                    "keep_ratio": true
+                },
+                "children": [
+                    {
+                        "name": "text3",
+                        "type": "Text",
+                        "pos": [
+                            180,
+                            90
+                        ],
+                        "size": [
+                            212,
+                            96
+                        ],
+                        "layer": 2,
+                        "visible": true,
+                        "locked": true,
+                        "props": {
+                            "sprite_path": "placeholder.png",
+                            "anchor": "center",
+                            "pivot": [
+                                0.5,
+                                0.5
+                            ],
+                            "color": [
+                                236,
+                                236,
+                                230
+                            ],
+                            "text": "Save 1",
+                            "font_size": 83,
+                            "alpha": 255,
+                            "flip_x": false,
+                            "flip_y": false,
+                            "angle": 0,
+                            "image_mode": "Stretch",
+                            "keep_ratio": true
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "name": "Text",
+                "type": "Text",
+                "pos": [
+                    700,
+                    225
+                ],
+                "size": [
+                    1146,
+                    197
+                ],
+                "layer": 3,
+                "visible": true,
+                "locked": false,
+                "props": {
+                    "sprite_path": "placeholder.png",
+                    "anchor": "midbottom",
+                    "pivot": [
+                        0.5,
+                        0.5
+                    ],
+                    "color": [
+                        15,
+                        15,
+                        9
+                    ],
+                    "text": "Select ur save slot",
+                    "font_size": 171,
+                    "alpha": 255,
+                    "flip_x": false,
+                    "flip_y": false,
+                    "angle": 0,
+                    "image_mode": "Stretch",
+                    "keep_ratio": true
+                },
+                "children": []
+            }
+        ]
+    }
+}

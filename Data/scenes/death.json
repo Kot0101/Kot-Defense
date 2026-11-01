@@ -1,0 +1,1225 @@
+{
+    "name": "Scene",
+    "type": "Scene",
+    "pos": [
+        0,
+        0
+    ],
+    "size": [
+        1400,
+        800
+    ],
+    "layer": 0,
+    "visible": true,
+    "locked": false,
+    "script": "# self - ссылка на этот объект (Object или Text из classes.py)\n# game - ссылка на твой класс игры, если передашь его в update\ndef update(self, game):\n    pass",
+    "props": {
+        "sprite_path": "placeholder.png",
+        "anchor": "topleft",
+        "pivot": [
+            0.5,
+            0.5
+        ],
+        "alignment": "center",
+        "margin": [
+            0,
+            0,
+            0,
+            0
+        ],
+        "padding": [
+            0,
+            0,
+            0,
+            0
+        ],
+        "color": [
+            100,
+            100,
+            255
+        ],
+        "text": "Текст",
+        "font_size": 24
+    },
+    "children": [
+        {
+            "name": "background",
+            "type": "Label",
+            "pos": [
+                1,
+                3
+            ],
+            "size": [
+                1400,
+                800
+            ],
+            "layer": 1,
+            "visible": true,
+            "locked": false,
+            "script": "# self - ссылка на этот объект (Object или Text из classes.py)\n# game - ссылка на твой класс игры, если передашь его в update\ndef update(self, game):\n    pass",
+            "props": {
+                "sprite_path": "placeholder.png",
+                "anchor": "topleft",
+                "pivot": [
+                    0.5,
+                    0.5
+                ],
+                "alignment": "center",
+                "margin": [
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                "color": [
+                    72,
+                    72,
+                    72
+                ],
+                "text": "Текст",
+                "font_size": 24
+            },
+            "children": [
+                {
+                    "name": "Text_1",
+                    "type": "Text",
+                    "pos": [
+                        700,
+                        125
+                    ],
+                    "size": [
+                        372,
+                        104
+                    ],
+                    "layer": 3,
+                    "visible": true,
+                    "locked": false,
+                    "script": "# self - ссылка на этот объект (Object или Text из classes.py)\n# game - ссылка на твой класс игры, если передашь его в update\ndef update(self, game):\n    pass",
+                    "props": {
+                        "sprite_path": "placeholder.png",
+                        "anchor": "center",
+                        "pivot": [
+                            0.5,
+                            0.5
+                        ],
+                        "alignment": "center",
+                        "margin": [
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "padding": [
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "color": [
+                            251,
+                            0,
+                            0
+                        ],
+                        "text": "You death !",
+                        "font_size": 90
+                    },
+                    "children": []
+                },
+                {
+                    "name": "statistics",
+                    "type": "Label",
+                    "pos": [
+                        300,
+                        250
+                    ],
+                    "size": [
+                        375,
+                        375
+                    ],
+                    "layer": 1,
+                    "visible": true,
+                    "locked": false,
+                    "script": "# self - ссылка на этот объект (Object или Text из classes.py)\n# game - ссылка на твой класс игры, если передашь его в update\ndef update(self, game):\n    pass",
+                    "props": {
+                        "sprite_path": "placeholder.png",
+                        "anchor": "topleft",
+                        "pivot": [
+                            0.5,
+                            0.5
+                        ],
+                        "alignment": "center",
+                        "margin": [
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "padding": [
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "color": [
+                            97,
+                            97,
+                            97
+                        ],
+                        "text": "Текст",
+                        "font_size": 24
+                    },
+                    "children": [
+                        {
+                            "name": "fill_frame",
+                            "type": "Label",
+                            "pos": [
+                                25,
+                                25
+                            ],
+                            "size": [
+                                350,
+                                325
+                            ],
+                            "layer": 1,
+                            "visible": true,
+                            "locked": false,
+                            "script": "# self - ссылка на этот объект (Object или Text из classes.py)\n# game - ссылка на твой класс игры, если передашь его в update\ndef update(self, game):\n    pass",
+                            "props": {
+                                "sprite_path": "placeholder.png",
+                                "anchor": "topleft",
+                                "pivot": [
+                                    0.5,
+                                    0.5
+                                ],
+                                "alignment": "center",
+                                "margin": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                ],
+                                "padding": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                ],
+                                "color": [
+                                    72,
+                                    72,
+                                    72
+                                ],
+                                "text": "Текст",
+                                "font_size": 24
+                            },
+                            "children": [
+                                {
+                                    "name": "money",
+                                    "type": "Text",
+                                    "pos": [
+                                        15,
+                                        105
+                                    ],
+                                    "size": [
+                                        253,
+                                        37
+                                    ],
+                                    "layer": 10,
+                                    "visible": true,
+                                    "locked": false,
+                                    "script": "# self - ссылка на этот объект (Object или Text из classes.py)\n# game - ссылка на твой класс игры, если передашь его в update\ndef update(self, game):\n    pass",
+                                    "props": {
+                                        "sprite_path": "placeholder.png",
+                                        "anchor": "midleft",
+                                        "pivot": [
+                                            0.5,
+                                            0.5
+                                        ],
+                                        "alignment": "center",
+                                        "margin": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ],
+                                        "padding": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ],
+                                        "color": [
+                                            233,
+                                            233,
+                                            233
+                                        ],
+                                        "text": "Money spent: XXXX$",
+                                        "font_size": 32
+                                    },
+                                    "children": []
+                                },
+                                {
+                                    "name": "survived",
+                                    "type": "Text",
+                                    "pos": [
+                                        15,
+                                        60
+                                    ],
+                                    "size": [
+                                        286,
+                                        37
+                                    ],
+                                    "layer": 10,
+                                    "visible": true,
+                                    "locked": false,
+                                    "script": "# self - ссылка на этот объект (Object или Text из classes.py)\n# game - ссылка на твой класс игры, если передашь его в update\ndef update(self, game):\n    pass",
+                                    "props": {
+                                        "sprite_path": "placeholder.png",
+                                        "anchor": "midleft",
+                                        "pivot": [
+                                            0.5,
+                                            0.5
+                                        ],
+                                        "alignment": "center",
+                                        "margin": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ],
+                                        "padding": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ],
+                                        "color": [
+                                            233,
+                                            233,
+                                            233
+                                        ],
+                                        "text": "You survived: xxx waves",
+                                        "font_size": 32
+                                    },
+                                    "children": []
+                                },
+                                {
+                                    "name": "killed",
+                                    "type": "Text",
+                                    "pos": [
+                                        15,
+                                        150
+                                    ],
+                                    "size": [
+                                        197,
+                                        37
+                                    ],
+                                    "layer": 10,
+                                    "visible": true,
+                                    "locked": false,
+                                    "script": "# self - ссылка на этот объект (Object или Text из classes.py)\n# game - ссылка на твой класс игры, если передашь его в update\ndef update(self, game):\n    pass",
+                                    "props": {
+                                        "sprite_path": "placeholder.png",
+                                        "anchor": "midleft",
+                                        "pivot": [
+                                            0.5,
+                                            0.5
+                                        ],
+                                        "alignment": "center",
+                                        "margin": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ],
+                                        "padding": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ],
+                                        "color": [
+                                            233,
+                                            233,
+                                            233
+                                        ],
+                                        "text": "Killed dogs: xxxx",
+                                        "font_size": 32
+                                    },
+                                    "children": []
+                                },
+                                {
+                                    "name": "died",
+                                    "type": "Text",
+                                    "pos": [
+                                        15,
+                                        195
+                                    ],
+                                    "size": [
+                                        178,
+                                        37
+                                    ],
+                                    "layer": 10,
+                                    "visible": true,
+                                    "locked": false,
+                                    "script": "# self - ссылка на этот объект (Object или Text из classes.py)\n# game - ссылка на твой класс игры, если передашь его в update\ndef update(self, game):\n    pass",
+                                    "props": {
+                                        "sprite_path": "placeholder.png",
+                                        "anchor": "midleft",
+                                        "pivot": [
+                                            0.5,
+                                            0.5
+                                        ],
+                                        "alignment": "center",
+                                        "margin": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ],
+                                        "padding": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ],
+                                        "color": [
+                                            233,
+                                            233,
+                                            233
+                                        ],
+                                        "text": "Cats died: xxxx",
+                                        "font_size": 32
+                                    },
+                                    "children": []
+                                },
+                                {
+                                    "name": "scoreLabel",
+                                    "type": "Text",
+                                    "pos": [
+                                        170,
+                                        210
+                                    ],
+                                    "size": [
+                                        150,
+                                        56
+                                    ],
+                                    "layer": 10,
+                                    "visible": true,
+                                    "locked": false,
+                                    "script": "# self - ссылка на этот объект (Object или Text из classes.py)\n# game - ссылка на твой класс игры, если передашь его в update\ndef update(self, game):\n    pass",
+                                    "props": {
+                                        "sprite_path": "placeholder.png",
+                                        "anchor": "midtop",
+                                        "pivot": [
+                                            0.5,
+                                            0.5
+                                        ],
+                                        "alignment": "center",
+                                        "margin": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ],
+                                        "padding": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ],
+                                        "color": [
+                                            233,
+                                            233,
+                                            233
+                                        ],
+                                        "text": "SCORE:",
+                                        "font_size": 48
+                                    },
+                                    "children": []
+                                },
+                                {
+                                    "name": "score",
+                                    "type": "Text",
+                                    "pos": [
+                                        170,
+                                        250
+                                    ],
+                                    "size": [
+                                        171,
+                                        73
+                                    ],
+                                    "layer": 10,
+                                    "visible": true,
+                                    "locked": false,
+                                    "script": "# self - ссылка на этот объект (Object или Text из classes.py)\n# game - ссылка на твой класс игры, если передашь его в update\ndef update(self, game):\n    pass",
+                                    "props": {
+                                        "sprite_path": "placeholder.png",
+                                        "anchor": "midtop",
+                                        "pivot": [
+                                            0.5,
+                                            0.5
+                                        ],
+                                        "alignment": "center",
+                                        "margin": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ],
+                                        "padding": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ],
+                                        "color": [
+                                            86,
+                                            255,
+                                            62
+                                        ],
+                                        "text": "XXXXX",
+                                        "font_size": 63
+                                    },
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "label",
+                            "type": "Text",
+                            "pos": [
+                                200,
+                                25
+                            ],
+                            "size": [
+                                278,
+                                69
+                            ],
+                            "layer": 8,
+                            "visible": true,
+                            "locked": false,
+                            "script": "# self - ссылка на этот объект (Object или Text из classes.py)\n# game - ссылка на твой класс игры, если передашь его в update\ndef update(self, game):\n    pass",
+                            "props": {
+                                "sprite_path": "placeholder.png",
+                                "anchor": "center",
+                                "pivot": [
+                                    0.5,
+                                    0.5
+                                ],
+                                "alignment": "center",
+                                "margin": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                ],
+                                "padding": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                ],
+                                "color": [
+                                    230,
+                                    182,
+                                    15
+                                ],
+                                "text": "STATISTICS",
+                                "font_size": 60
+                            },
+                            "children": []
+                        },
+                        {
+                            "name": "label_copy",
+                            "type": "Text",
+                            "pos": [
+                                200,
+                                25
+                            ],
+                            "size": [
+                                286,
+                                72
+                            ],
+                            "layer": 13,
+                            "visible": true,
+                            "locked": false,
+                            "script": "# self - ссылка на этот объект (Object или Text из classes.py)\n# game - ссылка на твой класс игры, если передашь его в update\ndef update(self, game):\n    pass",
+                            "props": {
+                                "sprite_path": "placeholder.png",
+                                "anchor": "center",
+                                "pivot": [
+                                    0.5,
+                                    0.5
+                                ],
+                                "alignment": "center",
+                                "margin": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                ],
+                                "padding": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                ],
+                                "color": [
+                                    191,
+                                    151,
+                                    13
+                                ],
+                                "text": "STATISTICS",
+                                "font_size": 62
+                            },
+                            "children": []
+                        }
+                    ]
+                },
+                {
+                    "name": "frame2",
+                    "type": "Label",
+                    "pos": [
+                        675,
+                        250
+                    ],
+                    "size": [
+                        475,
+                        125
+                    ],
+                    "layer": 1,
+                    "visible": true,
+                    "locked": false,
+                    "script": "# self - ссылка на этот объект (Object или Text из classes.py)\n# game - ссылка на твой класс игры, если передашь его в update\ndef update(self, game):\n    pass",
+                    "props": {
+                        "sprite_path": "placeholder.png",
+                        "anchor": "topleft",
+                        "pivot": [
+                            0.5,
+                            0.5
+                        ],
+                        "alignment": "center",
+                        "margin": [
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "padding": [
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "color": [
+                            97,
+                            97,
+                            97
+                        ],
+                        "text": "Текст",
+                        "font_size": 24
+                    },
+                    "children": [
+                        {
+                            "name": "fill_frame2",
+                            "type": "Label",
+                            "pos": [
+                                0,
+                                25
+                            ],
+                            "size": [
+                                450,
+                                75
+                            ],
+                            "layer": 1,
+                            "visible": true,
+                            "locked": false,
+                            "script": "# self - ссылка на этот объект (Object или Text из classes.py)\n# game - ссылка на твой класс игры, если передашь его в update\ndef update(self, game):\n    pass",
+                            "props": {
+                                "sprite_path": "placeholder.png",
+                                "anchor": "topleft",
+                                "pivot": [
+                                    0.5,
+                                    0.5
+                                ],
+                                "alignment": "center",
+                                "margin": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                ],
+                                "padding": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                ],
+                                "color": [
+                                    72,
+                                    72,
+                                    72
+                                ],
+                                "text": "Текст",
+                                "font_size": 24
+                            },
+                            "children": [
+                                {
+                                    "name": "Text_0",
+                                    "type": "Text",
+                                    "pos": [
+                                        206,
+                                        36
+                                    ],
+                                    "size": [
+                                        236,
+                                        69
+                                    ],
+                                    "layer": 26,
+                                    "visible": true,
+                                    "locked": false,
+                                    "script": "# self - ссылка на этот объект (Object или Text из classes.py)\n# game - ссылка на твой класс игры, если передашь его в update\ndef update(self, game):\n    pass",
+                                    "props": {
+                                        "sprite_path": "placeholder.png",
+                                        "anchor": "center",
+                                        "pivot": [
+                                            0.5,
+                                            0.5
+                                        ],
+                                        "alignment": "center",
+                                        "margin": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ],
+                                        "padding": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ],
+                                        "color": [
+                                            255,
+                                            255,
+                                            255
+                                        ],
+                                        "text": "Not bad :D",
+                                        "font_size": 60
+                                    },
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "background_copy_copy_1_copy",
+                    "type": "Label",
+                    "pos": [
+                        675,
+                        375
+                    ],
+                    "size": [
+                        25,
+                        250
+                    ],
+                    "layer": 1,
+                    "visible": true,
+                    "locked": false,
+                    "script": "# self - ссылка на этот объект (Object или Text из classes.py)\n# game - ссылка на твой класс игры, если передашь его в update\ndef update(self, game):\n    pass",
+                    "props": {
+                        "sprite_path": "placeholder.png",
+                        "anchor": "topleft",
+                        "pivot": [
+                            0.5,
+                            0.5
+                        ],
+                        "alignment": "center",
+                        "margin": [
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "padding": [
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "color": [
+                            97,
+                            97,
+                            97
+                        ],
+                        "text": "Текст",
+                        "font_size": 24
+                    },
+                    "children": []
+                },
+                {
+                    "name": "RestartButton",
+                    "type": "Label",
+                    "pos": [
+                        725,
+                        525
+                    ],
+                    "size": [
+                        250,
+                        90
+                    ],
+                    "layer": 19,
+                    "visible": true,
+                    "locked": false,
+                    "script": "# self - ссылка на этот объект (Object или Text из classes.py)\n# game - ссылка на твой класс игры, если передашь его в update\ndef update(self, game):\n    pass",
+                    "props": {
+                        "sprite_path": "placeholder.png",
+                        "anchor": "topleft",
+                        "pivot": [
+                            0.5,
+                            0.5
+                        ],
+                        "alignment": "center",
+                        "margin": [
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "padding": [
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "color": [
+                            23,
+                            255,
+                            64
+                        ],
+                        "text": "Текст",
+                        "font_size": 24
+                    },
+                    "children": [
+                        {
+                            "name": "RestartButton_copy",
+                            "type": "Label",
+                            "pos": [
+                                10,
+                                10
+                            ],
+                            "size": [
+                                230,
+                                70
+                            ],
+                            "layer": 19,
+                            "visible": true,
+                            "locked": false,
+                            "script": "# self - ссылка на этот объект (Object или Text из classes.py)\n# game - ссылка на твой класс игры, если передашь его в update\ndef update(self, game):\n    pass",
+                            "props": {
+                                "sprite_path": "placeholder.png",
+                                "anchor": "topleft",
+                                "pivot": [
+                                    0.5,
+                                    0.5
+                                ],
+                                "alignment": "center",
+                                "margin": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                ],
+                                "padding": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                ],
+                                "color": [
+                                    210,
+                                    255,
+                                    218
+                                ],
+                                "text": "Текст",
+                                "font_size": 24
+                            },
+                            "children": []
+                        }
+                    ]
+                },
+                {
+                    "name": "RageQuitButton",
+                    "type": "Label",
+                    "pos": [
+                        1000,
+                        525
+                    ],
+                    "size": [
+                        150,
+                        90
+                    ],
+                    "layer": 22,
+                    "visible": true,
+                    "locked": false,
+                    "script": "# self - ссылка на этот объект (Object или Text из classes.py)\n# game - ссылка на твой класс игры, если передашь его в update\ndef update(self, game):\n    pass",
+                    "props": {
+                        "sprite_path": "placeholder.png",
+                        "anchor": "topleft",
+                        "pivot": [
+                            0.5,
+                            0.5
+                        ],
+                        "alignment": "center",
+                        "margin": [
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "padding": [
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "color": [
+                            255,
+                            32,
+                            37
+                        ],
+                        "text": "Текст",
+                        "font_size": 24
+                    },
+                    "children": [
+                        {
+                            "name": "RageQuitButton_copy",
+                            "type": "Label",
+                            "pos": [
+                                10,
+                                10
+                            ],
+                            "size": [
+                                130,
+                                70
+                            ],
+                            "layer": 22,
+                            "visible": true,
+                            "locked": false,
+                            "script": "# self - ссылка на этот объект (Object или Text из classes.py)\n# game - ссылка на твой класс игры, если передашь его в update\ndef update(self, game):\n    pass",
+                            "props": {
+                                "sprite_path": "placeholder.png",
+                                "anchor": "topleft",
+                                "pivot": [
+                                    0.5,
+                                    0.5
+                                ],
+                                "alignment": "center",
+                                "margin": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                ],
+                                "padding": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                ],
+                                "color": [
+                                    255,
+                                    204,
+                                    205
+                                ],
+                                "text": "Текст",
+                                "font_size": 24
+                            },
+                            "children": [
+                                {
+                                    "name": "Text_5",
+                                    "type": "Text",
+                                    "pos": [
+                                        63,
+                                        20
+                                    ],
+                                    "size": [
+                                        69,
+                                        35
+                                    ],
+                                    "layer": 24,
+                                    "visible": true,
+                                    "locked": false,
+                                    "script": "# self - ссылка на этот объект (Object или Text из classes.py)\n# game - ссылка на твой класс игры, если передашь его в update\ndef update(self, game):\n    pass",
+                                    "props": {
+                                        "sprite_path": "placeholder.png",
+                                        "anchor": "center",
+                                        "pivot": [
+                                            0.5,
+                                            0.5
+                                        ],
+                                        "alignment": "center",
+                                        "margin": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ],
+                                        "padding": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ],
+                                        "color": [
+                                            0,
+                                            0,
+                                            0
+                                        ],
+                                        "text": "RAGE",
+                                        "font_size": 30
+                                    },
+                                    "children": []
+                                },
+                                {
+                                    "name": "Text_5_copy",
+                                    "type": "Text",
+                                    "pos": [
+                                        62,
+                                        49
+                                    ],
+                                    "size": [
+                                        59,
+                                        35
+                                    ],
+                                    "layer": 24,
+                                    "visible": true,
+                                    "locked": false,
+                                    "script": "# self - ссылка на этот объект (Object или Text из classes.py)\n# game - ссылка на твой класс игры, если передашь его в update\ndef update(self, game):\n    pass",
+                                    "props": {
+                                        "sprite_path": "placeholder.png",
+                                        "anchor": "center",
+                                        "pivot": [
+                                            0.5,
+                                            0.5
+                                        ],
+                                        "alignment": "center",
+                                        "margin": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ],
+                                        "padding": [
+                                            0,
+                                            0,
+                                            0,
+                                            0
+                                        ],
+                                        "color": [
+                                            0,
+                                            0,
+                                            0
+                                        ],
+                                        "text": "QUIT",
+                                        "font_size": 30
+                                    },
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "BackButton",
+            "type": "Label",
+            "pos": [
+                725,
+                400
+            ],
+            "size": [
+                425,
+                100
+            ],
+            "layer": 16,
+            "visible": true,
+            "locked": false,
+            "script": "# self - ссылка на этот объект (Object или Text из classes.py)\n# game - ссылка на твой класс игры, если передашь его в update\ndef update(self, game):\n    pass",
+            "props": {
+                "sprite_path": "placeholder.png",
+                "anchor": "topleft",
+                "pivot": [
+                    0.5,
+                    0.5
+                ],
+                "alignment": "center",
+                "margin": [
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                "color": [
+                    23,
+                    255,
+                    64
+                ],
+                "text": "Текст",
+                "font_size": 24
+            },
+            "children": []
+        },
+        {
+            "name": "Label_0_copy",
+            "type": "Label",
+            "pos": [
+                736,
+                410
+            ],
+            "size": [
+                405,
+                80
+            ],
+            "layer": 16,
+            "visible": true,
+            "locked": false,
+            "script": "# self - ссылка на этот объект (Object или Text из classes.py)\n# game - ссылка на твой класс игры, если передашь его в update\ndef update(self, game):\n    pass",
+            "props": {
+                "sprite_path": "placeholder.png",
+                "anchor": "topleft",
+                "pivot": [
+                    0.5,
+                    0.5
+                ],
+                "alignment": "center",
+                "margin": [
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                "color": [
+                    210,
+                    255,
+                    218
+                ],
+                "text": "Текст",
+                "font_size": 24
+            },
+            "children": [
+                {
+                    "name": "Text_1_1",
+                    "type": "Text",
+                    "pos": [
+                        200,
+                        40
+                    ],
+                    "size": [
+                        242,
+                        56
+                    ],
+                    "layer": 18,
+                    "visible": true,
+                    "locked": false,
+                    "script": "# self - ссылка на этот объект (Object или Text из classes.py)\n# game - ссылка на твой класс игры, если передашь его в update\ndef update(self, game):\n    pass",
+                    "props": {
+                        "sprite_path": "placeholder.png",
+                        "anchor": "center",
+                        "pivot": [
+                            0.5,
+                            0.5
+                        ],
+                        "alignment": "center",
+                        "margin": [
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "padding": [
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "color": [
+                            0,
+                            0,
+                            0
+                        ],
+                        "text": "Back to menu",
+                        "font_size": 48
+                    },
+                    "children": []
+                }
+            ]
+        },
+        {
+            "name": "Text_3",
+            "type": "Text",
+            "pos": [
+                851,
+                571
+            ],
+            "size": [
+                118,
+                69
+            ],
+            "layer": 23,
+            "visible": true,
+            "locked": false,
+            "script": "# self - ссылка на этот объект (Object или Text из classes.py)\n# game - ссылка на твой класс игры, если передашь его в update\ndef update(self, game):\n    pass",
+            "props": {
+                "sprite_path": "placeholder.png",
+                "anchor": "center",
+                "pivot": [
+                    0.5,
+                    0.5
+                ],
+                "alignment": "center",
+                "margin": [
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                "padding": [
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                "color": [
+                    0,
+                    0,
+                    0
+                ],
+                "text": "Retry",
+                "font_size": 60
+            },
+            "children": []
+        }
+    ]
+}
