@@ -30,12 +30,32 @@ IS_DESKTOP = not IS_ANDROID
 
 
 def _app_dir():
-    """Directory that holds main.py and the Data folder."""
+    """Directory that holds main.py and the Data folder.
+
+    На Android p4a задаёт несколько переменных, и они означают РАЗНОЕ:
+      ANDROID_ARGUMENT - папка приложения (там main.py и Data)  <- то, что нужно
+      ANDROID_PRIVATE  - родительская приватная папка (".../files")
+    Поэтому сначала ищем ту, в которой реально лежит Data, иначе легко получить
+    ".../files/Data" вместо ".../files/app/Data".
+    """
     if IS_ANDROID:
-        for key in ("ANDROID_PRIVATE", "ANDROID_APP_PATH", "ANDROID_UNPACK"):
+        keys = ("ANDROID_ARGUMENT", "ANDROID_UNPACK", "ANDROID_APP_PATH", "ANDROID_PRIVATE")
+
+        for key in keys:
+            value = os.environ.get(key)
+            if value and os.path.isdir(os.path.join(value, "Data")):
+                return value
+
+        for key in keys:
             value = os.environ.get(key)
             if value and os.path.isdir(value):
                 return value
+
+        # Последний шанс: папка, в которой лежит этот файл.
+        here = os.path.dirname(os.path.abspath(__file__))
+        if os.path.isdir(os.path.join(here, "Data")):
+            return here
+
     return os.path.dirname(os.path.abspath(__file__))
 
 
