@@ -49,6 +49,11 @@ android.permissions =
 
 # Датапаки и сохранения живут в приватной папке приложения (ANDROID_PRIVATE),
 # поэтому доступ к внешней памяти не запрашивается.
+# ВАЖНО: фиксируем релиз python-for-android.
+# В свежих ветках (master/develop) Python уже 3.14, а pygame 2.5.2 и Cython
+# 0.29 его не поддерживают - сборка падает на "too few arguments to function".
+# В v2024.01.21 стоит Python 3.11.5 + Cython 0.29.36: проверенная связка.
+p4a.branch = v2024.01.21
 p4a.bootstrap = sdl2
 
 [buildozer]
