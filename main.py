@@ -1,5 +1,6 @@
 import pygame
 import sys
+import os
 import math
 import time
 import threading
@@ -56,6 +57,11 @@ class Loader:
         self._update_frame()
 
     def wait_and_close(self):
+        # При замерах производительности не ждём клика по экрану загрузки.
+        if os.path.exists(res("profile.flag")) or os.path.exists(res("bench.flag")):
+            self.is_loaded = True
+            return
+
         clock = pygame.time.Clock()
 
         while True:
@@ -828,16 +834,16 @@ class GameScene:
                 elif self.game.gid.counter == 68:
                     self.game.gid.play(f"Для начала давай\nудалим всех котов")
                 elif self.game.gid.counter == 69:
-                    self.game.gid.play(f"Чтобы их удалять\nнажимай ПКМ по котам")
+                    self.game.gid.play(f"Чтобы их удалять\nзажми кота пальцем")
                     self.oldCatsCount = len(self.game.towerManager.towers)
                 elif self.game.gid.counter == 71:
-                    self.game.gid.play(f"Зажми Ctrl+ПКМ чтобы\nудалять множество")
+                    self.game.gid.play(f"Долгое нажатие удаляет\nкота за 50% цены")
                 elif self.game.gid.counter == 1485:
                     self.game.gid.play(f"На нижней панели\nбудут коты")
                 elif self.game.gid.counter == 1486:
                     self.game.gid.play(f"Выбери кликом кота\nи место куда его")
                 elif self.game.gid.counter == 1487:
-                    self.game.gid.play(f"И не забывай про\nCtrl+ЛКМ ;-)", "action1")
+                    self.game.gid.play(f"Долгое нажатие\nудаляет кота", "action1")
                 elif self.game.gid.counter == 1488:
                     self.game.gid.play(f"Как закончишь\nзапусти волну")
                     self.game.waveManager.wave = 13
@@ -850,18 +856,36 @@ class GameScene:
         eventManager.event("game scene update")
     
     def background(self):
-        
-        width_cells  = WIDTH//cell_size
-        height_cells = HEIGHT//cell_size
-        
-        offsets = (-cell_size//2, -cell_size//2)
-        for row in range(height_cells+1):
-            for col in range(width_cells+2):
-                if self.hausManager.enable:
-                    color = self.hausManager.get("cell1", (0, 255),"color") if (row+col) % 2 == 0 else self.hausManager.get("cell2", (0, 255),"color")
-                else:
-                    color = self.cell1 if (row+col) % 2 == 0 else self.cell2
-                pygame.draw.rect(screen, color, (col*cell_size+offsets[0], row*cell_size+offsets[1], cell_size, cell_size))
+        # Сетка между кадрами не меняется, поэтому рисуем её ОДИН раз в отдельную
+        # поверхность и дальше копируем одним blit-ом.
+        # Раньше это были 154 вызова draw.rect каждый кадр (~4.5 мс).
+        key = (cell_size, bool(self.hausManager.enable), str(self.cell1), str(self.cell2))
+
+        if getattr(self, "_grid_key", None) != key or getattr(self, "_grid_surface", None) is None:
+            grid = pygame.Surface((WIDTH, HEIGHT)).convert()
+            grid.fill(self.cell2)
+            # Сетка живёт только в игровом поле: под верхней панелью и над
+            # нижней панелью магазина её быть не должно.
+            grid.set_clip(pygame.Rect(0, upbar, WIDTH, HEIGHT - upbar - downbar))
+
+            for row in range((HEIGHT - upbar - downbar) // cell_size + 2):
+                for col in range(WIDTH // cell_size + 2):
+                    if self.hausManager.enable:
+                        color = self.hausManager.get("cell1", (0, 255),"color") if (row+col) % 2 == 0 else self.hausManager.get("cell2", (0, 255),"color")
+                    else:
+                        color = self.cell1 if (row+col) % 2 == 0 else self.cell2
+                    pygame.draw.rect(grid, color, (
+                        col * cell_size,
+                        upbar + row * cell_size,
+                        cell_size,
+                        cell_size,
+                    ))
+
+            grid.set_clip(None)
+            self._grid_surface = grid
+            self._grid_key = key
+
+        screen.blit(self._grid_surface, (0, 0))
     
     def draw(self):
         if self.settings["background"] == True:
@@ -881,8 +905,10 @@ class GameScene:
         self.game.infoBar.draw(self.game.input.mouse_pos)
         
         # Затемнение типо старт волны
-        screen.blit(self.overlay.set_alpha(self.overlay_alpha) or self.overlay, (0, 0))
+        # Блит 1400x800 с альфой стоит ~3 мс, поэтому рисуем только когда видно.
         if self.overlay_alpha > 0:
+            self.overlay.set_alpha(self.overlay_alpha)
+            screen.blit(self.overlay, (0, 0))
             if self.settings["error_fun"] == True:
                 self.settings["background"] = True
             self.overlay.fill((0, 0, 0, 150))
@@ -896,8 +922,9 @@ class GameScene:
             if self.settings["error_fun"] == True:
                 self.settings["background"] = False
         # Затемнение типо пауза аааааааааа гамно коддд x2
-        screen.blit(self.pauseScene.overlay_p.set_alpha(self.pauseScene.overlay_p_alpha) or self.pauseScene.overlay_p, (0, 0))
         if self.pauseScene.overlay_p_alpha > 0:
+            self.pauseScene.overlay_p.set_alpha(self.pauseScene.overlay_p_alpha)
+            screen.blit(self.pauseScene.overlay_p, (0, 0))
             self.pauseScene.overlay_p.fill((0, 0, 0, 150))
         if self.pause and self.pause_visible:
             self.pauseScene.draw()
@@ -1364,6 +1391,17 @@ class Game:
         eventManager.event("loaded")
         self.sceneManager.go("login")
         load.wait_and_close()
+
+        # Профилировка по флагу profile.flag рядом с main.py (см. perf_probe.py).
+        if os.path.exists(res("profile.flag")):
+            import perf_probe
+            perf_probe.run(self, present, frames=240, setup=_enter_game_scene)
+            os._exit(0)
+
+        # Бенчмарк: сразу в бой, без профилировщика (меряем реальный FPS).
+        if os.path.exists(res("bench.flag")):
+            _enter_game_scene(self)
+
         self.loop()
     
     def load_profile(self, profile_id):
@@ -1465,12 +1503,47 @@ class Game:
         self.gid.draw()
     
     def loop(self):
+        # Счётчик FPS: раз в 5 секунд пишем в logcat (тег python).
+        frames = 0
+        last_report = time.time()
+        t_upd = t_draw = t_present = t_tick = 0.0
         while self.running:
+            a = time.perf_counter()
             self.update()
+            b = time.perf_counter()
             self.draw()
-            
+            c = time.perf_counter()
             present()
+            d = time.perf_counter()
             clock.tick(FPS)
+            e = time.perf_counter()
+
+            t_upd += b - a
+            t_draw += c - b
+            t_present += d - c
+            t_tick += e - d
+
+            frames += 1
+            now = time.time()
+            if now - last_report >= 5.0:
+                n = max(1, frames)
+                print(
+                    f"[fps] {frames / (now - last_report):.1f} "
+                    f"upd={t_upd / n * 1000:.1f} draw={t_draw / n * 1000:.1f} "
+                    f"present={t_present / n * 1000:.1f} tick={t_tick / n * 1000:.1f}"
+                )
+                frames = 0
+                t_upd = t_draw = t_present = t_tick = 0.0
+                last_report = now
+
+# Только для замеров производительности: сразу входим в бой, минуя меню.
+def _enter_game_scene(game):
+    game.load_profile(0)
+    game.game_managers()
+    game.load_entity()
+    game.sceneManager.init(GameScene(game), "mainGame")
+    game.sceneManager.go("mainGame")
+
 
 # Датапак - это код из Data/DataPacks. На мобилке он опционален:
 # если что-то пошло не так, игра должна запуститься, а не умереть.

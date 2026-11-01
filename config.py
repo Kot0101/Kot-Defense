@@ -17,9 +17,14 @@ upbar = 80
 
 cell1 = (148, 146, 124)
 cell2 = (130, 128, 109)# (94,143,86)
-cell_size = 90
-GRID_SIZE = 90
-cat_base_size = 80
+cell_size = 104
+GRID_SIZE = 104
+cat_base_size = 96
+
+# Начало сетки: клетки центрируются на точках привязки котов,
+# а поле начинается ровно под верхней панелью.
+GRID_X0 = cell_size // 2
+GRID_Y0 = upbar + cell_size // 2
 
 FPS = 60
 

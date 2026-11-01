@@ -13,7 +13,7 @@ source.exclude_dirs = .git,.github,tools,recipes,bin,.buildozer,__pycache__,.ide
 source.exclude_patterns = _smoke_test.py,compiler.py,start.bat,output_project.md,*.psd,*.pyc
 
 # Версия APK. Меняй при каждой сборке, если ставишь поверх старой.
-version = 1.5.0
+version = 1.6.0
 
 # pygame-ce на десктопе, но python-for-android собирает upstream pygame
 # (рецепт "pygame"). 2.5.2 - ближайшая версия к pygame-ce 2.5.7 по API:

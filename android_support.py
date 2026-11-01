@@ -105,21 +105,44 @@ class Display:
 
         pygame.display.set_caption(title)
 
-        win_w, win_h = width, height
-        flags = 0
+        self.scaled_by_sdl = False
 
         if IS_ANDROID:
-            try:
-                info = pygame.display.Info()
-                if info.current_w > 0 and info.current_h > 0:
-                    win_w, win_h = info.current_w, info.current_h
-            except Exception:
-                pass
-            flags = pygame.FULLSCREEN
-            # Phone screens are usually 16:9..20:9, the game is 7:4.
             os.environ.setdefault("SDL_VIDEO_MINIMIZE_ON_FOCUS_LOSS", "0")
 
-        self.window = self._set_mode((win_w, win_h), flags)
+            # Идеальный вариант для телефона: SDL сам растягивает кадр 1400x800
+            # под экран средствами GPU (pygame.SCALED). Тогда не нужно каждый
+            # кадр гонять transform.scale на CPU - это стоило нам 20 мс/кадр.
+            try:
+                self.window = pygame.display.set_mode(
+                    (width, height), pygame.FULLSCREEN | pygame.SCALED, depth=16
+                )
+                self.logical = self.window
+                self.scaled_by_sdl = True
+                self.scale = 1.0
+                self.offset = (0, 0)
+                print(f"[display] SDL SCALED {self.window.get_size()} depth={self.window.get_bitsize()}")
+            except Exception as error:
+                print(f"[display] SCALED failed ({error}), falling back")
+
+        if not self.scaled_by_sdl:
+            win_w, win_h = width, height
+            flags = 0
+            if IS_ANDROID:
+                try:
+                    info = pygame.display.Info()
+                    if info.current_w > 0 and info.current_h > 0:
+                        win_w, win_h = info.current_w, info.current_h
+                except Exception:
+                    pass
+                flags = pygame.FULLSCREEN
+
+            self.window = self._set_mode((win_w, win_h), flags)
+            self.logical = pygame.Surface((width, height)).convert()
+            self.scale = 1.0
+            self.offset = (0, 0)
+            self._update_geometry()
+            print(f"[display] software scale {self.window.get_size()} -> {(width, height)}")
 
         if icon_path:
             try:
@@ -127,10 +150,6 @@ class Display:
             except Exception:
                 pass
 
-        self.logical = pygame.Surface((width, height)).convert()
-        self.scale = 1.0
-        self.offset = (0, 0)
-        self._update_geometry()
         return self.window, self.logical
 
     def _set_mode(self, size, flags):
@@ -174,6 +193,12 @@ class Display:
     # -- frame -------------------------------------------------------------
     def present(self):
         import pygame
+
+        # В режиме SDL SCALED кадр уже является экранной поверхностью:
+        # масштабированием занимается GPU, нам остаётся только flip.
+        if self.scaled_by_sdl:
+            pygame.display.flip()
+            return
 
         self._update_geometry()
         win_w, win_h = self.window.get_size()

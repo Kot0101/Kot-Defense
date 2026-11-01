@@ -231,7 +231,14 @@ def load_entity(game):
                 health = round(max(0.0, self.hp.value), 1)
                 max_hp = round(self.max_hp.value, 1)
                 self.game.infoBar.text = f"{health:g}/{max_hp:g} HP"
-                if not input.mouse_down(1) and ((input.mouse_down(3) and input.key_down(pygame.K_LCTRL)) or input.mouse_pressed(3)):
+                # Удаление кота: на ПК это ПКМ (или Ctrl+ПКМ), на телефоне -
+                # долгое нажатие пальцем по коту.
+                if self.game.input.long_press:
+                    self.sell(50)
+                elif not input.mouse_down(1) and (
+                    (input.mouse_down(3) and input.key_down(pygame.K_LCTRL))
+                    or input.mouse_pressed(3)
+                ):
                     self.sell(50)
             if self.animator and not self.animator.playing and self.animator.current_anim != self.game.animationManager.animations.get("idle"):
                 self.animator.play("idle", loop=True)

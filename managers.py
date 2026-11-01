@@ -105,6 +105,10 @@ class PathManager:
         self.ANIMATIONS = self.DATA / "animations"
 
 class InputManager:
+    # Насколько долго держать палец, чтобы это считалось "зажатием" (удаление кота).
+    LONG_PRESS_TIME = 0.55
+    LONG_PRESS_DRAG = 24  # px: сдвиг больше этого отменяет зажатие
+
     def __init__(self):
         self.down, self.pressed, self.released = set(), set(), set()
         self.m_down, self.m_pressed, self.m_released = set(), set(), set()
@@ -116,7 +120,14 @@ class InputManager:
         self.scancodes_pressed = set()
         
         self.mouse_pos = (0, 0)
-        
+
+        # Зажатие (long press) - единственный способ удалять котов на тач-экране:
+        # правой кнопки мыши и Ctrl на телефоне нет.
+        self._press_start = None
+        self._press_pos = None
+        self._long_press_fired = False
+        self.long_press = False
+
     def scancode_pressed(self, scancode):
         return scancode in self.scancodes_pressed
 
@@ -164,11 +175,31 @@ class InputManager:
                     if b not in self.m_down:
                         self.m_pressed.add(b)
                     self.m_down.add(b)
+                    if b == 1:
+                        self._press_start = time.time()
+                        self._press_pos = self.mouse_pos
+                        self._long_press_fired = False
                 else:
                     self.m_down.discard(b)
                     self.m_released.add(b)
+                    if b == 1:
+                        self._press_start = None
             elif e.type == pygame.MOUSEMOTION:
                 self.mouse_pos = getattr(e, 'pos', self.mouse_pos)
+
+        # Зажатие пальца на месте: считаем один раз за нажатие.
+        self.long_press = False
+        if (
+            1 in self.m_down
+            and self._press_start is not None
+            and not self._long_press_fired
+        ):
+            held = time.time() - self._press_start
+            dx = self.mouse_pos[0] - self._press_pos[0]
+            dy = self.mouse_pos[1] - self._press_pos[1]
+            if held >= self.LONG_PRESS_TIME and (dx * dx + dy * dy) <= self.LONG_PRESS_DRAG ** 2:
+                self.long_press = True
+                self._long_press_fired = True
 
     key_down = lambda s, k: k in s.down
     key_pressed = lambda s, k: k in s.pressed
@@ -829,8 +860,10 @@ class StoreManager:
             radius((self.ghostTower.rect.centerx, self.ghostTower.rect.centery), (255, 255, 255), self.ghostTower.range.value)
     
     def snap(self, pos):
-        x = round(pos[0]/GRID_SIZE)*GRID_SIZE
-        y = round(pos[1]/GRID_SIZE)*GRID_SIZE
+        # Привязка к центрам клеток сетки (шаг GRID_SIZE от её начала),
+        # а не к кратным координатам от угла экрана.
+        x = round((pos[0] - GRID_X0) / GRID_SIZE) * GRID_SIZE + GRID_X0
+        y = round((pos[1] - GRID_Y0) / GRID_SIZE) * GRID_SIZE + GRID_Y0
         
         return (x, y)
     
