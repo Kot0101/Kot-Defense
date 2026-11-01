@@ -9,7 +9,7 @@ package.domain = org.kotdefense
 
 source.dir = .
 source.include_exts = py,png,jpg,jpeg,ttf,otf,json,mp3,ogg,wav,txt,md
-source.exclude_dirs = .git,.github,tools,bin,.buildozer,__pycache__,.idea,.vscode,saves
+source.exclude_dirs = .git,.github,tools,recipes,bin,.buildozer,__pycache__,.idea,.vscode,saves
 source.exclude_patterns = _smoke_test.py,compiler.py,start.bat,output_project.md,*.psd,*.pyc
 
 # Версия APK. Меняй при каждой сборке, если ставишь поверх старой.
@@ -54,6 +54,11 @@ android.allow_backup = True
 # В свежих ветках (master/develop) Python уже 3.14, а pygame 2.5.2 и Cython
 # 0.29 его не поддерживают - сборка падает на "too few arguments to function".
 # В v2024.01.21 стоит Python 3.11.5 + Cython 0.29.36: проверенная связка.
+# Локальный рецепт-патч для pygame: в шаблоне Setup.Android.SDL2.in из 2.5.x
+# забыт src_c/simd_blitters_sse2.c, из-за чего на телефоне падает
+# "dlopen failed: cannot locate symbol alphablit_alpha_sse2_argb_surf_alpha".
+p4a.local_recipes = ./recipes
+
 p4a.branch = v2024.01.21
 p4a.bootstrap = sdl2
 
